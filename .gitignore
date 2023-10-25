@@ -1,0 +1,9 @@
+# Ignore Firebase JSONs
+src/config/*.json
+
+# Ignore environment files
+src/.env.dev
+src/.env.prod
+
+# Ignore node modules
+node_modules/
