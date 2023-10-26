@@ -4,7 +4,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /companies:
+ * /companies/create:
  *  post:
  *    summary: Create a new company
  *    tags: [Companies]

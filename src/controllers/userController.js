@@ -1,18 +1,30 @@
 const User = require('../models/User');
+const Authorization = require('../models/Authorization'); // Import the Authorization model
 const admin = require('../firebase'); // Importing from src/firebase.js
 const db = admin.firestore();
 
-// Create a new user
+// Create a new user along with their authorizations
 exports.createUser = async (req, res) => {
   try {
+    const { authorizations, ...userData } = req.body;
+
     // Save to PostgreSQL
-    const newUser = await User.create(req.body);
+    const newUser = await User.create(userData);
+
+    // Save authorizations to PostgreSQL
+    if (authorizations && authorizations.length > 0) {
+      const authObjects = authorizations.map(auth => ({
+        ...auth,
+        user_id: newUser.id,
+      }));
+      await Authorization.bulkCreate(authObjects);
+    }
 
     // Save to Firebase
-    const userRef = db.collection('users').doc(); // Create a new doc with auto-generated ID
+    const userRef = db.collection('users').doc(newUser.id); // Use the same ID as PostgreSQL
     await userRef.set({
-      id: userRef.id, // Use auto-generated ID from Firebase
-      ...req.body
+      ...userData,
+      authorizations,
     });
 
     res.status(201).json({
@@ -24,10 +36,12 @@ exports.createUser = async (req, res) => {
   }
 };
 
-// Get a user by ID
+// Get a user by ID along with their authorizations
 exports.getUser = async (req, res) => {
   try {
-    const user = await User.findByPk(req.params.id);
+    const user = await User.findByPk(req.params.id, {
+      include: ['authorizations'],  // Include related Authorizations
+    });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -86,5 +100,20 @@ exports.getAllUsers = async (req, res) => {
     res.status(200).json(users);
   } catch (error) {
     res.status(400).json({ message: 'Error fetching users', error });
+  }
+};
+
+// Get all authorizations for a user by ID
+exports.getUserAuthorizations = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.params.id, {
+      include: ['authorizations'],  // Include related Authorizations
+    });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json(user.authorizations);
+  } catch (error) {
+    res.status(400).json({ message: 'Error fetching authorizations', error });
   }
 };

@@ -9,7 +9,8 @@ if (process.env.NODE_ENV === 'production') {
 const express = require('express');
 const { Sequelize } = require('sequelize');
 const dbConfig = require('./config/database');
-const User = require('./models/User');  // Import the User model
+const User = require('./models/User');
+const Authorization = require('./models/Authorization');
 const Company = require('./models/Company');  // Import the Company model
 const Supervisor = require('./models/Supervisor');  // Import the Supervisor model
 const Event = require('./models/Event');  // Import the Event model
@@ -25,6 +26,7 @@ const eventRoutes = require('./routes/eventRouter'); // Import the event routes
 const supervisorRoutes = require('./routes/supervisorRouter'); // Import the supervisor routes
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocs = require('./swagger');  // Import the Swagger configuration
+const syncRouter = require('./routes/syncRouter'); // Import the sync routes
 const admin = require('./firebase');  // adjust the path as needed
 
 // Initialize Sequelize
@@ -32,7 +34,8 @@ const sequelize = new Sequelize(dbConfig);
 sequelize.sync({ force: true })  // This will delete all tables and re-create them
 
 // Initialize models
-User.init(sequelize);  // Initialize the User model
+User.init(sequelize);
+Authorization.init(sequelize);
 Company.init(sequelize);  // Initialize the Company model
 Supervisor.init(sequelize);  // Initialize the Supervisor model
 Event.init(sequelize);  // Initialize the Event model
@@ -40,8 +43,28 @@ Vessel.init(sequelize);  // Initialize the Vessel model
 Docking.init(sequelize);  // Initialize the Docking model
 Portal.init(sequelize);  // Initialize the Portal model
 
+User.hasMany(Authorization, {
+  foreignKey: 'user_id',
+  as: 'authorizations'
+});
+
+Authorization.belongsTo(User, {
+  foreignKey: 'user_id',
+  as: 'user'
+});
+
 const app = express();
 const routes = require('./routes');
+
+const rateLimit = require("express-rate-limit");
+
+const syncLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 10 // limit each IP to 10 requests per windowMs
+});
+
+app.use("/sync", syncLimiter);
+
 
 app.use(express.json());
 app.use('/', routes);
@@ -52,6 +75,7 @@ app.use('/portal', portalRoutes);  // Use the portal routes for any requests tha
 app.use('/vessel', vesselRoutes);  // Use the vessel routes for any requests that start with "/vessel"
 app.use('/event', eventRoutes);  // Use the event routes for any requests that start with "/event"
 app.use('/supervisor', supervisorRoutes);  // Use the supervisor routes for any requests that start with "/supervisor"
+app.use('/sync', syncRouter);  // Use the sync routes for any requests that start with "/sync"
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 

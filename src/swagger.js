@@ -158,9 +158,32 @@ const swaggerOptions = {
                         },
                         },
           },
+          Authorization: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'string',
+                format: 'uuid',
+                description: 'The auto-generated ID of the authorization',
+              },
+              user_id: {
+                type: 'string',
+                description: 'The user ID associated with this authorization',
+              },
+              vessel_id: {
+                type: 'string',
+                description: 'The vessel ID associated with this authorization',
+              },
+              expiration_date: {
+                type: 'string',
+                format: 'date-time',
+                description: 'The expiration date of this authorization',
+              },
+            },
+          },
           Event: {
-                        type: 'object',
-                        properties: {
+             type: 'object',
+             properties: {
                           id: {
                             type: 'string',
                             description: 'The auto-generated ID of the event',
@@ -236,9 +259,12 @@ const swaggerOptions = {
                             type: 'string',
                             description: 'The name of the user',
                           },
-                          vessel_id: {
-                            type: 'string',
-                            description: 'The vessel ID of the user',
+                          authorizations: {
+                            type: 'array',
+                            items: {
+                              $ref: '#/components/schemas/Authorization'
+                            },
+                            description: 'The authorizations associated with this user',
                           },
                             created_at: {
                                 type: 'date',
@@ -352,15 +378,32 @@ const swaggerOptions = {
                                 type: 'date',
                                 description: 'The end_job of the user',
                             },
-                            user : {
-                                type: 'string',
-                                description: 'The user of the user',
+                            username: {
+                              type: 'string',
+                              description: 'The username of the user',
                             },
-                            password : {
-                                type: 'string',
-                                description: 'The password of the user',
+                            salt: {
+                              type: 'string',
+                              description: 'The salt for the user password',
                             },
                         },
+                        Sync: {
+                            type: 'object',
+                            properties: {
+                                model: {
+                                    type: 'string',
+                                    enum: ['Event', 'Company', 'Vessel', 'Docking', 'Portal', 'Supervisor', 'User'],
+                                    description: 'The model to which these records belong',
+                                },
+                                records: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'object',
+                                        additionalProperties: true,
+                                    },
+                                },
+                            },
+                          },
           },
         },
       },

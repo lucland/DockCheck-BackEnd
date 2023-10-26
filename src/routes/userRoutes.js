@@ -6,7 +6,7 @@ const router = express.Router();
  * @swagger
  * /users:
  *  post:
- *    summary: Create a new user
+ *    summary: Create a new user along with their authorizations
  *    tags: [Users]
  *    requestBody:
  *      required: true
@@ -104,5 +104,26 @@ router.delete('/:id', userController.deleteUser);
  *        description: Successful operation
  */
 router.get('/', userController.getAllUsers);
+
+/**
+ * @swagger
+ * /users/{id}/authorizations:
+ *  get:
+ *    summary: Get all authorizations for a user by ID
+ *    tags: [Users]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: User ID
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *      '404':
+ *        description: User not found
+ */
+router.get('/:id/authorizations', userController.getUserAuthorizations);
 
 module.exports = router;

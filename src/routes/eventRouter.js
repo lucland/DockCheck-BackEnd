@@ -105,4 +105,31 @@ router.delete('/:id', eventController.deleteEvent);
  */
 router.get('/', eventController.getAllEvents);
 
+/**
+ * @swagger
+ * /events/sync:
+ *  post:
+ *    summary: Sync events
+ *    tags: [Events]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: 'object'
+ *            properties:
+ *              events:
+ *                type: 'array'
+ *                items:
+ *                  $ref: '#/components/schemas/Event'
+ *    responses:
+ *      '200':
+ *        description: Events synced successfully
+ *      '400':
+ *        description: Bad request
+ *      '500':
+ *        description: Internal server error
+ */
+router.post('/sync', eventController.syncEvents);
+
 module.exports = router;

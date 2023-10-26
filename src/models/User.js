@@ -7,7 +7,6 @@ class User extends Model {
         type: DataTypes.STRING,
         primaryKey: true,
       },
-      vessel_id: DataTypes.STRING,
       name: DataTypes.STRING,
       company: DataTypes.STRING,
       role: DataTypes.STRING,
@@ -37,8 +36,8 @@ class User extends Model {
       type_job: DataTypes.STRING,
       start_job: DataTypes.DATE,
       end_job: DataTypes.DATE,
-      user: DataTypes.STRING,
-      password : DataTypes.STRING,
+      username: DataTypes.STRING,
+      salt: DataTypes.STRING,
     }, {
       sequelize,
       modelName: 'User',

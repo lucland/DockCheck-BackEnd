@@ -88,3 +88,26 @@ exports.getAllEvents = async (req, res) => {
     res.status(400).json({ message: 'Error fetching events', error });
   }
 };
+
+exports.syncEvents = async (req, res) => {
+  try {
+    const incomingEvents = req.body.events; // Assuming events is an array of objects
+    if (incomingEvents.length > 100) {
+      return res.status(400).json({ message: 'Batch size too large. Limit to 100 records.' });
+    }
+
+    // Loop through the events and update the databases
+    for (const event of incomingEvents) {
+      // Update or Create in PostgreSQL
+      await Event.upsert(event);
+
+      // Update or Create in Firebase
+      const eventRef = db.collection('events').doc(event.id || ''); // Use existing ID or create new
+      await eventRef.set(event, { merge: true }); // Merge true will update or create
+    }
+
+    res.status(200).json({ message: 'Events synced successfully.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error syncing events', error });
+  }
+};
