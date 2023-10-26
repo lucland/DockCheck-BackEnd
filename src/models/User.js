@@ -16,12 +16,19 @@ class User extends Model {
       cpf: DataTypes.STRING,
       aso: DataTypes.DATE,
       aso_document: DataTypes.STRING,
+      has_aso: DataTypes.BOOLEAN,
       nr34: DataTypes.DATE,
       nr34_document: DataTypes.STRING,
+      has_nr34: DataTypes.BOOLEAN,
       nr35: DataTypes.DATE,
       nr35_document: DataTypes.STRING,
+      has_nr35: DataTypes.BOOLEAN,
       nr33: DataTypes.DATE,
       nr33_document: DataTypes.STRING,
+      has_nr33: DataTypes.BOOLEAN,
+      nr10: DataTypes.DATE,
+      nr10_document: DataTypes.STRING,
+      has_nr10: DataTypes.BOOLEAN,
       email: DataTypes.STRING,
       area: DataTypes.STRING,
       is_admin: DataTypes.BOOLEAN,
@@ -38,10 +45,21 @@ class User extends Model {
       end_job: DataTypes.DATE,
       username: DataTypes.STRING,
       salt: DataTypes.STRING,
+      hash: DataTypes.STRING,
     }, {
       sequelize,
       modelName: 'User',
     });
+  }
+
+  setPassword(password) {
+    this.salt = crypto.randomBytes(16).toString('hex');
+    this.hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, 'sha512').toString('hex');
+  }
+
+  validPassword(password) {
+    const hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, 'sha512').toString('hex');
+    return this.hash === hash;
   }
 }
 

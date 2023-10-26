@@ -79,6 +79,25 @@ exports.updatePortal = async (req, res) => {
     }
   };
 
+  // Get all portals for a specific vessel
+exports.getPortalsByVessel = async (req, res) => {
+  try {
+    const { vessel_id } = req.params;
+    const portals = await Portal.findAll({
+      where: {
+        vessel_id: vessel_id
+      }
+    });
+    if (portals.length === 0) {
+      return res.status(404).json({ message: 'No portals found for this vessel' });
+    }
+    res.status(200).json(portals);
+  } catch (error) {
+    res.status(400).json({ message: 'Error fetching portals', error });
+  }
+};
+
+
 // Get all portals
 exports.getAllPortals = async (req, res) => {
   try {

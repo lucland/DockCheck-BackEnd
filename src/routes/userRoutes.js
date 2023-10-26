@@ -1,6 +1,7 @@
 const express = require('express');
 const userController = require('../controllers/userController');
 const router = express.Router();
+const authenticateJWT = require('../middleware/auth');
 
 /**
  * @swagger
@@ -17,10 +18,58 @@ const router = express.Router();
  *    responses:
  *      '201':
  *        description: User created successfully
+ *        content:
+ *          application/json:
+ *            example:
+ *              id: "user123"
+ *              name: "John Doe"
+ *              company: "Company Inc."
+ *              role: "Engineer"
+ *              project: "Project A"
+ *              number: 12345
+ *              identidade: "ID12345"
+ *              cpf: "123.456.789-00"
+ *              aso: "2023-01-01"
+ *              aso_document: "aso_doc.pdf"
+ *              has_aso: false
+ *              nr34: "2023-01-01"
+ *              nr34_document: "nr34_doc.pdf"
+ *              has_nr34: false
+ *              nr35: "2023-01-01"
+ *              nr35_document: "nr35_doc.pdf"
+ *              has_nr35: false
+ *              nr33: "2023-01-01"
+ *              nr33_document: "nr33_doc.pdf"
+ *              has_nr33: false
+ *              nr10: "2023-01-01"
+ *              nr10_document: "nr10_doc.pdf"
+ *              has_nr10: false
+ *              email: "johndoeexample.com"
+ *              area: "Engineering"
+ *              is_admin: false
+ *              is_visitor: false
+ *              is_blocked: false
+ *              block_reason: null
+ *              rfid: "RFID12345"
+ *              picture: "picture.jpg"
+ *              created_at: "2023-01-01T00:00:00.000Z"
+ *              updated_at: "2023-01-01T00:00:00.000Z"
+ *              events: ["event1", "event2"]
+ *              type_job: "Full-time"
+ *              start_job: "2023-01-01"
+ *              end_job: "2023-12-31"
+ *              username: "johndoe"
+ *              salt: "random_salt"
+ *              hash: "hashed_password"
  *      '400':
  *        description: Bad request
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Error creating user"
+ *              error: "Details about the error"
  */
-router.post('/create', userController.createUser);
+router.post('/create', authenticateJWT, userController.createUser);
 
 /**
  * @swagger
@@ -38,10 +87,53 @@ router.post('/create', userController.createUser);
  *    responses:
  *      '200':
  *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            example:
+ *              id: "user123"
+ *              name: "John Doe"
+ *              company: "Company Inc."
+ *              role: "Engineer"
+ *              project: "Project A"
+ *              number: 12345
+ *              identidade: "ID12345"
+ *              cpf: "123.456.789-00"
+ *              aso: "2023-01-01"
+ *              aso_document: "aso_doc.pdf"
+ *              has_aso: false
+ *              nr34: "2023-01-01"
+ *              nr34_document: "nr34_doc.pdf"
+ *              has_nr34: false
+ *              nr35: "2023-01-01"
+ *              nr35_document: "nr35_doc.pdf"
+ *              has_nr35: false
+ *              nr33: "2023-01-01"
+ *              nr33_document: "nr33_doc.pdf"
+ *              has_nr33: false
+ *              nr10: "2023-01-01"
+ *              nr10_document: "nr10_doc.pdf"
+ *              has_nr10: false
+ *              email: "johndoeexample.com"
+ *              area: "Engineering"
+ *              is_admin: false
+ *              is_visitor: false
+ *              is_blocked: false
+ *              block_reason: null
+ *              rfid: "RFID12345"
+ *              picture: "picture.jpg"
+ *              created_at: "2023-01-01T00:00:00.000Z"
+ *              updated_at: "2023-01-01T00:00:00.000Z"
+ *              events: ["event1", "event2"]
+ *              type_job: "Full-time"
+ *              start_job: "2023-01-01"
+ *              end_job: "2023-12-31"
+ *              username: "johndoe"
+ *              salt: "random_salt"
+ *              hash: "hashed_password"
  *      '404':
  *        description: User not found
  */
-router.get('/:id', userController.getUser);
+router.get('/:id', authenticateJWT, userController.getUser);
 
 /**
  * @swagger
@@ -65,12 +157,61 @@ router.get('/:id', userController.getUser);
  *    responses:
  *      '200':
  *        description: User updated successfully
+ *        content:
+ *          application/json:
+ *            example:
+ *              id: "user123"
+ *              name: "John Doe"
+ *              company: "Company Inc."
+ *              role: "Engineer"
+ *              project: "Project A"
+ *              number: 12345
+ *              identidade: "ID12345"
+ *              cpf: "123.456.789-00"
+ *              aso: "2023-01-01"
+ *              aso_document: "aso_doc.pdf"
+ *              has_aso: false
+ *              nr34: "2023-01-01"
+ *              nr34_document: "nr34_doc.pdf"
+ *              has_nr34: false
+ *              nr35: "2023-01-01"
+ *              nr35_document: "nr35_doc.pdf"
+ *              has_nr35: false
+ *              nr33: "2023-01-01"
+ *              nr33_document: "nr33_doc.pdf"
+ *              has_nr33: false
+ *              nr10: "2023-01-01"
+ *              nr10_document: "nr10_doc.pdf"
+ *              has_nr10: false
+ *              email: "johndoeexample.com"
+ *              area: "Engineering"
+ *              is_admin: false
+ *              is_visitor: false
+ *              is_blocked: false
+ *              block_reason: null
+ *              rfid: "RFID12345"
+ *              picture: "picture.jpg"
+ *              created_at: "2023-01-01T00:00:00.000Z"
+ *              updated_at: "2023-01-01T00:00:00.000Z"
+ *              events: ["event1", "event2"]
+ *              type_job: "Full-time"
+ *              start_job: "2023-01-01"
+ *              end_job: "2023-12-31"
+ *              username: "johndoe"
+ *              salt: "random_salt"
+ *              hash: "hashed_password"
  *      '400':
  *        description: Bad request
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Error updating user"
+ *              error: "Details about the error"
  *      '404':
  *        description: User not found
  */
-router.put('/:id', userController.updateUser);
+router.put('/:id', authenticateJWT, userController.updateUser);
+
 
 /**
  * @swagger
@@ -91,7 +232,7 @@ router.put('/:id', userController.updateUser);
  *      '404':
  *        description: User not found
  */
-router.delete('/:id', userController.deleteUser);
+router.delete('/:id', authenticateJWT, userController.deleteUser);
 
 /**
  * @swagger
@@ -102,8 +243,103 @@ router.delete('/:id', userController.deleteUser);
  *    responses:
  *      '200':
  *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            example:
+ *              [
+ *                {
+ *                  "id": "user123",
+ *                  "name": "John Doe",
+ *                  "company": "Company Inc.",
+ *                  "role": "Engineer",
+ *                  "project": "Project X",
+ *                  "number": 12345,
+ *                  "identidade": "ID12345",
+ *                  "cpf": "123.456.789-00",
+ *                  "aso": "2023-01-01T00:00:00.000Z",
+ *                  "aso_document": "aso_doc.pdf",
+ *                  "has_aso": false,
+ *                  "nr34": "2023-01-01T00:00:00.000Z",
+ *                  "nr34_document": "nr34_doc.pdf",
+ *                  "has_nr34": false,
+ *                  "nr35": "2023-01-01T00:00:00.000Z",
+ *                  "nr35_document": "nr35_doc.pdf",
+ *                  "has_nr35": false,
+ *                  "nr33": "2023-01-01T00:00:00.000Z",
+ *                  "nr33_document": "nr33_doc.pdf",
+ *                  "has_nr33": false,
+ *                  "nr10": "2023-01-01T00:00:00.000Z",
+ *                  "nr10_document": "nr10_doc.pdf",
+ *                  "has_nr10": false,
+ *                  "email": "john.doeexample.com",
+ *                  "area": "Engineering",
+ *                  "is_admin": false,
+ *                  "is_visitor": false,
+ *                  "is_blocked": false,
+ *                  "block_reason": null,
+ *                  "rfid": "RFID123",
+ *                  "picture": "john_doe.jpg",
+ *                  "created_at": "2023-01-01T00:00:00.000Z",
+ *                  "updated_at": "2023-01-01T00:00:00.000Z",
+ *                  "events": ["event1", "event2"],
+ *                  "type_job": "Full-time",
+ *                  "start_job": "2023-01-01T00:00:00.000Z",
+ *                  "end_job": "2023-12-31T00:00:00.000Z",
+ *                  "username": "johndoe",
+ *                  "salt": "salt123",
+ *                  "hash": "hash123"
+ *                },
+ *                {
+ *                  "id": "user124",
+ *                  "name": "Jane Doe",
+ *                  "company": "Company Inc.",
+ *                  "role": "Engineer",
+ *                  "project": "Project X",
+ *                  "number": 12345,
+ *                  "identidade": "ID12345",
+ *                  "cpf": "123.456.789-00",
+ *                  "aso": "2023-01-01T00:00:00.000Z",
+ *                  "aso_document": "aso_doc.pdf",
+ *                  "has_aso": false,
+ *                  "nr34": "2023-01-01T00:00:00.000Z",
+ *                  "nr34_document": "nr34_doc.pdf",
+ *                  "has_nr34": false,
+ *                  "nr35": "2023-01-01T00:00:00.000Z",
+ *                  "nr35_document": "nr35_doc.pdf",
+ *                  "has_nr35": false,
+ *                  "nr33": "2023-01-01T00:00:00.000Z",
+ *                  "nr33_document": "nr33_doc.pdf",
+ *                  "has_nr33": false,
+ *                  "nr10": "2023-01-01T00:00:00.000Z",
+ *                  "nr10_document": "nr10_doc.pdf",
+ *                  "has_nr10": false,
+ *                  "email": "john.doeexample.com",
+ *                  "area": "Engineering",
+ *                  "is_admin": false,
+ *                  "is_visitor": false,
+ *                  "is_blocked": false,
+ *                  "block_reason": null,
+ *                  "rfid": "RFID123",
+ *                  "picture": "john_doe.jpg",
+ *                  "created_at": "2023-01-01T00:00:00.000Z",
+ *                  "updated_at": "2023-01-01T00:00:00.000Z",
+ *                  "events": ["event1", "event2"],
+ *                  "type_job": "Full-time",
+ *                  "start_job": "2023-01-01T00:00:00.000Z",
+ *                  "end_job": "2023-12-31T00:00:00.000Z",
+ *                  "username": "johndoe",
+ *                  "salt": "salt123",
+ *                  "hash": "hash123"
+ *                }
+ *              ]
+ *       '404':
+ *        description: User not found
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "User not found"
  */
-router.get('/', userController.getAllUsers);
+router.get('/', authenticateJWT, userController.getAllUsers);
 
 /**
  * @swagger
@@ -121,9 +357,32 @@ router.get('/', userController.getAllUsers);
  *    responses:
  *      '200':
  *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            example:
+ *              [
+ *                {
+ *                  "id": "uuid1",
+ *                  "user_id": "user123",
+ *                  "vessel_id": "vessel123",
+ *                  "expiration_date": "2023-01-01T00:00:00.000Z"
+ *                },
+ *                {
+ *                  "id": "uuid2",
+ *                  "user_id": "user123",
+ *                  "vessel_id": "vessel124",
+ *                  "expiration_date": "2023-02-01T00:00:00.000Z"
+ *                }
+ *              ]
  *      '404':
  *        description: User not found
+ *        content:
+ *          application/json:
+ *            example:
+ *              {
+ *                "message": "User not found"
+ *              }
  */
-router.get('/:id/authorizations', userController.getUserAuthorizations);
+router.get('/:id/authorizations', authenticateJWT, userController.getUserAuthorizations);
 
 module.exports = router;

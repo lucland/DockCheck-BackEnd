@@ -27,6 +27,7 @@ const supervisorRoutes = require('./routes/supervisorRouter'); // Import the sup
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocs = require('./swagger');  // Import the Swagger configuration
 const syncRouter = require('./routes/syncRouter'); // Import the sync routes
+const loginRouter = require('./routes/loginRouter'); // Import the login routes
 const admin = require('./firebase');  // adjust the path as needed
 
 // Initialize Sequelize
@@ -76,6 +77,7 @@ app.use('/vessel', vesselRoutes);  // Use the vessel routes for any requests tha
 app.use('/event', eventRoutes);  // Use the event routes for any requests that start with "/event"
 app.use('/supervisor', supervisorRoutes);  // Use the supervisor routes for any requests that start with "/supervisor"
 app.use('/sync', syncRouter);  // Use the sync routes for any requests that start with "/sync"
+app.use('/login', loginRouter);  // Use the login routes for any requests that start with "/login"
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 

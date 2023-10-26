@@ -1,6 +1,43 @@
 const express = require('express');
 const companyController = require('../controllers/companyController');
 const router = express.Router();
+const authenticateJWT = require('../middleware/auth');
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Company:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *         logo:
+ *           type: string
+ *         supervisors:
+ *           type: array
+ *           items:
+ *             type: string
+ *         vessels:
+ *           type: array
+ *           items:
+ *             type: string
+ *         updated_at:
+ *           type: string
+ *           format: date-time
+ *         id:
+ *           type: string
+ *         expiration_date:
+ *           type: string
+ *           format: date-time
+ *     CompanyResponse:
+ *       allOf:
+ *         - $ref: '#/components/schemas/Company'
+ *         - type: object
+ *           properties:
+ *             message:
+ *               type: string
+ */
 
 /**
  * @swagger
@@ -17,10 +54,28 @@ const router = express.Router();
  *    responses:
  *      '201':
  *        description: Company created successfully
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/CompanyResponse'
+ *            example:
+ *              message: "Company created successfully"
+ *              name: "Company A"
+ *              logo: "logo.png"
+ *              supervisors: ["supervisor1", "supervisor2"]
+ *              vessels: ["vessel1", "vessel2"]
+ *              updated_at: "2023-10-25T12:34:56Z"
+ *              id: "123"
+ *              expiration_date: "2023-12-31T12:34:56Z"
  *      '400':
  *        description: Bad request
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Error creating company"
+ *              error: "Details about the error"
  */
-router.post('/create', companyController.createCompany);
+router.post('/create', authenticateJWT, companyController.createCompany);
 
 /**
  * @swagger
@@ -38,10 +93,26 @@ router.post('/create', companyController.createCompany);
  *    responses:
  *      '200':
  *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Company'
+ *            example:
+ *              name: "Company A"
+ *              logo: "logoA.png"
+ *              supervisors: ["supervisor1", "supervisor2"]
+ *              vessels: ["vessel1", "vessel2"]
+ *              updated_at: "2023-10-25T12:34:56Z"
+ *              id: "123"
+ *              expiration_date: "2023-12-31T12:34:56Z"
  *      '404':
  *        description: Company not found
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Company not found"
  */
-router.get('/:id', companyController.getCompany);
+router.get('/:id', authenticateJWT, companyController.getCompany);
 
 /**
  * @swagger
@@ -65,12 +136,28 @@ router.get('/:id', companyController.getCompany);
  *    responses:
  *      '200':
  *        description: Company updated successfully
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/CompanyResponse'
+ *            example:
+ *              message: "Company updated successfully"
+ *              name: "Updated Company A"
+ *              logo: "updatedLogo.png"
+ *              supervisors: ["updatedSupervisor1", "updatedSupervisor2"]
+ *              vessels: ["updatedVessel1", "updatedVessel2"]
+ *              updated_at: "2023-10-25T14:34:56Z"
+ *              id: "123"
+ *              expiration_date: "2023-12-31T12:34:56Z"
  *      '400':
  *        description: Bad request
- *      '404':
- *        description: Company not found
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Error updating company"
+ *              error: "Details about the error"
  */
-router.put('/:id', companyController.updateCompany);
+router.put('/:id', authenticateJWT, companyController.updateCompany);
 
 /**
  * @swagger
@@ -91,7 +178,7 @@ router.put('/:id', companyController.updateCompany);
  *      '404':
  *        description: Company not found
  */
-router.delete('/:id', companyController.deleteCompany);
+router.delete('/:id', authenticateJWT, companyController.deleteCompany);
 
 /**
  * @swagger
@@ -102,7 +189,35 @@ router.delete('/:id', companyController.deleteCompany);
  *    responses:
  *      '200':
  *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                $ref: '#/components/schemas/Company'
+ *            example:
+ *              - name: "Company A"
+ *                logo: "logoA.png"
+ *                supervisors: ["supervisor1", "supervisor2"]
+ *                vessels: ["vessel1", "vessel2"]
+ *                updated_at: "2023-10-25T12:34:56Z"
+ *                id: "123"
+ *                expiration_date: "2023-12-31T12:34:56Z"
+ *              - name: "Company B"
+ *                logo: "logoB.png"
+ *                supervisors: ["supervisor3", "supervisor4"]
+ *                vessels: ["vessel3", "vessel4"]
+ *                updated_at: "2023-10-26T12:34:56Z"
+ *                id: "124"
+ *                expiration_date: "2023-12-31T12:34:56Z"
+ *      '400':
+ *        description: Bad request
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Error updating company"
+ *              error: "Details about the error"
  */
-router.get('/', companyController.getAllCompanies);
+router.get('/', authenticateJWT, companyController.getAllCompanies);
 
 module.exports = router;

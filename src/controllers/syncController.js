@@ -6,15 +6,16 @@ const Docking = require('../models/Docking');
 const Portal = require('../models/Portal');
 const Supervisor = require('../models/Supervisor');
 const User = require('../models/User');
+const { Op } = require('sequelize');
 
 const models = {
   Event,
   Company,
   Vessel,
-    Docking,
-    Portal,
-    Supervisor,
-    User
+  Docking,
+  Portal,
+  Supervisor,
+  User
 };
 
 exports.syncData = async (req, res) => {
@@ -47,3 +48,65 @@ exports.syncData = async (req, res) => {
     res.status(400).json({ success: false, error });
   }
 };
+
+exports.getFilteredUsersByVessel = async (req, res) => {
+  try {
+    const { vessel_id } = req.params;
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+    const users = await User.findAll({
+      where: {
+        // Assuming you have a vessel_id field in your User model
+        vessel_id: vessel_id,
+        [Op.or]: [
+          {
+            has_aso: true,
+            aso: {
+              [Op.lte]: todayStr
+            }
+          },
+          {
+            has_nr34: true,
+            nr34: {
+              [Op.lte]: todayStr
+            }
+          },
+          {
+            has_nr35: true,
+            nr35: {
+              [Op.lte]: todayStr
+            }
+          },
+          {
+            has_nr33: true,
+            nr33: {
+              [Op.lte]: todayStr
+            }
+          },
+          {
+            has_nr10: true,
+            nr10: {
+              [Op.lte]: todayStr
+            }
+          },
+          {
+            end_job: {
+              [Op.lte]: todayStr
+            }
+          },
+          {
+            is_blocked: true
+          }
+        ]
+      }
+    });
+
+    const rfidList = users.map(user => user.rfid);
+
+    res.status(200).json(rfidList);
+  } catch (error) {
+    res.status(400).json({ message: 'Error fetching filtered users', error });
+  }
+};
+

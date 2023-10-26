@@ -4,7 +4,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /events:
+ * /events/create:
  *  post:
  *    summary: Create a new event
  *    tags: [Events]
@@ -17,8 +17,24 @@ const router = express.Router();
  *    responses:
  *      '201':
  *        description: Event created successfully
+ *        content:
+ *          application/json:
+ *            example:
+ *              id: "event123"
+ *              portal_id: "portal1"
+ *              user_id: "user1"
+ *              timestamp: "2023-10-25T00:00:00.000Z"
+ *              direction: 1
+ *              picture: "picture_url"
+ *              vessel_id: "vessel123"
+ *              action: 1
  *      '400':
  *        description: Bad request
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Error creating event"
+ *              error: "Details about the error"
  */
 router.post('/create', eventController.createEvent);
 
@@ -38,8 +54,23 @@ router.post('/create', eventController.createEvent);
  *    responses:
  *      '200':
  *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            example:
+ *              id: "event123"
+ *              portal_id: "portal1"
+ *              user_id: "user1"
+ *              timestamp: "2023-10-25T00:00:00.000Z"
+ *              direction: 1
+ *              picture: "picture_url"
+ *              vessel_id: "vessel123"
+ *              action: 1
  *      '404':
  *        description: Event not found
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Event not found"
  */
 router.get('/:id', eventController.getEvent);
 
@@ -65,10 +96,30 @@ router.get('/:id', eventController.getEvent);
  *    responses:
  *      '200':
  *        description: Event updated successfully
+ *        content:
+ *          application/json:
+ *            example:
+ *              id: "event123"
+ *              portal_id: "portal1"
+ *              user_id: "user2"
+ *              timestamp: "2023-10-25T00:00:00.000Z"
+ *              direction: 2
+ *              picture: "new_picture_url"
+ *              vessel_id: "vessel123"
+ *              action: 2
  *      '400':
  *        description: Bad request
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Error updating event"
+ *              error: "Details about the error"
  *      '404':
  *        description: Event not found
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Event not found"
  */
 router.put('/:id', eventController.updateEvent);
 
@@ -102,6 +153,25 @@ router.delete('/:id', eventController.deleteEvent);
  *    responses:
  *      '200':
  *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            example:
+ *              - id: "event123"
+ *                portal_id: "portal1"
+ *                user_id: "user1"
+ *                timestamp: "2023-10-25T00:00:00.000Z"
+ *                direction: 1
+ *                picture: "picture_url"
+ *                vessel_id: "vessel123"
+ *                action: 1
+ *              - id: "event124"
+ *                portal_id: "portal2"
+ *                user_id: "user2"
+ *                timestamp: "2023-10-26T00:00:00.000Z"
+ *                direction: 2
+ *                picture: "another_picture_url"
+ *                vessel_id: "vessel124"
+ *                action: 2
  */
 router.get('/', eventController.getAllEvents);
 

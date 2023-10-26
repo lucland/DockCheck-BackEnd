@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const syncController = require('../controllers/syncController');
 
-
 /**
  * @swagger
  * /sync:
@@ -18,7 +17,13 @@ const syncController = require('../controllers/syncController');
  *            properties:
  *              model:
  *                type: 'string'
- *                enum: [Event, Company, Vessel]  // Add other model names here
+ *                enum: 
+ *                  - Event
+ *                  - Company
+ *                  - Vessel
+ *                  - Portal
+ *                  - User
+ *                  - Supervisor
  *                description: 'The model to which these records belong'
  *              records:
  *                type: 'array'
@@ -32,5 +37,30 @@ const syncController = require('../controllers/syncController');
  *        description: Bad request
  */
 router.post('/sync', syncController.syncData);
+
+
+/**
+ * @swagger
+ * /sync/users/{vessel_id}:
+ *  get:
+ *    summary: Get banned users by vessel ID
+ *    tags: [Sync]
+ *    parameters:
+ *      - in: path
+ *        name: vessel_id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: Vessel ID
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            example: ["rfid1", "rfid2", "rfid3"]
+ *      '400':
+ *        description: Bad request
+ */
+router.get('/users/:vessel_id', syncController.getFilteredUsersByVessel);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const express = require('express');
 const supervisorsController = require('../controllers/supervisorController');
 const router = express.Router();
+const authenticateJWT = require('../middleware/auth');
 
 /**
  * @swagger
@@ -17,8 +18,21 @@ const router = express.Router();
  *    responses:
  *      '201':
  *        description: Supervisor created successfully
+ *        content:
+ *          application/json:
+ *            example:
+ *              id: "supervisor123"
+ *              name: "John Doe"
+ *              username: "johndoe"
+ *              company_id: "company123"
+ *              updated_at: "2023-10-25T01:00:00.000Z"
  *      '400':
  *        description: Bad request
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Error creating supervisor"
+ *              error: "Details about the error"
  */
 router.post('/create', supervisorsController.createSupervisor);
 
@@ -38,10 +52,18 @@ router.post('/create', supervisorsController.createSupervisor);
  *    responses:
  *      '200':
  *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            example:
+ *              id: "supervisor123"
+ *              name: "John Doe"
+ *              username: "johndoe"
+ *              company_id: "company123"
+ *              updated_at: "2023-10-25T01:00:00.000Z"
  *      '404':
  *        description: Supervisor not found
  */
-router.get('/:id', supervisorsController.getSupervisor);
+router.get('/:id', authenticateJWT, supervisorsController.getSupervisor);
 
 /**
  * @swagger
@@ -65,12 +87,25 @@ router.get('/:id', supervisorsController.getSupervisor);
  *    responses:
  *      '200':
  *        description: Supervisor updated successfully
+ *        content:
+ *          application/json:
+ *            example:
+ *              id: "supervisor123"
+ *              name: "John Doe Updated"
+ *              username: "johndoeupdated"
+ *              company_id: "company123"
+ *              updated_at: "2023-10-25T01:00:00.000Z"
  *      '400':
  *        description: Bad request
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Error updating supervisor"
+ *              error: "Details about the error"
  *      '404':
  *        description: Supervisor not found
  */
-router.put('/:id', supervisorsController.updateSupervisor);
+router.put('/:id', authenticateJWT, supervisorsController.updateSupervisor);
 
 /**
  * @swagger
@@ -91,7 +126,7 @@ router.put('/:id', supervisorsController.updateSupervisor);
  *      '404':
  *        description: Supervisor not found
  */
-router.delete('/:id', supervisorsController.deleteSupervisor);
+router.delete('/:id', authenticateJWT, supervisorsController.deleteSupervisor);
 
 /**
  * @swagger
@@ -102,7 +137,20 @@ router.delete('/:id', supervisorsController.deleteSupervisor);
  *    responses:
  *      '200':
  *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            example:
+ *              - id: "supervisor123"
+ *                name: "John Doe"
+ *                username: "johndoe"
+ *                company_id: "company123"
+ *                updated_at: "2023-10-25T01:00:00.000Z"
+ *              - id: "supervisor124"
+ *                name: "Jane Doe"
+ *                username: "janedoe"
+ *                company_id: "company124"
+ *                updated_at: "2023-10-25T01:00:00.000Z"
  */
-router.get('/', supervisorsController.getAllSupervisors);
+router.get('/', authenticateJWT, supervisorsController.getAllSupervisors);
 
 module.exports = router;

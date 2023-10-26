@@ -1,10 +1,11 @@
 const express = require('express');
 const dockingController = require('../controllers/dockingController');
 const router = express.Router();
+const authenticateJWT = require('../middleware/auth');
 
 /**
  * @swagger
- * /dockings:
+ * /dockings/create:
  *  post:
  *    summary: Create a new docking
  *    tags: [Dockings]
@@ -17,10 +18,28 @@ const router = express.Router();
  *    responses:
  *      '201':
  *        description: Docking created successfully
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Docking created successfully"
+ *              docking: 
+ *                id: "123"
+ *                onboarded_count: 10
+ *                date_start: "2023-10-25T00:00:00.000Z"
+ *                date_end: "2023-10-26T00:00:00.000Z"
+ *                admins: ["admin1", "admin2"]
+ *                vessel_id: "vessel123"
+ *                updated_at: "2023-10-25T00:00:00.000Z"
+ *                draft_meters: 5.5
  *      '400':
  *        description: Bad request
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Error creating docking"
+ *              error: "Details about the error"
  */
-router.post('/create', dockingController.createDocking);
+router.post('/create', authenticateJWT, dockingController.createDocking);
 
 /**
  * @swagger
@@ -38,10 +57,25 @@ router.post('/create', dockingController.createDocking);
  *    responses:
  *      '200':
  *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            example:
+ *              id: "123"
+ *              onboarded_count: 10
+ *              date_start: "2023-10-25T00:00:00.000Z"
+ *              date_end: "2023-10-26T00:00:00.000Z"
+ *              admins: ["admin1", "admin2"]
+ *              vessel_id: "vessel123"
+ *              updated_at: "2023-10-25T00:00:00.000Z"
+ *              draft_meters: 5.5
  *      '404':
  *        description: Docking not found
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Docking not found"
  */
-router.get('/:id', dockingController.getDocking);
+router.get('/:id', authenticateJWT, dockingController.getDocking);
 
 /**
  * @swagger
@@ -65,12 +99,32 @@ router.get('/:id', dockingController.getDocking);
  *    responses:
  *      '200':
  *        description: Docking updated successfully
+ *        content:
+ *          application/json:
+ *            example:
+ *              id: "123"
+ *              onboarded_count: 11
+ *              date_start: "2023-10-25T00:00:00.000Z"
+ *              date_end: "2023-10-26T00:00:00.000Z"
+ *              admins: ["admin1", "admin3"]
+ *              vessel_id: "vessel123"
+ *              updated_at: "2023-10-25T00:00:00.000Z"
+ *              draft_meters: 5.6
  *      '400':
  *        description: Bad request
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Error updating docking"
+ *              error: "Details about the error"
  *      '404':
  *        description: Docking not found
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Docking not found"
  */
-router.put('/:id', dockingController.updateDocking);
+router.put('/:id', authenticateJWT, dockingController.updateDocking);
 
 /**
  * @swagger
@@ -91,7 +145,7 @@ router.put('/:id', dockingController.updateDocking);
  *      '404':
  *        description: Docking not found
  */
-router.delete('/:id', dockingController.deleteDocking);
+router.delete('/:id', authenticateJWT, dockingController.deleteDocking);
 
 /**
  * @swagger
@@ -102,7 +156,26 @@ router.delete('/:id', dockingController.deleteDocking);
  *    responses:
  *      '200':
  *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            example:
+ *              - id: "123"
+ *                onboarded_count: 10
+ *                date_start: "2023-10-25T00:00:00.000Z"
+ *                date_end: "2023-10-26T00:00:00.000Z"
+ *                admins: ["admin1", "admin2"]
+ *                vessel_id: "vessel123"
+ *                updated_at: "2023-10-25T00:00:00.000Z"
+ *                draft_meters: 5.5
+ *              - id: "124"
+ *                onboarded_count: 12
+ *                date_start: "2023-10-27T00:00:00.000Z"
+ *                date_end: "2023-10-28T00:00:00.000Z"
+ *                admins: ["admin3", "admin4"]
+ *                vessel_id: "vessel124"
+ *                updated_at: "2023-10-27T00:00:00.000Z"
+ *                draft_meters: 6.0
  */
-router.get('/', dockingController.getAllDockings);
+router.get('/', authenticateJWT, dockingController.getAllDockings);
 
 module.exports = router;

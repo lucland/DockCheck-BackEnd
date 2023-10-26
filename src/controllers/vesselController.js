@@ -77,7 +77,25 @@ exports.updateVessel = async (req, res) => {
     } catch (error) {
       res.status(400).json({ message: 'Error deleting vessel', error });
     }
-  };  
+  };
+  
+// Get all vessels for a specific company
+exports.getVesselsByCompany = async (req, res) => {
+  try {
+    const { company_id } = req.params;
+    const vessels = await Vessel.findAll({
+      where: {
+        company_id: company_id
+      }
+    });
+    if (vessels.length === 0) {
+      return res.status(404).json({ message: 'No vessels found for this company' });
+    }
+    res.status(200).json(vessels);
+  } catch (error) {
+    res.status(400).json({ message: 'Error fetching vessels', error });
+  }
+};
 
 // Get all vessels
 exports.getAllVessels = async (req, res) => {

@@ -230,14 +230,18 @@ const swaggerOptions = {
                             type: 'string',
                             description: 'The name of the supervisor',
                           },
-                            user: {
+                            username: {
                                 type: 'string',
-                                description: 'The user of the supervisor',
+                                description: 'The username of the supervisor',
                             },
-                            password: {
+                            salt: {
                                 type: 'string',
-                                description: 'The password of the supervisor',
+                                description: 'The salt of the supervisor',
                             },
+                            hash: {
+                              type: 'string',
+                              description: 'The hash of the supervisor',
+                           },
                             company_id: {
                                 type: 'string',
                                 description: 'The company ID of the supervisor',
@@ -310,6 +314,10 @@ const swaggerOptions = {
                                 type: 'string',
                                 description: 'The aso_document of the user',
                             },
+                            has_aso: {
+                                type: 'boolean',
+                                description: 'The has_aso of the user',
+                            },
                             nr34: {
                                 type: 'date',
                                 description: 'The nr34 of the user',
@@ -317,6 +325,10 @@ const swaggerOptions = {
                             nr34_document: {
                                 type: 'string',
                                 description: 'The nr34_document of the user',
+                            },
+                            has_nr34: {
+                                type: 'boolean',
+                                description: 'The has_nr34 of the user',
                             },
                             nr35: {
                                 type: 'date',
@@ -326,6 +338,10 @@ const swaggerOptions = {
                                 type: 'string',
                                 description: 'The nr35_document of the user',
                             },
+                            has_nr35: {
+                                type: 'boolean',
+                                description: 'The has_nr35 of the user',
+                            },
                             nr33: {
                                 type: 'date',
                                 description: 'The nr33 of the user',
@@ -333,6 +349,22 @@ const swaggerOptions = {
                             nr33_document: {
                                 type: 'string',
                                 description: 'The nr33_document of the user',
+                            },
+                            has_nr33: {
+                                type: 'boolean',
+                                description: 'The has_nr33 of the user',
+                            },
+                            nr10: {
+                                type: 'date',
+                                description: 'The nr10 of the user',
+                            },
+                            nr10_document: {
+                                type: 'string',
+                                description: 'The nr10_document of the user',
+                            },
+                            has_nr10: {
+                                type: 'boolean',
+                                description: 'The has_nr10 of the user',
                             },
                             email: {
                                 type: 'string',
@@ -386,26 +418,30 @@ const swaggerOptions = {
                               type: 'string',
                               description: 'The salt for the user password',
                             },
+                            hash: {
+                              type: 'string',
+                              description: 'The hash for the user password',
+                            },
                         },
-                        Sync: {
-                            type: 'object',
-                            properties: {
-                                model: {
-                                    type: 'string',
-                                    enum: ['Event', 'Company', 'Vessel', 'Docking', 'Portal', 'Supervisor', 'User'],
-                                    description: 'The model to which these records belong',
-                                },
-                                records: {
-                                    type: 'array',
-                                    items: {
-                                        type: 'object',
-                                        additionalProperties: true,
-                                    },
-                                },
+                      },
+                      Sync: {
+                        type: 'object',
+                        properties: {
+                          model: {
+                            type: 'string',
+                            enum: ['Event', 'Company', 'Vessel', 'Docking', 'Portal', 'Supervisor', 'User'],
+                            description: 'The model to which these records belong',
+                          },
+                          records: {
+                            type: 'array',
+                            items: {
+                              type: 'object',
+                              additionalProperties: true,
                             },
                           },
-          },
-        },
+                        },
+                      },                      
+                    },
       },
   },
   apis: ['./routes/*.js'],
