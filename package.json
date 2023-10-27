@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --config=./jest.config.js --testMatch=\"**/src/tests/**/*.test.js\"",
+    "test:watch": "jest --config=./jest.config.js --watch --testMatch=\"**/src/tests/**/*.test.js\""
+  },  
+  "jest": {
+    "setupFiles": ["./jest.setup.js"]
   },
   "keywords": [],
   "author": "",
@@ -23,5 +27,8 @@
     "sequelize": "^6.33.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }

@@ -5,7 +5,7 @@ const authenticateJWT = require('../middleware/auth');
 
 /**
  * @swagger
- * /supervisors:
+ * /api/v1/supervisors:
  *  post:
  *    summary: Create a new supervisor
  *    tags: [Supervisors]
@@ -38,7 +38,7 @@ router.post('/create', supervisorsController.createSupervisor);
 
 /**
  * @swagger
- * /supervisors/{id}:
+ * /api/v1/supervisors/{id}:
  *  get:
  *    summary: Get a supervisor by ID
  *    tags: [Supervisors]
@@ -67,7 +67,7 @@ router.get('/:id', authenticateJWT, supervisorsController.getSupervisor);
 
 /**
  * @swagger
- * /supervisors/{id}:
+ * /api/v1/supervisors/{id}:
  *  put:
  *    summary: Update a supervisor by ID
  *    tags: [Supervisors]
@@ -109,7 +109,7 @@ router.put('/:id', authenticateJWT, supervisorsController.updateSupervisor);
 
 /**
  * @swagger
- * /supervisors/{id}:
+ * /api/v1/supervisors/{id}:
  *  delete:
  *    summary: Delete a supervisor by ID
  *    tags: [Supervisors]
@@ -130,7 +130,7 @@ router.delete('/:id', authenticateJWT, supervisorsController.deleteSupervisor);
 
 /**
  * @swagger
- * /supervisors:
+ * /api/v1/supervisors:
  *  get:
  *    summary: Get all supervisors
  *    tags: [Supervisors]

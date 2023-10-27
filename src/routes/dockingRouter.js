@@ -5,7 +5,7 @@ const authenticateJWT = require('../middleware/auth');
 
 /**
  * @swagger
- * /dockings/create:
+ * /api/v1/dockings/create:
  *  post:
  *    summary: Create a new docking
  *    tags: [Dockings]
@@ -43,7 +43,7 @@ router.post('/create', authenticateJWT, dockingController.createDocking);
 
 /**
  * @swagger
- * /dockings/{id}:
+ * /api/v1/dockings/{id}:
  *  get:
  *    summary: Get a docking by ID
  *    tags: [Dockings]
@@ -79,7 +79,7 @@ router.get('/:id', authenticateJWT, dockingController.getDocking);
 
 /**
  * @swagger
- * /dockings/{id}:
+ * /api/v1/dockings/{id}:
  *  put:
  *    summary: Update a docking by ID
  *    tags: [Dockings]
@@ -128,7 +128,7 @@ router.put('/:id', authenticateJWT, dockingController.updateDocking);
 
 /**
  * @swagger
- * /dockings/{id}:
+ * /api/v1/dockings/{id}:
  *  delete:
  *    summary: Delete a docking by ID
  *    tags: [Dockings]
@@ -149,7 +149,7 @@ router.delete('/:id', authenticateJWT, dockingController.deleteDocking);
 
 /**
  * @swagger
- * /dockings:
+ * /api/v1/dockings:
  *  get:
  *    summary: Get all dockings
  *    tags: [Dockings]

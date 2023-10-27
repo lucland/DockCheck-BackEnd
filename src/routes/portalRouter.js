@@ -5,7 +5,7 @@ const authenticateJWT = require('../middleware/auth');
 
 /**
  * @swagger
- * /portals/create:
+ * /api/v1/portals/create:
  *  post:
  *    summary: Create a new portal
  *    tags: [Portals]
@@ -42,7 +42,7 @@ router.post('/create', authenticateJWT, portalController.createPortal);
 
 /**
  * @swagger
- * /portals/{id}:
+ * /api/v1/portals/{id}:
  *  get:
  *    summary: Get a portal by ID
  *    tags: [Portals]
@@ -75,7 +75,7 @@ router.get('/:id', authenticateJWT, portalController.getPortal);
 
 /**
  * @swagger
- * /portals/{id}:
+ * /api/v1/portals/{id}:
  *  put:
  *    summary: Update a portal by ID
  *    tags: [Portals]
@@ -120,7 +120,7 @@ router.put('/:id', authenticateJWT, portalController.updatePortal);
 
 /**
  * @swagger
- * /portals/{id}:
+ * /api/v1/portals/{id}:
  *  delete:
  *    summary: Delete a portal by ID
  *    tags: [Portals]
@@ -141,7 +141,7 @@ router.delete('/:id', authenticateJWT, portalController.deletePortal);
 
 /**
  * @swagger
- * /portals/vessel/{vessel_id}:
+ * /api/v1/portals/vessel/{vessel_id}:
  *  get:
  *    summary: Get all portals for a specific vessel
  *    tags: [Portals]
@@ -174,7 +174,7 @@ router.get('/vessel/:vessel_id', authenticateJWT, portalController.getPortalsByV
 
 /**
  * @swagger
- * /portals:
+ * /api/v1/portals:
  *  get:
  *    summary: Get all portals
  *    tags: [Portals]

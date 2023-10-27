@@ -41,7 +41,7 @@ const authenticateJWT = require('../middleware/auth');
 
 /**
  * @swagger
- * /companies/create:
+ * /api/v1/companies/create:
  *  post:
  *    summary: Create a new company
  *    tags: [Companies]
@@ -79,7 +79,7 @@ router.post('/create', authenticateJWT, companyController.createCompany);
 
 /**
  * @swagger
- * /companies/{id}:
+ * /api/v1/companies/{id}:
  *  get:
  *    summary: Get a company by ID
  *    tags: [Companies]
@@ -116,7 +116,7 @@ router.get('/:id', authenticateJWT, companyController.getCompany);
 
 /**
  * @swagger
- * /companies/{id}:
+ * /api/v1/companies/{id}:
  *  put:
  *    summary: Update a company by ID
  *    tags: [Companies]
@@ -161,7 +161,7 @@ router.put('/:id', authenticateJWT, companyController.updateCompany);
 
 /**
  * @swagger
- * /companies/{id}:
+ * /api/v1/companies/{id}:
  *  delete:
  *    summary: Delete a company by ID
  *    tags: [Companies]
@@ -182,7 +182,7 @@ router.delete('/:id', authenticateJWT, companyController.deleteCompany);
 
 /**
  * @swagger
- * /companies:
+ * /api/v1/companies:
  *  get:
  *    summary: Get all companies
  *    tags: [Companies]

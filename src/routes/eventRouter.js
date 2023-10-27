@@ -4,7 +4,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /events/create:
+ * /api/v1/events/create:
  *  post:
  *    summary: Create a new event
  *    tags: [Events]
@@ -40,7 +40,7 @@ router.post('/create', eventController.createEvent);
 
 /**
  * @swagger
- * /events/{id}:
+ * /api/v1/events/{id}:
  *  get:
  *    summary: Get an event by ID
  *    tags: [Events]
@@ -76,7 +76,7 @@ router.get('/:id', eventController.getEvent);
 
 /**
  * @swagger
- * /events/{id}:
+ * /api/v1/events/{id}:
  *  put:
  *    summary: Update an event by ID
  *    tags: [Events]
@@ -125,7 +125,7 @@ router.put('/:id', eventController.updateEvent);
 
 /**
  * @swagger
- * /events/{id}:
+ * /api/v1/events/{id}:
  *  delete:
  *    summary: Delete an event by ID
  *    tags: [Events]
@@ -146,10 +146,23 @@ router.delete('/:id', eventController.deleteEvent);
 
 /**
  * @swagger
- * /events:
+ * /api/v1/events:
  *  get:
- *    summary: Get all events
+ *    summary: Get all events with pagination
  *    tags: [Events]
+ *    parameters:
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *        required: false
+ *        description: Limit number of events. Default is 10.
+ *      - in: query
+ *        name: offset
+ *        schema:
+ *          type: integer
+ *        required: false
+ *        description: Starting index for events. Default is 0.
  *    responses:
  *      '200':
  *        description: Successful operation
@@ -172,12 +185,19 @@ router.delete('/:id', eventController.deleteEvent);
  *                picture: "another_picture_url"
  *                vessel_id: "vessel124"
  *                action: 2
+ *      '400':
+ *        description: Bad request
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Error fetching events"
+ *              error: "Details about the error"
  */
 router.get('/', eventController.getAllEvents);
 
 /**
  * @swagger
- * /events/sync:
+ * /api/v1/events/sync:
  *  post:
  *    summary: Sync events
  *    tags: [Events]

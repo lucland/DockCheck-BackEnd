@@ -5,7 +5,7 @@ const authenticateJWT = require('../middleware/auth');
 
 /**
   * @swagger
- * /vessels:
+ * /api/v1/vessels:
  *  post:
  *    summary: Create a new vessel
  *    tags: [Vessels]
@@ -31,7 +31,7 @@ router.post('/create', authenticateJWT, vesselController.createVessel);
 
 /**
  * @swagger
- * /vessels/{id}:
+ * /api/v1/vessels/{id}:
  *  get:
  *    summary: Get a vessel by ID
  *    tags: [Vessels]
@@ -62,7 +62,7 @@ router.get('/:id', authenticateJWT, vesselController.getVessel);
 
 /**
  * @swagger
- * /vessels/{id}:
+ * /api/v1/vessels/{id}:
  *  put:
  *    summary: Update a vessel by ID
  *    tags: [Vessels]
@@ -94,7 +94,7 @@ router.put('/:id', authenticateJWT, vesselController.updateVessel);
 
 /**
  * @swagger
- * /vessels/{id}:
+ * /api/v1/vessels/{id}:
  *  delete:
  *    summary: Delete a vessel by ID
  *    tags: [Vessels]
@@ -115,7 +115,7 @@ router.delete('/:id', authenticateJWT, vesselController.deleteVessel);
 
 /**
  * @swagger
- * /vessels/company/{company_id}:
+ * /api/v1/vessels/company/{company_id}:
  *  get:
  *    summary: Get all vessels for a specific company
  *    tags: [Vessels]
@@ -153,7 +153,7 @@ router.get('/company/:company_id', authenticateJWT, vesselController.getVesselsB
 
 /**
  * @swagger
- * /vessels:
+ * /api/v1/vessels:
  *  get:
  *    summary: Get all vessels
  *    tags: [Vessels]

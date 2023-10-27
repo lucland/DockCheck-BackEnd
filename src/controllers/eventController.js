@@ -82,12 +82,20 @@ exports.updateEvent = async (req, res) => {
 // Get all events
 exports.getAllEvents = async (req, res) => {
   try {
-    const events = await Event.findAll();
+    const limit = parseInt(req.query.limit) || 10;  // Default limit is 10
+    const offset = parseInt(req.query.offset) || 0;  // Default offset is 0
+
+    const events = await Event.findAll({
+      limit: limit,
+      offset: offset
+    });
+
     res.status(200).json(events);
   } catch (error) {
     res.status(400).json({ message: 'Error fetching events', error });
   }
 };
+
 
 exports.syncEvents = async (req, res) => {
   try {

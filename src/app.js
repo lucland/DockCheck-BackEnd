@@ -7,43 +7,42 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const express = require('express');
-const { Sequelize } = require('sequelize');
-const dbConfig = require('./config/database');
-const User = require('./models/User');
-const Authorization = require('./models/Authorization');
-const Company = require('./models/Company');  // Import the Company model
-const Supervisor = require('./models/Supervisor');  // Import the Supervisor model
-const Event = require('./models/Event');  // Import the Event model
-const Vessel = require('./models/Vessel');  // Import the Vessel model
-const Docking = require('./models/Docking');  // Import the Docking model
-const Portal = require('./models/Portal');  // Import the Portal model
-const userRoutes = require('./routes/userRoutes'); // Import the user routes
-const companyRoutes = require('./routes/companyRouter'); // Import the company routes
-const dockingRoutes = require('./routes/dockingRouter'); // Import the docking routes
-const portalRoutes = require('./routes/portalRouter'); // Import the portal routes
-const vesselRoutes = require('./routes/vesselRouter'); // Import the vessel routes
-const eventRoutes = require('./routes/eventRouter'); // Import the event routes
-const supervisorRoutes = require('./routes/supervisorRouter'); // Import the supervisor routes
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocs = require('./swagger');  // Import the Swagger configuration
-const syncRouter = require('./routes/syncRouter'); // Import the sync routes
-const loginRouter = require('./routes/loginRouter'); // Import the login routes
-const admin = require('./firebase');  // adjust the path as needed
-
-// Initialize Sequelize
-const sequelize = new Sequelize(dbConfig);
-sequelize.sync({ force: true })  // This will delete all tables and re-create them
+const sequelize = require('./config/database'); // Import Sequelize instance
 
 // Initialize models
+const User = require('./models/User');
+const Authorization = require('./models/Authorization');
+const Company = require('./models/Company');
+const Supervisor = require('./models/Supervisor');
+const Event = require('./models/Event');
+const Vessel = require('./models/Vessel');
+const Docking = require('./models/Docking');
+const Portal = require('./models/Portal');
+
+// Initialize routes
+const userRoutes = require('./routes/userRoutes');
+const companyRoutes = require('./routes/companyRouter');
+const dockingRoutes = require('./routes/dockingRouter');
+const portalRoutes = require('./routes/portalRouter');
+const vesselRoutes = require('./routes/vesselRouter');
+const eventRoutes = require('./routes/eventRouter');
+const supervisorRoutes = require('./routes/supervisorRouter');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocs = require('./swagger');
+const syncRouter = require('./routes/syncRouter');
+const loginRouter = require('./routes/loginRouter');
+
+// Initialize Sequelize models
 User.init(sequelize);
 Authorization.init(sequelize);
-Company.init(sequelize);  // Initialize the Company model
-Supervisor.init(sequelize);  // Initialize the Supervisor model
-Event.init(sequelize);  // Initialize the Event model
-Vessel.init(sequelize);  // Initialize the Vessel model
-Docking.init(sequelize);  // Initialize the Docking model
-Portal.init(sequelize);  // Initialize the Portal model
+Company.init(sequelize);
+Supervisor.init(sequelize);
+Event.init(sequelize);
+Vessel.init(sequelize);
+Docking.init(sequelize);
+Portal.init(sequelize);
 
+// Define relationships
 User.hasMany(Authorization, {
   foreignKey: 'user_id',
   as: 'authorizations'
@@ -54,33 +53,32 @@ Authorization.belongsTo(User, {
   as: 'user'
 });
 
+// Initialize Express and middleware
 const app = express();
-const routes = require('./routes');
-
 const rateLimit = require("express-rate-limit");
 
 const syncLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 10 // limit each IP to 10 requests per windowMs
+  windowMs: 1 * 60 * 1000,
+  max: 10
 });
 
 app.use("/sync", syncLimiter);
-
-
 app.use(express.json());
-app.use('/', routes);
-app.use('/users', userRoutes);  // Use the user routes for any requests that start with "/users"
-app.use('/companies', companyRoutes);  // Use the company routes for any requests that start with "/companies"
-app.use('/docking', dockingRoutes);  // Use the docking routes for any requests that start with "/docking"
-app.use('/portal', portalRoutes);  // Use the portal routes for any requests that start with "/portal"
-app.use('/vessel', vesselRoutes);  // Use the vessel routes for any requests that start with "/vessel"
-app.use('/event', eventRoutes);  // Use the event routes for any requests that start with "/event"
-app.use('/supervisor', supervisorRoutes);  // Use the supervisor routes for any requests that start with "/supervisor"
-app.use('/sync', syncRouter);  // Use the sync routes for any requests that start with "/sync"
-app.use('/login', loginRouter);  // Use the login routes for any requests that start with "/login"
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
+// Define routes
+app.use('/api/v1/', require('./routes'));
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/companies', companyRoutes);
+app.use('/api/v1/docking', dockingRoutes);
+app.use('/api/v1/portal', portalRoutes);
+app.use('/api/v1/vessel', vesselRoutes);
+app.use('/api/v1/event', eventRoutes);
+app.use('/api/v1/supervisor', supervisorRoutes);
+app.use('/api/v1/sync', syncRouter);
+app.use('/api/v1/login', loginRouter);
+app.use('/api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
+// Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

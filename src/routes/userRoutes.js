@@ -5,7 +5,7 @@ const authenticateJWT = require('../middleware/auth');
 
 /**
  * @swagger
- * /users:
+ * /api/v1/users:
  *  post:
  *    summary: Create a new user along with their authorizations
  *    tags: [Users]
@@ -69,11 +69,11 @@ const authenticateJWT = require('../middleware/auth');
  *              message: "Error creating user"
  *              error: "Details about the error"
  */
-router.post('/create', authenticateJWT, userController.createUser);
+router.post('/create', userController.createUser);
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/v1/users/{id}:
  *  get:
  *    summary: Get a user by ID
  *    tags: [Users]
@@ -137,7 +137,7 @@ router.get('/:id', authenticateJWT, userController.getUser);
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/v1/users/{id}:
  *  put:
  *    summary: Update a user by ID
  *    tags: [Users]
@@ -215,7 +215,7 @@ router.put('/:id', authenticateJWT, userController.updateUser);
 
 /**
  * @swagger
- * /users/{id}:
+ * /api/v1/users/{id}:
  *  delete:
  *    summary: Delete a user by ID
  *    tags: [Users]
@@ -236,114 +236,122 @@ router.delete('/:id', authenticateJWT, userController.deleteUser);
 
 /**
  * @swagger
- * /users:
+ * /api/v1/users:
  *  get:
- *    summary: Get all users
+ *    summary: Get all users with pagination
  *    tags: [Users]
+ *    parameters:
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *        required: false
+ *        description: Limit number of users. Default is 10.
+ *      - in: query
+ *        name: offset
+ *        schema:
+ *          type: integer
+ *        required: false
+ *        description: Starting index for users. Default is 0.
  *    responses:
  *      '200':
  *        description: Successful operation
  *        content:
  *          application/json:
  *            example:
- *              [
- *                {
- *                  "id": "user123",
- *                  "name": "John Doe",
- *                  "company": "Company Inc.",
- *                  "role": "Engineer",
- *                  "project": "Project X",
- *                  "number": 12345,
- *                  "identidade": "ID12345",
- *                  "cpf": "123.456.789-00",
- *                  "aso": "2023-01-01T00:00:00.000Z",
- *                  "aso_document": "aso_doc.pdf",
- *                  "has_aso": false,
- *                  "nr34": "2023-01-01T00:00:00.000Z",
- *                  "nr34_document": "nr34_doc.pdf",
- *                  "has_nr34": false,
- *                  "nr35": "2023-01-01T00:00:00.000Z",
- *                  "nr35_document": "nr35_doc.pdf",
- *                  "has_nr35": false,
- *                  "nr33": "2023-01-01T00:00:00.000Z",
- *                  "nr33_document": "nr33_doc.pdf",
- *                  "has_nr33": false,
- *                  "nr10": "2023-01-01T00:00:00.000Z",
- *                  "nr10_document": "nr10_doc.pdf",
- *                  "has_nr10": false,
- *                  "email": "john.doeexample.com",
- *                  "area": "Engineering",
- *                  "is_admin": false,
- *                  "is_visitor": false,
- *                  "is_blocked": false,
- *                  "block_reason": null,
- *                  "rfid": "RFID123",
- *                  "picture": "john_doe.jpg",
- *                  "created_at": "2023-01-01T00:00:00.000Z",
- *                  "updated_at": "2023-01-01T00:00:00.000Z",
- *                  "events": ["event1", "event2"],
- *                  "type_job": "Full-time",
- *                  "start_job": "2023-01-01T00:00:00.000Z",
- *                  "end_job": "2023-12-31T00:00:00.000Z",
- *                  "username": "johndoe",
- *                  "salt": "salt123",
- *                  "hash": "hash123"
- *                },
- *                {
- *                  "id": "user124",
- *                  "name": "Jane Doe",
- *                  "company": "Company Inc.",
- *                  "role": "Engineer",
- *                  "project": "Project X",
- *                  "number": 12345,
- *                  "identidade": "ID12345",
- *                  "cpf": "123.456.789-00",
- *                  "aso": "2023-01-01T00:00:00.000Z",
- *                  "aso_document": "aso_doc.pdf",
- *                  "has_aso": false,
- *                  "nr34": "2023-01-01T00:00:00.000Z",
- *                  "nr34_document": "nr34_doc.pdf",
- *                  "has_nr34": false,
- *                  "nr35": "2023-01-01T00:00:00.000Z",
- *                  "nr35_document": "nr35_doc.pdf",
- *                  "has_nr35": false,
- *                  "nr33": "2023-01-01T00:00:00.000Z",
- *                  "nr33_document": "nr33_doc.pdf",
- *                  "has_nr33": false,
- *                  "nr10": "2023-01-01T00:00:00.000Z",
- *                  "nr10_document": "nr10_doc.pdf",
- *                  "has_nr10": false,
- *                  "email": "john.doeexample.com",
- *                  "area": "Engineering",
- *                  "is_admin": false,
- *                  "is_visitor": false,
- *                  "is_blocked": false,
- *                  "block_reason": null,
- *                  "rfid": "RFID123",
- *                  "picture": "john_doe.jpg",
- *                  "created_at": "2023-01-01T00:00:00.000Z",
- *                  "updated_at": "2023-01-01T00:00:00.000Z",
- *                  "events": ["event1", "event2"],
- *                  "type_job": "Full-time",
- *                  "start_job": "2023-01-01T00:00:00.000Z",
- *                  "end_job": "2023-12-31T00:00:00.000Z",
- *                  "username": "johndoe",
- *                  "salt": "salt123",
- *                  "hash": "hash123"
- *                }
- *              ]
- *       '404':
- *        description: User not found
+ *              - id: "user123"
+ *                name: "John Doe"
+ *                company: "Company Inc."
+ *                role: "Engineer"
+ *                project: "Project A"
+ *                number: 12345
+ *                identidade: "ID12345"
+ *                cpf: "123.456.789-00"
+ *                aso: "2023-01-01"
+ *                aso_document: "aso_doc.pdf"
+ *                has_aso: false
+ *                nr34: "2023-01-01"
+ *                nr34_document: "nr34_doc.pdf"
+ *                has_nr34: false
+ *                nr35: "2023-01-01"
+ *                nr35_document: "nr35_doc.pdf"
+ *                has_nr35: false
+ *                nr33: "2023-01-01"
+ *                nr33_document: "nr33_doc.pdf"
+ *                has_nr33: false
+ *                nr10: "2023-01-01"
+ *                nr10_document: "nr10_doc.pdf"
+ *                has_nr10: false
+ *                email: "johndoeexample.com"
+ *                area: "Engineering"
+ *                is_admin: false
+ *                is_visitor: false
+ *                is_blocked: false
+ *                block_reason: null
+ *                rfid: "RFID12345"
+ *                picture: "picture.jpg"
+ *                created_at: "2023-01-01T00:00:00.000Z"
+ *                updated_at: "2023-01-01T00:00:00.000Z"
+ *                events: ["event1", "event2"]
+ *                type_job: "Full-time"
+ *                start_job: "2023-01-01"
+ *                end_job: "2023-12-31"
+ *                username: "johndoe"
+ *                salt: "random_salt"
+ *                hash: "hashed_password"
+ *              - id: "user124"
+ *                name: "Jane Doe"
+ *                company: "Company Inc."
+ *                role: "Engineer"
+ *                project: "Project A"
+ *                number: 12345
+ *                identidade: "ID12345"
+ *                cpf: "123.456.789-00"
+ *                aso: "2023-01-01"
+ *                aso_document: "aso_doc.pdf"
+ *                has_aso: false
+ *                nr34: "2023-01-01"
+ *                nr34_document: "nr34_doc.pdf"
+ *                has_nr34: false
+ *                nr35: "2023-01-01"
+ *                nr35_document: "nr35_doc.pdf"
+ *                has_nr35: false
+ *                nr33: "2023-01-01"
+ *                nr33_document: "nr33_doc.pdf"
+ *                has_nr33: false
+ *                nr10: "2023-01-01"
+ *                nr10_document: "nr10_doc.pdf"
+ *                has_nr10: false
+ *                email: "johndoeexample.com"
+ *                area: "Engineering"
+ *                is_admin: false
+ *                is_visitor: false
+ *                is_blocked: false
+ *                block_reason: null
+ *                rfid: "RFID12345"
+ *                picture: "picture.jpg"
+ *                created_at: "2023-01-01T00:00:00.000Z"
+ *                updated_at: "2023-01-01T00:00:00.000Z"
+ *                events: ["event1", "event2"]
+ *                type_job: "Full-time"
+ *                start_job: "2023-01-01"
+ *                end_job: "2023-12-31"
+ *                username: "johndoe"
+ *                salt: "random_salt"
+ *                hash: "hashed_password"
+ *      '400':
+ *        description: Bad request
  *        content:
  *          application/json:
  *            example:
- *              message: "User not found"
+ *              message: "Error fetching users"
+ *              error: "Details about the error"
  */
 router.get('/', authenticateJWT, userController.getAllUsers);
 
 /**
  * @swagger
- * /users/{id}/authorizations:
+ * /api/v1/users/{id}/authorizations:
  *  get:
  *    summary: Get all authorizations for a user by ID
  *    tags: [Users]

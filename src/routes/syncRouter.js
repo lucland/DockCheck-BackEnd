@@ -4,7 +4,7 @@ const syncController = require('../controllers/syncController');
 
 /**
  * @swagger
- * /sync:
+ * /api/v1/sync:
  *  post:
  *    summary: Sync data
  *    tags: [Sync]
@@ -41,7 +41,7 @@ router.post('/sync', syncController.syncData);
 
 /**
  * @swagger
- * /sync/users/{vessel_id}:
+ * /api/v1/sync/users/{vessel_id}:
  *  get:
  *    summary: Get banned users by vessel ID
  *    tags: [Sync]

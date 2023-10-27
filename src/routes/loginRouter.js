@@ -5,10 +5,11 @@ const Supervisor = require('../models/Supervisor');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const router = express.Router();
+const crypto = require('crypto');
 
 /**
  * @swagger
- * /login:
+ * /api/v1/login:
  *   post:
  *     summary: Login to the application
  *     tags: [Authentication]
@@ -65,8 +66,11 @@ router.post('/', async (req, res) => {
       return res.status(401).json({ message: 'User not found' });
     }
   
-    // Assuming 'hash' is the field where the hashed password is stored
-    const validPassword = await bcrypt.compare(password, user.hash);
+    // Generate hash from the incoming password and the salt stored in the database
+    const hash = crypto.pbkdf2Sync(password, user.salt, 1000, 64, 'sha512').toString('hex');
+  
+    // Compare the generated hash with the hash stored in the database
+    const validPassword = (user.hash === hash);
   
     if (validPassword) {
       const token = jwt.sign({ id: user.id, role }, process.env.SECRET_KEY, { expiresIn: '2 days' });
@@ -74,6 +78,7 @@ router.post('/', async (req, res) => {
     } else {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
-  });
+  });  
   
   module.exports = router;
+  

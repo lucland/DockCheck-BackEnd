@@ -3,6 +3,7 @@ const Authorization = require('../models/Authorization');
 const admin = require('../firebase');
 const crypto = require('crypto');
 const db = admin.firestore();
+const sequelize = require('../config/database'); // Make sure to import sequelize
 
 // Helper function to set password and salt
 const setPassword = (user, password) => {
@@ -11,14 +12,18 @@ const setPassword = (user, password) => {
 };
 
 exports.createUser = async (req, res) => {
+  let t; // Declare transaction variable here so it's accessible in the catch block
   try {
+    console.log("Starting createUser...");
     const { authorizations, password, ...userData } = req.body;
 
     // Check if the user is an admin
     if (userData.is_admin === true) {
+      console.log("User is admin. Setting password and salt...");
       // Hash the password and set salt for admin users
       setPassword(userData, password);
     } else {
+      console.log("User is not admin. Setting username and salt to '-'...");
       // Set username and salt to "-" for non-admin users
       userData.username = "-";
       userData.salt = "-";
@@ -26,15 +31,18 @@ exports.createUser = async (req, res) => {
       userData.hash = "-";
     }
 
+    console.log("Starting transaction...");
     // Start a transaction
-    const t = await sequelize.transaction();
+    t = await sequelize.transaction();
 
     try {
+      console.log("Creating new user in PostgreSQL...");
       // Save to PostgreSQL
       const newUser = await User.create(userData, { transaction: t });
 
       // Save authorizations to PostgreSQL
       if (authorizations && authorizations.length > 0) {
+        console.log("Creating authorizations in PostgreSQL...");
         const authObjects = authorizations.map(auth => ({
           ...auth,
           user_id: newUser.id,
@@ -42,29 +50,39 @@ exports.createUser = async (req, res) => {
         await Authorization.bulkCreate(authObjects, { transaction: t });
       }
 
+      console.log("Committing transaction...");
       // Commit the transaction
       await t.commit();
+      console.log("Transaction committed");
 
+      console.log("Creating new user in Firebase...");
       // Save to Firebase
       const userRef = db.collection('users').doc(newUser.id);
       await userRef.set({
         ...userData,
         authorizations,
       });
+      console.log("User created in Firebase");
 
       res.status(201).json({
         message: 'User created successfully',
         user: newUser,
       });
-    } catch (error) {
+    } catch (innerError) {
+      console.error("Inner catch block error:", innerError);
       // If any operation fails, rollback the transaction
       await t.rollback();
-      throw error;
+      throw innerError;
     }
   } catch (error) {
+    console.error("Outer catch block error:", error);
+    if (t) {
+      await t.rollback();
+    }
     res.status(400).json({ message: 'Error creating user', error });
   }
 };
+
 
 
 // Get a user by ID along with their authorizations
@@ -134,10 +152,17 @@ exports.updateUser = async (req, res) => {
     }
   };
 
-// Get all users
+// Get all users with pagination
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.findAll();
+    const limit = parseInt(req.query.limit) || 10; // number of records per page
+    const offset = parseInt(req.query.offset) || 0; // start index for records
+
+    const users = await User.findAll({
+      limit,
+      offset
+    });
+
     res.status(200).json(users);
   } catch (error) {
     res.status(400).json({ message: 'Error fetching users', error });
