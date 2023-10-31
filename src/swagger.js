@@ -382,6 +382,10 @@ const swaggerOptions = {
                                 type: 'boolean',
                                 description: 'The is_visitor of the user',
                             },
+                            is_guardian: {
+                                type: 'boolean',
+                                description: 'The is_guardian of the user',
+                            },
                             is_blocked: {
                                 type: 'boolean',
                                 description: 'The is_blocked of the user',
@@ -441,6 +445,52 @@ const swaggerOptions = {
                           },
                         },
                       },                      
+                    },
+                    Login: {
+                      type: 'object',
+                      properties: {
+                        username: {
+                          type: 'string',
+                          description: 'The username of the user.',
+                        },
+                        password: {
+                          type: 'string',
+                          description: 'The password of the user.',
+                        },
+                        role: {
+                          type: 'string',
+                          enum: ['admin', 'supervisor'],
+                          description: 'The role of the user.',
+                        },
+                        system: {
+                          type: 'string',
+                          enum: ['windows', 'android', 'ios'],
+                          description: 'The system from which the user is logging in.',
+                        },
+                      },
+                      required: ['username', 'password', 'role', 'system'],
+                    },
+                    Authorization: {
+                      type: 'object',
+                      properties: {
+                        id: {
+                          type: 'string',
+                          description: 'The auto-generated ID of the authorization',
+                        },
+                        user_id: {
+                          type: 'string',
+                          description: 'The user ID associated with this authorization',
+                        },
+                        vessel_id: {
+                          type: 'string',
+                          description: 'The vessel ID associated with this authorization',
+                        },
+                        expiration_date: {
+                          type: 'string',
+                          format: 'date-time',
+                          description: 'The expiration date of this authorization',
+                        },
+                      },
                     },
       },
   },

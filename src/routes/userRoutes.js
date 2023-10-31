@@ -48,6 +48,7 @@ const authenticateJWT = require('../middleware/auth');
  *              area: "Engineering"
  *              is_admin: false
  *              is_visitor: false
+ *              is_guardian: false
  *              is_blocked: false
  *              block_reason: null
  *              rfid: "RFID12345"
@@ -91,6 +92,7 @@ router.post('/create', userController.createUser);
  *          application/json:
  *            example:
  *              id: "user123"
+ *              authorizations_id: ["uuid1", "uuid2"]
  *              name: "John Doe"
  *              company: "Company Inc."
  *              role: "Engineer"
@@ -117,6 +119,7 @@ router.post('/create', userController.createUser);
  *              area: "Engineering"
  *              is_admin: false
  *              is_visitor: false
+ *              is_guardian: false
  *              is_blocked: false
  *              block_reason: null
  *              rfid: "RFID12345"
@@ -161,6 +164,7 @@ router.get('/:id', authenticateJWT, userController.getUser);
  *          application/json:
  *            example:
  *              id: "user123"
+ *              authorizations_id: ["uuid1", "uuid2"]
  *              name: "John Doe"
  *              company: "Company Inc."
  *              role: "Engineer"
@@ -261,6 +265,7 @@ router.delete('/:id', authenticateJWT, userController.deleteUser);
  *            example:
  *              - id: "user123"
  *                name: "John Doe"
+ *                authorizations_id: ["uuid1", "uuid2"]
  *                company: "Company Inc."
  *                role: "Engineer"
  *                project: "Project A"
@@ -326,6 +331,7 @@ router.delete('/:id', authenticateJWT, userController.deleteUser);
  *                area: "Engineering"
  *                is_admin: false
  *                is_visitor: false
+ *                is_guardian: false
  *                is_blocked: false
  *                block_reason: null
  *                rfid: "RFID12345"

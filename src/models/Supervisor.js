@@ -4,9 +4,9 @@ class Supervisor extends Model {
   static init(sequelize) {
     super.init({
       name: DataTypes.STRING,
-      username: DataTypes.STRING,  // Changed from 'user'
-      salt: DataTypes.STRING,  // Changed from 'password'
-      hash: DataTypes.STRING,  // Added 'hash' field
+      username: DataTypes.STRING,
+      salt: DataTypes.STRING,
+      hash: DataTypes.STRING,
       company_id: DataTypes.STRING,
       id: {
         type: DataTypes.STRING,

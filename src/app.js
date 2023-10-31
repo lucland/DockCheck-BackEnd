@@ -21,6 +21,7 @@ const Portal = require('./models/Portal');
 
 // Initialize routes
 const userRoutes = require('./routes/userRoutes');
+const authorizationRouter = require('./routes/authorizationRouter');
 const companyRoutes = require('./routes/companyRouter');
 const dockingRoutes = require('./routes/dockingRouter');
 const portalRoutes = require('./routes/portalRouter');
@@ -68,6 +69,7 @@ app.use(express.json());
 // Define routes
 app.use('/api/v1/', require('./routes'));
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/authorizations', authorizationRouter);
 app.use('/api/v1/companies', companyRoutes);
 app.use('/api/v1/docking', dockingRoutes);
 app.use('/api/v1/portal', portalRoutes);

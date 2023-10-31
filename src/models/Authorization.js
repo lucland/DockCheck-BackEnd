@@ -12,7 +12,7 @@ class Authorization extends Model {
         type: DataTypes.STRING,
         allowNull: false,
         references: {
-          model: 'users', // 'Users' would be the table name. Make sure it matches your User table name
+          model: 'users',
           key: 'id'
         }
       },

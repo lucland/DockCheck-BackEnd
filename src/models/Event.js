@@ -14,6 +14,8 @@ class Event extends Model {
       picture: DataTypes.STRING,
       vessel_id: DataTypes.STRING,
       action: DataTypes.INTEGER,
+      manual: DataTypes.BOOLEAN,
+      justification: DataTypes.STRING,
     }, {
       sequelize,
       modelName: 'Event',
