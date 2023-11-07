@@ -399,4 +399,7 @@ router.get('/', authenticateJWT, userController.getAllUsers);
  */
 router.get('/:id/authorizations', authenticateJWT, userController.getUserAuthorizations);
 
+// router of checkUsername
+router.post('/checkUsername', userController.checkUsername);
+
 module.exports = router;

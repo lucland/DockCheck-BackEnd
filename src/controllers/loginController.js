@@ -4,58 +4,106 @@ const Login = require('../models/Login'); // Import the Login model
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const admin = require('../firebase');
+const sequelize = require('../config/database');
 
 exports.login = async (req, res) => {
-  const { username, password, role, system } = req.body;
+  let t; // Declare transaction variable here so it's accessible in the catch block
+  try {
+    console.log("Starting login...");
+    const { username, password, role, system } = req.body;
 
-  // Check if the user is already logged in on the same system
-  const existingLogin = await Login.findOne({ where: { user_id: username, system } });
-  if (existingLogin) {
-    return res.status(400).json({ message: 'User is already logged in on this system' });
-  }
+    let user;
+    if (role === 'admin') {
+      user = await User.findOne({ where: { username } });
+    } else if (role === 'supervisor') {
+      user = await Supervisor.findOne({ where: { username } });
+    } else {
+      console.log("Invalid role");
+      return res.status(400).json({ message: 'Invalid role' });
+    }
 
-  let user;
-  if (role === 'admin') {
-    user = await User.findOne({ where: { username } });
-  } else if (role === 'supervisor') {
-    user = await Supervisor.findOne({ where: { username } });
-  } else {
-    return res.status(400).json({ message: 'Invalid role' });
-  }
+    if (!user) {
+      console.log("User not found");
+      return res.status(401).json({ message: 'User not found' });
+    }
 
-  if (!user) {
-    return res.status(401).json({ message: 'User not found' });
-  }
+    console.log("Checking password...");
+    const hash = crypto.pbkdf2Sync(password, user.salt, 1000, 64, 'sha512').toString('hex');
+    const validPassword = (user.hash === hash);
+    console.log("Password is valid:", validPassword);
+    console.log(hash, user.hash);
 
-  const hash = crypto.pbkdf2Sync(password, user.salt, 1000, 64, 'sha512').toString('hex');
-  const validPassword = (user.hash === hash);
+    if (!validPassword) {
+      console.log("Invalid credentials");
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
 
-  if (validPassword) {
-    const token = jwt.sign({ id: user.id, role }, process.env.SECRET_KEY, { expiresIn: '2 days' });
-    
-    // Save login info
-    await Login.create({
-      user_id: username,
-      timestamp: new Date(),
-      expiration: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days from now
-      system,
-    });
+    console.log("Starting transaction...");
+    t = await sequelize.transaction();
 
-    return res.json({ token });
-  } else {
-    return res.status(401).json({ message: 'Invalid credentials' });
+    try {
+      console.log("Checking existing login...");
+      // Check if the user is already logged in on the same system
+      const existingLogin = await Login.findOne({ where: { user_id: user.id, system } }, { transaction: t });
+      if (existingLogin) {
+        console.log("User already logged in");
+        if (t && !t.finished) {
+          await t.rollback();
+        }
+        return res.status(400).json({ message: 'User is already logged in on this system' });
+      }
+
+      console.log("Creating login record...");
+      // Save login info
+      await Login.create({
+        id: crypto.randomBytes(16).toString('hex'),
+        user_id: user.id,
+        timestamp: new Date(),
+        expiration: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days from now
+        system,
+        created_at: new Date(),
+        updated_at: new Date(),
+      }, { transaction: t });
+
+      console.log("Committing transaction...");
+      await t.commit();
+
+      const token = jwt.sign({ id: user.id, role }, process.env.SECRET_KEY, { expiresIn: '2 days' });
+      console.log("Login successful");
+
+      return res.json({ token, user_id: user.id });
+    } catch (innerError) {
+      console.error("Inner catch block error:", innerError);
+      if (t && !t.finished) {
+        await t.rollback();
+      }
+      throw innerError;
+    }
+  } catch (error) {
+    console.error("Outer catch block error:", error);
+    if (t) {
+      if (t && !t.finished) {
+        await t.rollback();
+      }
+    }
+    res.status(400).json({ message: 'Error during login', error });
   }
 };
 
 exports.logout = async (req, res) => {
-    const { username, system } = req.body;
-  
+  try {
+    const { user_id } = req.body;
+    console.log("Logging out user", user_id);
     // Find and delete the login entry for the user on the specified system
-    const existingLogin = await Login.findOne({ where: { user_id: username, system } });
+    const existingLogin = await Login.findOne({ where: { user_id: user_id } });
     if (existingLogin) {
       await existingLogin.destroy();
       return res.status(200).json({ message: 'Successfully logged out' });
     } else {
       return res.status(400).json({ message: 'User is not logged in on this system' });
     }
+  } catch (error) {
+    console.error("Error during logout:", error);
+    res.status(400).json({ message: 'Error during logout', error });
+  }
   };

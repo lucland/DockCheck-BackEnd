@@ -5,6 +5,7 @@ const db = admin.firestore();
 // Create a new vessel
 exports.createVessel = async (req, res) => {
   try {
+    console.log("Starting createVessel...");
     // Save to PostgreSQL
     const newVessel = await Vessel.create(req.body);
 

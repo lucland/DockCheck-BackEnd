@@ -40,16 +40,6 @@ exports.createUser = async (req, res) => {
       // Save to PostgreSQL
       const newUser = await User.create(userData, { transaction: t });
 
-      // Save authorizations to PostgreSQL
-      if (authorizations && authorizations.length > 0) {
-        console.log("Creating authorizations in PostgreSQL...");
-        const authObjects = authorizations.map(auth => ({
-          ...auth,
-          user_id: newUser.id,
-        }));
-        await Authorization.bulkCreate(authObjects, { transaction: t });
-      }
-
       console.log("Committing transaction...");
       // Commit the transaction
       await t.commit();
@@ -60,7 +50,6 @@ exports.createUser = async (req, res) => {
       const userRef = db.collection('users').doc(newUser.id);
       await userRef.set({
         ...userData,
-        authorizations,
       });
       console.log("User created in Firebase");
 
@@ -71,13 +60,17 @@ exports.createUser = async (req, res) => {
     } catch (innerError) {
       console.error("Inner catch block error:", innerError);
       // If any operation fails, rollback the transaction
-      await t.rollback();
+      if (t && !t.finished) {
+        await t.rollback();
+      }
       throw innerError;
     }
   } catch (error) {
     console.error("Outer catch block error:", error);
     if (t) {
-      await t.rollback();
+      if (t && !t.finished) {
+        await t.rollback();
+      }
     }
     res.status(400).json({ message: 'Error creating user', error });
   }
@@ -181,5 +174,21 @@ exports.getUserAuthorizations = async (req, res) => {
     res.status(200).json(user.authorizations);
   } catch (error) {
     res.status(400).json({ message: 'Error fetching authorizations', error });
+  }
+};
+
+//check if username is already taken in postgresql
+exports.checkUsername = async (req, res) => {
+  try {
+    const { username } = req.params;
+    const user = await User.findOne({
+      where: { username: username }
+    });
+    if (user) {
+      return res.status(200).json({ message: 'Username already taken' });
+    }
+    res.status(200).json({ message: 'Username available' });
+  } catch (error) {
+    res.status(400).json({ message: 'Error fetching user', error });
   }
 };

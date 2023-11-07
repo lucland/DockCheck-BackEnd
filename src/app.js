@@ -14,6 +14,7 @@ const User = require('./models/User');
 const Authorization = require('./models/Authorization');
 const Company = require('./models/Company');
 const Supervisor = require('./models/Supervisor');
+const Login = require('./models/Login');
 const Event = require('./models/Event');
 const Vessel = require('./models/Vessel');
 const Docking = require('./models/Docking');
@@ -42,6 +43,7 @@ Event.init(sequelize);
 Vessel.init(sequelize);
 Docking.init(sequelize);
 Portal.init(sequelize);
+Login.init(sequelize);
 
 // Define relationships
 User.hasMany(Authorization, {

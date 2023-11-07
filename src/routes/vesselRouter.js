@@ -5,7 +5,7 @@ const authenticateJWT = require('../middleware/auth');
 
 /**
   * @swagger
- * /api/v1/vessels:
+ * /api/v1/vessel/create:
  *  post:
  *    summary: Create a new vessel
  *    tags: [Vessels]
