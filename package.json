@@ -2,8 +2,9 @@
   "name": "dockcheck-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
+    "start": "./node_modules/.bin/nodemon ./src/app.js",
     "test": "jest --config=./jest.config.js --testMatch=\"**/src/tests/**/*.test.js\"",
     "test:watch": "jest --config=./jest.config.js --watch --testMatch=\"**/src/tests/**/*.test.js\""
   },  

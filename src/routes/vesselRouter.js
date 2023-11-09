@@ -31,7 +31,7 @@ router.post('/create', authenticateJWT, vesselController.createVessel);
 
 /**
  * @swagger
- * /api/v1/vessels/{id}:
+ * /api/v1/vessel/{id}:
  *  get:
  *    summary: Get a vessel by ID
  *    tags: [Vessels]
@@ -62,7 +62,7 @@ router.get('/:id', authenticateJWT, vesselController.getVessel);
 
 /**
  * @swagger
- * /api/v1/vessels/{id}:
+ * /api/v1/vessel/{id}:
  *  put:
  *    summary: Update a vessel by ID
  *    tags: [Vessels]
@@ -94,7 +94,7 @@ router.put('/:id', authenticateJWT, vesselController.updateVessel);
 
 /**
  * @swagger
- * /api/v1/vessels/{id}:
+ * /api/v1/vessel/{id}:
  *  delete:
  *    summary: Delete a vessel by ID
  *    tags: [Vessels]
@@ -115,7 +115,7 @@ router.delete('/:id', authenticateJWT, vesselController.deleteVessel);
 
 /**
  * @swagger
- * /api/v1/vessels/company/{company_id}:
+ * /api/v1/vessel/company/{company_id}:
  *  get:
  *    summary: Get all vessels for a specific company
  *    tags: [Vessels]
@@ -179,5 +179,37 @@ router.get('/company/:company_id', authenticateJWT, vesselController.getVesselsB
  *                portals: ["portal3"]
  */
 router.get('/', authenticateJWT, vesselController.getAllVessels);
+
+//router to get all vessel by name, with getVesselByName controller function and swagger documentation
+/**
+ * @swagger
+ * /api/v1/vessel/name/{vessel_name}:
+ *  get:
+ *    summary: Get a vessel by name
+ *    tags: [Vessels]
+ *    parameters:
+ *      - in: path
+ *        name: vessel_name
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: Vessel name
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            example:
+ *              - id: "vessel123"
+ *                name: "Vessel 1"
+ *                company_id: "company123"
+ *                updated_at: "2023-01-01T00:00:00.000Z"
+ *                admins: ["admin1", "admin2"]
+ *                onboarded_count: 10
+ *                portals: ["portal1", "portal2"]
+ *      '404':
+ *        description: Vessel not found
+ */
+router.get('/name/:vessel_name', authenticateJWT, vesselController.getVesselByName);
 
 module.exports = router;

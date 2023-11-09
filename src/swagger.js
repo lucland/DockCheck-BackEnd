@@ -9,7 +9,11 @@ const swaggerOptions = {
       contact: {
         name: 'Developer',
       },
-      servers: ['http://localhost:3000'],
+      servers: [
+        {
+          url: `http://dockcheckapi.sa-east-1.elasticbeanstalk.com`,
+        },
+      ],
       version: '1.0.0',
     },
     components: {

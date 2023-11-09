@@ -38,6 +38,22 @@ exports.getVessel = async (req, res) => {
   }
 };
 
+exports.getVesselByName = async (req, res) => {
+  try {
+    const vessel = await Vessel.findAll({
+      where: {
+        vessel_name: req.params.vessel_name
+      }
+    });
+    if (!vessel) {
+      return res.status(404).json({ message: 'Vessel not found' });
+    }
+    res.status(200).json(vessel);
+  } catch (error) {
+    res.status(400).json({ message: 'Error fetching vessel', error });
+  }
+};
+
 // Update a vessel by ID
 exports.updateVessel = async (req, res) => {
     try {
