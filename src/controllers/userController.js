@@ -4,6 +4,7 @@ const admin = require('../firebase');
 const crypto = require('crypto');
 const db = admin.firestore();
 const sequelize = require('../config/database'); // Make sure to import sequelize
+const { Op } = require('sequelize');
 
 // Helper function to set password and salt
 const setPassword = (user, password) => {
@@ -190,5 +191,45 @@ exports.checkUsername = async (req, res) => {
     res.status(200).json({ message: 'Username available' });
   } catch (error) {
     res.status(400).json({ message: 'Error fetching user', error });
+  }
+};
+
+// Search for a user by name or id with pagination
+exports.searchUsers = async (req, res) => {
+  try {
+    const { searchTerm } = req.query; // searchTerm should be passed as a query parameter
+    const page = parseInt(req.query.page, 10) || 1; // current page number, default is 1
+    const pageSize = parseInt(req.query.pageSize, 10) || 10; // number of records per page, default is 10
+    const offset = (page - 1) * pageSize;
+
+    // Use Sequelize's 'or' operator to search by either name or id
+    const users = await User.findAndCountAll({
+      where: {
+        [Op.or]: [
+          { name: { [Op.iLike]: `%${searchTerm}%` } }, // case-insensitive
+          { id: searchTerm }
+        ]
+      },
+      limit: pageSize,
+      offset: offset,
+      include: ['authorizations'] // Include related Authorizations if needed
+    });
+
+    if (users.rows.length === 0) {
+      return res.status(404).json({ message: 'No users found' });
+    }
+
+    // Calculate total pages
+    const totalPages = Math.ceil(users.count / pageSize);
+
+    res.status(200).json({
+      users: users.rows,
+      currentPage: page,
+      pageSize: pageSize,
+      totalCount: users.count,
+      totalPages: totalPages
+    });
+  } catch (error) {
+    res.status(400).json({ message: 'Error searching for users', error });
   }
 };

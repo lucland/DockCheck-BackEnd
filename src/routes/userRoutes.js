@@ -399,7 +399,132 @@ router.get('/', authenticateJWT, userController.getAllUsers);
  */
 router.get('/:id/authorizations', authenticateJWT, userController.getUserAuthorizations);
 
-// router of checkUsername
+/**
+ * @swagger
+ * /api/v1/users/checkUsername:
+ *  post:
+ *    summary: Check if a username is already taken
+ *    tags: [Users]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              username:
+ *                type: string
+ *                example: "johndoe"
+ *    responses:
+ *      '200':
+ *        description: Username availability status
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Username available"
+ *      '400':
+ *        description: Bad request
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Error fetching user"
+ *              error: "Details about the error"
+ */
 router.post('/checkUsername', userController.checkUsername);
+
+/**
+ * @swagger
+ * /api/v1/users/search:
+ *  get:
+ *    summary: Search for users by name or id with pagination
+ *    tags: [Users]
+ *    parameters:
+ *      - in: query
+ *        name: searchTerm
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: Term to search for in user name or id
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *          default: 1
+ *        required: false
+ *        description: Current page number
+ *      - in: query
+ *        name: pageSize
+ *        schema:
+ *          type: integer
+ *          default: 10
+ *        required: false
+ *        description: Number of records per page
+ *    responses:
+ *      '200':
+ *        description: A list of users matching the search criteria
+ *        content:
+ *          application/json:
+ *            example:
+ *              users: 
+ *                - id: "user123"
+ *                  name: "John Doe"
+ *                  authorizations_id: ["uuid1", "uuid2"]
+ *                  company: "Company Inc."
+ *                  role: "Engineer"
+ *                  project: "Project A"
+ *                  number: 12345
+ *                  identidade: "ID12345"
+ *                  cpf: "123.456.789-00"
+ *                  aso: "2023-01-01"
+ *                  aso_document: "aso_doc.pdf"
+ *                  has_aso: false
+ *                  nr34: "2023-01-01"
+ *                  nr34_document: "nr34_doc.pdf"
+ *                  has_nr34: false
+ *                  nr35: "2023-01-01"
+ *                  nr35_document: "nr35_doc.pdf"
+ *                  has_nr35: false
+ *                  nr33: "2023-01-01"
+ *                  nr33_document: "nr33_doc.pdf"
+ *                  has_nr33: false
+ *                  nr10: "2023-01-01"
+ *                  nr10_document: "nr10_doc.pdf"
+ *                  has_nr10: false
+ *                  email: "johndoeexample.com"
+ *                  area: "Engineering"
+ *                  is_admin: false
+ *                  is_visitor: false
+ *                  is_blocked: false
+ *                  block_reason: null
+ *                  rfid: "RFID12345"
+ *                  picture: "picture.jpg"
+ *                  created_at: "2023-01-01T00:00:00.000Z"
+ *                  updated_at: "2023-01-01T00:00:00.000Z"
+ *                  events: ["event1", "event2"]
+ *                  type_job: "Full-time"
+ *                  start_job: "2023-01-01"
+ *                  end_job: "2023-12-31"
+ *                  username: "johndoe"
+ *                  salt: "random_salt"
+ *                  hash: "hashed_password"
+ *              currentPage: 1
+ *              pageSize: 10
+ *              totalCount: 20
+ *              totalPages: 2
+ *      '404':
+ *        description: No users found
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "No users found"
+ *      '400':
+ *        description: Bad request
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Error searching for users"
+ *              error: "Details about the error"
+ */
+router.get('/search', userController.searchUsers);
 
 module.exports = router;
