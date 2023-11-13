@@ -233,3 +233,22 @@ exports.searchUsers = async (req, res) => {
     res.status(400).json({ message: 'Error searching for users', error });
   }
 };
+
+//retrieve the highest user number
+exports.getUserNumber = async (req, res) => {
+  //find the highest user number in the users table and return it as a response
+  try {
+    const user = await User.findOne({
+      limit: 1,
+      order: [
+        ['number', 'DESC']
+      ]
+    });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json((user.number + 1).toString());
+  } catch (error) {
+    res.status(400).json({ message: 'Error fetching user', error });
+  }
+};
