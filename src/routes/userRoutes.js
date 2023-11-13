@@ -525,6 +525,36 @@ router.post('/checkUsername', userController.checkUsername);
  *              message: "Error searching for users"
  *              error: "Details about the error"
  */
-router.get('/search', userController.searchUsers);
+router.get('/search', authenticateJWT, userController.searchUsers);
+
+/**
+ * @swagger
+ * /api/v1/users/all/lastnumber:
+ *  get:
+ *    summary: Get the last number from the users
+ *    tags: [Users]
+ *    security:
+ *      - bearerAuth: []
+ *    responses:
+ *      '200':
+ *        description: Successfully retrieved the last number
+ *        content:
+ *          application/json:
+ *            example:
+ *              lastNumber: 12345
+ *      '401':
+ *        description: Unauthorized access
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Unauthorized"
+ *      '500':
+ *        description: Internal Server Error
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Internal server error"
+ */
+router.get('/all/lastnumber', authenticateJWT, userController.getUserNumber)
 
 module.exports = router;
