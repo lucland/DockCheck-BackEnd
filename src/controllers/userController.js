@@ -252,3 +252,50 @@ exports.getUserNumber = async (req, res) => {
     res.status(400).json({ message: 'Error fetching user', error });
   }
 };
+
+exports.getValidUsersByVesselID = async (req, res) => {
+  try {
+    const { vesselID } = req.params;
+
+    // Today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
+
+    const users = await User.findAll({
+      attributes: ['rfid'],  // Select only the rfid field
+      include: [{
+        model: Authorization,
+        as: 'authorizations',
+        where: { vessel_id: vesselID },
+        attributes: []
+      }],
+      where: {
+        nr34: {
+          [Op.gt]: today
+        },
+        aso: {
+          [Op.gt]: today
+        },
+        rfid: {
+          [Op.and]: {
+            [Op.ne]: null,    // Not null
+            [Op.ne]: ''       // Not an empty string
+          }
+        }
+      }
+    });
+
+    // Extract the rfid values from the user objects
+    const rfids = users.map(user => user.rfid);
+
+    //remove duplicates
+    const uniqueRfids = [...new Set(rfids)];
+
+    if (rfids.length === 0) {
+      return res.status(404).json({ message: 'No RFIDs found for the given vessel ID' });
+    }
+    
+    res.status(200).json(uniqueRfids);
+  } catch (error) {
+    res.status(400).json({ message: 'Error fetching RFIDs', error });
+  }
+};

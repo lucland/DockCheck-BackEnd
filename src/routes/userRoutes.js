@@ -557,4 +557,41 @@ router.get('/search', authenticateJWT, userController.searchUsers);
  */
 router.get('/all/lastnumber', authenticateJWT, userController.getUserNumber)
 
+/**
+ * @swagger
+ * /api/v1/users/valids/{vesselID}:
+ *   get:
+ *     summary: Get a list of valid RFIDs of users associated with a specific vessel
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: vesselID
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the vessel
+ *     responses:
+ *       '200':
+ *         description: A list of user RFIDs for the specified vessel
+ *         content:
+ *           application/json:
+ *             example: 
+ *               - "RFID12345"
+ *               - "RFID67890"
+ *       '404':
+ *         description: No users found for the given vessel ID
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "No users found for the given vessel ID"
+ *       '400':
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Error fetching users for the vessel"
+ *               error: "Details about the error"
+ */
+router.get('/valids/:vesselID', authenticateJWT, userController.getValidUsersByVesselID);
+
 module.exports = router;
