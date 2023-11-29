@@ -299,3 +299,21 @@ exports.getValidUsersByVesselID = async (req, res) => {
     res.status(400).json({ message: 'Error fetching RFIDs', error });
   }
 };
+
+//block user by id, setting is_blocked to true and block_reason to the reason provided
+exports.blockUser = async (req, res) => {
+  try {
+    const { block_reason } = req.body;
+    const user = await User.findByPk(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const updatedUser = await user.update({
+      is_blocked: true,
+      block_reason: block_reason
+    });
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(400).json({ message: 'Error blocking user', error });
+  }
+};
