@@ -594,4 +594,51 @@ router.get('/all/lastnumber', authenticateJWT, userController.getUserNumber)
  */
 router.get('/valids/:vesselID', authenticateJWT, userController.getValidUsersByVesselID);
 
+//block user by id, setting is_blocked to true and block_reason to the reason provided
+/**
+ * @swagger
+ * /api/v1/users/block/{id}:
+ *   put:
+ *     summary: Block a user by ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               block_reason:
+ *                 type: string
+ *                 example: "User is not allowed to enter the vessel"
+ *     responses:
+ *       '200':
+ *         description: User blocked successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "User blocked successfully"
+ *       '404':
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "User not found"
+ *       '400':
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Error blocking user"
+ *               error: "Details about the error"
+ */
+router.put('/block/:id', authenticateJWT, userController.blockUser);
+
 module.exports = router;
