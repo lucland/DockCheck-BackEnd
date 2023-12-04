@@ -105,4 +105,16 @@ router.put('/:id', updateAuthorization);
  */
 router.delete('/:id', deleteAuthorization);
 
+/**
+ * @swagger
+ * /api/v1/authorizations:
+ *  get:
+ *   summary: Get all authorizations
+ *  tags: [Authorization]
+ * responses:
+ *  200:
+ *  description: Successfully fetched
+ */
+router.get('/', getAllAuthorizations);
+
 module.exports = router;
