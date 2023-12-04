@@ -58,3 +58,12 @@ exports.deleteAuthorization = async (req, res) => {
     res.status(400).json({ message: 'Error deleting authorization', error });
   }
 };
+
+exports.getAllAuthorizations = async (req, res) => {
+  try {
+    const authorizations = await Authorization.findAll();
+    res.status(200).json(authorizations);
+  } catch (error) {
+    res.status(400).json({ message: 'Error fetching authorizations', error });
+  }
+};
