@@ -222,4 +222,6 @@ router.get('/', eventController.getAllEvents);
  */
 router.post('/sync', eventController.syncEvents);
 
+router.get('/user/:id', eventController.getEventsByUser);
+
 module.exports = router;
