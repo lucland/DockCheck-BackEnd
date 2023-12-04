@@ -15,6 +15,19 @@ exports.createEvent = async (req, res) => {
       ...req.body
     });
 
+    //update vessel.onboarded_count in PostgreSQL and Firebase incrementally if direction of event is 1 or decrementally if direction of event is 0
+    const vessel = await Vessel.findByPk(req.body.vessel_id);
+    if (req.body.direction == 0) {
+      vessel.onboarded_count = vessel.onboarded_count + 1;
+    } else if (req.body.direction == 1) {
+      vessel.onboarded_count = vessel.onboarded_count - 1;
+    } else {
+      return res.status(400).json({ message: 'Error updating vessel onboarded_count' });
+    }
+
+    const user = await User.findByPk(req.body.user_id);
+    user.events.push(req.body.id);
+
     res.status(201).json({
       message: 'Event created successfully',
       event: newEvent,
@@ -90,6 +103,24 @@ exports.getAllEvents = async (req, res) => {
       offset: offset
     });
 
+    res.status(200).json(events);
+  } catch (error) {
+    res.status(400).json({ message: 'Error fetching events', error });
+  }
+};
+
+//get all events for a specific user from PostgreSQL user.events array
+exports.getEventsByUser = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.params.user_id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const events = await Event.findAll({
+      where: {
+        id: user.events
+      }
+    });
     res.status(200).json(events);
   } catch (error) {
     res.status(400).json({ message: 'Error fetching events', error });
