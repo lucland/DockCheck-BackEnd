@@ -1,3 +1,4 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Supervisor = require('../models/Supervisor');
@@ -5,7 +6,7 @@ const Supervisor = require('../models/Supervisor');
 const SECRET_KEY = process.env.SECRET_KEY;
 
 const authenticateJWT = async (req, res, next) => {
-  const authHeader = req.header('Authorization');
+  const authHeader = req.headers.authorization;
 
   if (authHeader) {
     const token = authHeader.split(' ')[1]; // Split "Bearer YOUR_JWT_TOKEN"
@@ -28,7 +29,7 @@ const authenticateJWT = async (req, res, next) => {
       req.user = user;
       next();
     } catch (err) {
-      return res.status(403).json({ message: 'Invalid token', error: err });
+      return res.status(403).json({ message: 'Invalid token', error: err.message });
     }
   } else {
     res.status(401).json({ message: 'Token not provided' });
