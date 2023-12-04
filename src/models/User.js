@@ -36,6 +36,7 @@ class User extends Model {
       is_admin: DataTypes.BOOLEAN,
       is_visitor: DataTypes.BOOLEAN,
       is_guardian: DataTypes.BOOLEAN,
+      is_onboarded: DataTypes.BOOLEAN,
       is_blocked: DataTypes.BOOLEAN,
       block_reason: DataTypes.STRING,
       rfid: DataTypes.STRING,
