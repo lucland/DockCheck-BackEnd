@@ -222,6 +222,75 @@ router.get('/', eventController.getAllEvents);
  */
 router.post('/sync', eventController.syncEvents);
 
-router.get('/user/:id', eventController.getEventsByUser);
+//swagger documentation for get events by user
+/**
+ * @swagger
+ * /api/v1/events/user/{id}:
+ *  get:
+ *    summary: Get all events by user
+ *    tags: [Events]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: User ID
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            example:
+ *              - id: "event123"
+ *                portal_id: "portal1"
+ *                user_id: "user1"
+ *                timestamp: "2023-10-25T00:00:00.000Z"
+ *                direction: 1
+ *                picture: "picture_url"
+ *                vessel_id: "vessel123"
+ *                action: 1
+ *              - id: "event124"
+ *                portal_id: "portal2"
+ *                user_id: "user1"
+ *                timestamp: "2023-10-26T00:00:00.000Z"
+ *                direction: 2
+ *                picture: "another_picture_url"
+ *                vessel_id: "vessel124"
+ *                action: 2
+ *      '400':
+ *        description: Bad request
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Error fetching events"
+ *              error: "Details about the error"
+ */
+router.get('/user/:user_id', eventController.getEventsByUser);
+
+//swagger documentation for get all ids
+/**
+ * @swagger
+ * /api/v1/events/ids:
+ *  get:
+ *    summary: Get all events ids
+ *    tags: [Events]
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            example:
+ *              - id: "event123"
+ *              - id: "event124"
+ *      '400':
+ *        description: Bad request
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Error fetching events"
+ *              error: "Details about the error"
+ */
+router.get('/ids', eventController.getEventsIds);
 
 module.exports = router;
