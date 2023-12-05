@@ -641,4 +641,29 @@ router.get('/valids/:vesselID', authenticateJWT, userController.getValidUsersByV
  */
 router.put('/block/:id', authenticateJWT, userController.blockUser);
 
+//get all user ids using getAllUserIds
+/**
+ * @swagger
+ * /api/v1/users/all:
+ *   get:
+ *     summary: Get all user ids
+ *     tags: [Users]
+ *     responses:
+ *       '200':
+ *         description: Successfully retrieved all user ids
+ *         content:
+ *           application/json:
+ *             example:
+ *               - "user123"
+ *               - "user456"
+ *       '400':
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Error fetching users"
+ *               error: "Details about the error"
+ */
+router.get('/ids', authenticateJWT, userController.getAllUserIds);
+
 module.exports = router;
