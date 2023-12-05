@@ -220,4 +220,32 @@ router.delete('/:id', authenticateJWT, companyController.deleteCompany);
  */
 router.get('/', authenticateJWT, companyController.getAllCompanies);
 
+/**
+ * @swagger
+ * /api/v1/companies/ids:
+ *  get:
+ *    summary: Get all companies ids
+ *    tags: [Companies]
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                $ref: '#/components/schemas/Company'
+ *            example:
+ *              - id: "123"
+ *              - id: "124"
+ *      '400':
+ *        description: Bad request
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Error updating company"
+ *              error: "Details about the error"
+ */
+router.get('/ids', authenticateJWT, companyController.getAllCompaniesIds);
+
 module.exports = router;
