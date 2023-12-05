@@ -107,3 +107,15 @@ exports.getAllPortals = async (req, res) => {
     res.status(400).json({ message: 'Error fetching portals', error });
   }
 };
+
+//get all portals ids
+exports.getAllPortalsIds = async (req, res) => {
+  try {
+    const portals = await Portal.findAll({
+      attributes: ['id']
+    });
+    res.status(200).json(portals);
+  } catch (error) {
+    res.status(400).json({ message: 'Error fetching portals', error });
+  }
+};
