@@ -229,4 +229,29 @@ router.get('/name/:vessel_name', authenticateJWT, vesselController.getVesselByNa
  */
 router.get('/ids', authenticateJWT, vesselController.getAllVesselIds);
 
+//get all onboarded users of a vessel
+/**
+ * @swagger
+ * /api/v1/vessel/onboarded/{id}:
+ *  get:
+ *    summary: Get all onboarded users of a vessel
+ *    tags: [Vessels]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: Vessel ID
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            example:
+ *              - user123
+ *              - user124
+ */
+router.get('/onboarded/:id', authenticateJWT, vesselController.getOnboardedUsers);
+
 module.exports = router;
