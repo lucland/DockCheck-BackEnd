@@ -178,4 +178,21 @@ router.delete('/:id', authenticateJWT, dockingController.deleteDocking);
  */
 router.get('/', authenticateJWT, dockingController.getAllDockings);
 
+/**
+ * @swagger
+ * /api/v1/dockings/ids:
+ *  get:
+ *    summary: Get all docking ids
+ *    tags: [Dockings]
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            example:
+ *              - id: "123"
+ *              - id: "124"
+ */
+router.get('/ids', authenticateJWT, dockingController.getAllDockingsIds);
+
 module.exports = router;
