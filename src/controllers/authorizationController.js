@@ -67,3 +67,15 @@ exports.getAllAuthorizations = async (req, res) => {
     res.status(400).json({ message: 'Error fetching authorizations', error });
   }
 };
+
+//get all ids of authorizations
+exports.getAllAuthorizationIds = async (req, res) => {
+  try {
+    const authorizations = await Authorization.findAll({
+      attributes: ['id']
+    });
+    res.status(200).json(authorizations);
+  } catch (error) {
+    res.status(400).json({ message: 'Error fetching authorizations', error });
+  }
+};
