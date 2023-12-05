@@ -77,11 +77,11 @@ app.use('/api/v1/', require('./routes'));
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/authorizations', authorizationRouter);
 app.use('/api/v1/companies', companyRoutes);
-app.use('/api/v1/docking', dockingRoutes);
-app.use('/api/v1/portal', portalRoutes);
-app.use('/api/v1/vessel', vesselRoutes);
-app.use('/api/v1/event', eventRoutes);
-app.use('/api/v1/supervisor', supervisorRoutes);
+app.use('/api/v1/dockings', dockingRoutes);
+app.use('/api/v1/portals', portalRoutes);
+app.use('/api/v1/vessels', vesselRoutes);
+app.use('/api/v1/events', eventRoutes);
+app.use('/api/v1/supervisors', supervisorRoutes);
 app.use('/api/v1/sync', syncRouter);
 app.use('/api/v1/login', loginRouter);
 app.use('/api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
@@ -93,6 +93,6 @@ app.listen(process.env.PORT, () => {
 */
 // Start the server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
 });
