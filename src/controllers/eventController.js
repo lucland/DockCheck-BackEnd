@@ -109,18 +109,18 @@ exports.getAllEvents = async (req, res) => {
   }
 };
 
-//get all events for a specific user from PostgreSQL user.events array
+// Server-side controller
 exports.getEventsByUser = async (req, res) => {
+  //receive user_id from req.params, search the event table for all events with that user_id, and return them
   try {
-    const user = await User.findByPk(req.params.user_id);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
     const events = await Event.findAll({
       where: {
-        id: user.events
+        user_id: req.params.user_id
       }
     });
+    if (events.length === 0) {
+      return res.status(404).json({ message: 'Events not found' });
+    }
     res.status(200).json(events);
   } catch (error) {
     res.status(400).json({ message: 'Error fetching events', error });
@@ -148,5 +148,16 @@ exports.syncEvents = async (req, res) => {
     res.status(200).json({ message: 'Events synced successfully.' });
   } catch (error) {
     res.status(500).json({ message: 'Error syncing events', error });
+  }
+};
+
+exports.getEventsIds = async (req, res) => {
+  try {
+    const events = await Event.findAll({
+      attributes: ['id']
+    });
+    res.status(200).json(events);
+  } catch (error) {
+    res.status(400).json({ message: 'Error fetching events', error });
   }
 };
