@@ -8,6 +8,7 @@ const {
 } = require('../controllers/authorizationController');
 
 const router = express.Router();
+const authorizationController = require('../controllers/authorizationController');
 
 /**
  * @swagger
@@ -25,7 +26,7 @@ const router = express.Router();
  *       201:
  *         description: Successfully created
  */
-router.post('/', createAuthorization);
+router.post('/', authorizationController.createAuthorization);
 
 /**
  * @swagger
@@ -43,7 +44,7 @@ router.post('/', createAuthorization);
  *       200:
  *         description: Successfully fetched
  */
-router.get('/:user_id', getAuthorizations);
+router.get('/:user_id', authorizationController.getAuthorizations);
 
 /**
  * @swagger
@@ -61,7 +62,7 @@ router.get('/:user_id', getAuthorizations);
  *       200:
  *         description: Successfully fetched
  */
-router.get('/:id', getAuthorizationById);
+router.get('/:id', authorizationController.getAuthorizationById);
 
 /**
  * @swagger
@@ -85,7 +86,7 @@ router.get('/:id', getAuthorizationById);
  *       200:
  *         description: Successfully updated
  */
-router.put('/:id', updateAuthorization);
+router.put('/:id', authorizationController.updateAuthorization);
 
 /**
  * @swagger
@@ -103,7 +104,7 @@ router.put('/:id', updateAuthorization);
  *       200:
  *         description: Successfully deleted
  */
-router.delete('/:id', deleteAuthorization);
+router.delete('/:id', authorizationController.deleteAuthorization);
 
 /**
  * @swagger
@@ -115,6 +116,18 @@ router.delete('/:id', deleteAuthorization);
  *  200:
  *  description: Successfully fetched
  */
-router.get('/', getAllAuthorizations);
+router.get('/', authorizationController.getAllAuthorizations);
+
+/**
+ * @swagger
+ * /api/v1/authorizations/ids:
+ *  get:
+ *   summary: Get all authorization ids
+ *  tags: [Authorization]
+ * responses:
+ *  200:
+ *  description: Successfully fetched
+ */
+router.get('/ids', authorizationController.getAllAuthorizationIds);
 
 module.exports = router;
