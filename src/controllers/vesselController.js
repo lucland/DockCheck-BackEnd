@@ -135,3 +135,17 @@ exports.getAllVesselIds = async (req, res) => {
     res.status(400).json({ message: 'Error fetching vessels', error });
   }
 };
+
+//get all onboarded users of a vessel
+exports.getOnboardedUsers = async (req, res) => {
+  try {
+    const vessel = await Vessel.findByPk(req.params.id);
+    if (!vessel) {
+      return res.status(404).json({ message: 'Vessel not found' });
+    }
+    const onboardedUsers = vessel.onboarded_users;
+    res.status(200).json(onboardedUsers);
+  } catch (error) {
+    res.status(400).json({ message: 'Error fetching onboarded users', error });
+  }
+};
