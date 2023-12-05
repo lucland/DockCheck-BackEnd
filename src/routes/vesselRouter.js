@@ -212,4 +212,21 @@ router.get('/', authenticateJWT, vesselController.getAllVessels);
  */
 router.get('/name/:vessel_name', authenticateJWT, vesselController.getVesselByName);
 
+/**
+ * @swagger
+ * /api/v1/vessel/ids:
+ *  get:
+ *    summary: Get all vessel ids
+ *    tags: [Vessels]
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            example:
+ *              - vessel123
+ *              - vessel124
+ */
+router.get('/ids', authenticateJWT, vesselController.getAllVesselIds);
+
 module.exports = router;
