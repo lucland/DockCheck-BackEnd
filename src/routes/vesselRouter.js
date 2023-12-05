@@ -5,7 +5,7 @@ const authenticateJWT = require('../middleware/auth');
 
 /**
   * @swagger
- * /api/v1/vessel/create:
+ * /api/v1/vessels/create:
  *  post:
  *    summary: Create a new vessel
  *    tags: [Vessels]
@@ -31,7 +31,7 @@ router.post('/create', authenticateJWT, vesselController.createVessel);
 
 /**
  * @swagger
- * /api/v1/vessel/{id}:
+ * /api/v1/vessels/{id}:
  *  get:
  *    summary: Get a vessel by ID
  *    tags: [Vessels]
@@ -62,7 +62,7 @@ router.get('/:id', authenticateJWT, vesselController.getVessel);
 
 /**
  * @swagger
- * /api/v1/vessel/{id}:
+ * /api/v1/vessels/{id}:
  *  put:
  *    summary: Update a vessel by ID
  *    tags: [Vessels]
@@ -94,7 +94,7 @@ router.put('/:id', authenticateJWT, vesselController.updateVessel);
 
 /**
  * @swagger
- * /api/v1/vessel/{id}:
+ * /api/v1/vessels/{id}:
  *  delete:
  *    summary: Delete a vessel by ID
  *    tags: [Vessels]
@@ -115,7 +115,7 @@ router.delete('/:id', authenticateJWT, vesselController.deleteVessel);
 
 /**
  * @swagger
- * /api/v1/vessel/company/{company_id}:
+ * /api/v1/vessels/company/{company_id}:
  *  get:
  *    summary: Get all vessels for a specific company
  *    tags: [Vessels]
@@ -183,7 +183,7 @@ router.get('/', authenticateJWT, vesselController.getAllVessels);
 //router to get all vessel by name, with getVesselByName controller function and swagger documentation
 /**
  * @swagger
- * /api/v1/vessel/name/{vessel_name}:
+ * /api/v1/vessels/name/{vessel_name}:
  *  get:
  *    summary: Get a vessel by name
  *    tags: [Vessels]
@@ -214,7 +214,7 @@ router.get('/name/:vessel_name', authenticateJWT, vesselController.getVesselByNa
 
 /**
  * @swagger
- * /api/v1/vessel/ids:
+ * /api/v1/vessels/ids:
  *  get:
  *    summary: Get all vessel ids
  *    tags: [Vessels]
@@ -232,7 +232,7 @@ router.get('/ids', authenticateJWT, vesselController.getAllVesselIds);
 //get all onboarded users of a vessel
 /**
  * @swagger
- * /api/v1/vessel/onboarded/{id}:
+ * /api/v1/vessels/onboarded/{id}:
  *  get:
  *    summary: Get all onboarded users of a vessel
  *    tags: [Vessels]
