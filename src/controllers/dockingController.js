@@ -88,3 +88,15 @@ exports.getAllDockings = async (req, res) => {
     res.status(400).json({ message: 'Error fetching dockings', error });
   }
 };
+
+//get all ids of dockings
+exports.getAllDockingsIds = async (req, res) => {
+  try {
+    const dockings = await Docking.findAll({
+      attributes: ['id']
+    });
+    res.status(200).json(dockings);
+  } catch (error) {
+    res.status(400).json({ message: 'Error fetching dockings', error });
+  }
+};
