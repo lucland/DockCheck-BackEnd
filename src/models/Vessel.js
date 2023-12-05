@@ -13,6 +13,7 @@ class Vessel extends Model {
       admins: DataTypes.ARRAY(DataTypes.STRING),
       onboarded_count: DataTypes.INTEGER,
       portals: DataTypes.ARRAY(DataTypes.STRING),
+      onboarded_users: DataTypes.ARRAY(DataTypes.STRING),
     }, {
       sequelize,
       modelName: 'Vessel',
