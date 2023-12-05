@@ -205,4 +205,21 @@ router.get('/vessel/:vessel_id', authenticateJWT, portalController.getPortalsByV
  */
 router.get('/', authenticateJWT, portalController.getAllPortals);
 
+/**
+ * @swagger
+ * /api/v1/portals/ids:
+ *  get:
+ *    summary: Get all portals ids
+ *    tags: [Portals]
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            example:
+ *              - id: "portal123"
+ *              - id: "portal124"
+ */
+router.get('/ids', authenticateJWT, portalController.getAllPortalsIds);
+
 module.exports = router;
