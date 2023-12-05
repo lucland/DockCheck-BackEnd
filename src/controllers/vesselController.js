@@ -123,3 +123,15 @@ exports.getAllVessels = async (req, res) => {
     res.status(400).json({ message: 'Error fetching vessels', error });
   }
 };
+
+//get all ids of vessels
+exports.getAllVesselIds = async (req, res) => {
+  try {
+    const vessels = await Vessel.findAll({
+      attributes: ['id']
+    });
+    res.status(200).json(vessels);
+  } catch (error) {
+    res.status(400).json({ message: 'Error fetching vessels', error });
+  }
+};
