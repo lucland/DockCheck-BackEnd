@@ -15,11 +15,13 @@ exports.createDocking = async (req, res) => {
       ...req.body
     });
 
+    console.log("201 - docking created successfully");
     res.status(201).json({
       message: 'Docking created successfully',
       docking: newDocking,
     });
   } catch (error) {
+    console.log("400 - error creating docking");
     res.status(400).json({ message: 'Error creating docking', error });
   }
 };
@@ -29,10 +31,13 @@ exports.getDocking = async (req, res) => {
   try {
     const docking = await Docking.findByPk(req.params.id);
     if (!docking) {
+      console.log("404 - docking not found");
       return res.status(404).json({ message: 'Docking not found' });
     }
+    console.log("200 - docking fetched successfully");
     res.status(200).json(docking);
   } catch (error) {
+    console.log("400 - error fetching docking");
     res.status(400).json({ message: 'Error fetching docking', error });
   }
 };
@@ -42,6 +47,7 @@ exports.updateDocking = async (req, res) => {
     try {
       const docking = await Docking.findByPk(req.params.id);
       if (!docking) {
+        console.log("404 - docking not found");
         return res.status(404).json({ message: 'Docking not found' });
       }
   
@@ -52,8 +58,10 @@ exports.updateDocking = async (req, res) => {
       const dockingRef = db.collection('dockings').doc(req.params.id);
       await dockingRef.update(req.body);
   
+      console.log("200 - docking updated successfully");
       res.status(200).json(updatedDocking);
     } catch (error) {
+      console.log("400 - error updating docking");
       res.status(400).json({ message: 'Error updating docking', error });
     }
   };
@@ -63,6 +71,7 @@ exports.updateDocking = async (req, res) => {
     try {
       const docking = await Docking.findByPk(req.params.id);
       if (!docking) {
+        console.log("404 - docking not found");
         return res.status(404).json({ message: 'Docking not found' });
       }
   
@@ -73,8 +82,10 @@ exports.updateDocking = async (req, res) => {
       const dockingRef = db.collection('dockings').doc(req.params.id);
       await dockingRef.delete();
   
+      console.log("204 - docking deleted successfully");
       res.status(204).json({ message: 'Docking deleted successfully' });
     } catch (error) {
+      console.log("400 - error deleting docking");
       res.status(400).json({ message: 'Error deleting docking', error });
     }
   };
@@ -83,8 +94,10 @@ exports.updateDocking = async (req, res) => {
 exports.getAllDockings = async (req, res) => {
   try {
     const dockings = await Docking.findAll();
+    console.log("200 - dockings fetched successfully");
     res.status(200).json(dockings);
   } catch (error) {
+    console.log("400 - error fetching dockings");
     res.status(400).json({ message: 'Error fetching dockings', error });
   }
 };
@@ -95,8 +108,10 @@ exports.getAllDockingsIds = async (req, res) => {
     const dockings = await Docking.findAll({
       attributes: ['id']
     });
+    console.log("200 - dockings fetched successfully");
     res.status(200).json(dockings);
   } catch (error) {
+    console.log("400 - error fetching dockings");
     res.status(400).json({ message: 'Error fetching dockings', error });
   }
 };
