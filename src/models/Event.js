@@ -16,6 +16,8 @@ class Event extends Model {
       action: DataTypes.INTEGER,
       manual: DataTypes.BOOLEAN,
       justification: DataTypes.STRING,
+      created_at: DataTypes.DATE,
+      updated_at: DataTypes.DATE,
     }, {
       sequelize,
       modelName: 'Event',
