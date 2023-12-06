@@ -19,11 +19,13 @@ exports.login = async (req, res) => {
       user = await Supervisor.findOne({ where: { username } });
     } else {
       console.log("Invalid role");
+      console.log("400 - invalid role");
       return res.status(400).json({ message: 'Invalid role' });
     }
 
     if (!user) {
       console.log("User not found");
+      console.log("401 - user not found");
       return res.status(401).json({ message: 'User not found' });
     }
 
@@ -35,6 +37,7 @@ exports.login = async (req, res) => {
 
     if (!validPassword) {
       console.log("Invalid credentials");
+      console.log("401 - invalid credentials");
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
@@ -50,6 +53,7 @@ exports.login = async (req, res) => {
         if (t && !t.finished) {
           await t.rollback();
         }
+        console.log("400 - user already logged in");
         return res.status(400).json({ message: 'User is already logged in on this system' });
       }
 
@@ -86,6 +90,7 @@ exports.login = async (req, res) => {
         await t.rollback();
       }
     }
+    console.log("400 - error during login");
     res.status(400).json({ message: 'Error during login', error });
   }
 };
@@ -98,8 +103,10 @@ exports.logout = async (req, res) => {
     const existingLogin = await Login.findOne({ where: { user_id: user_id } });
     if (existingLogin) {
       await existingLogin.destroy();
+      console.log("Logged out successfully");
       return res.status(200).json({ message: 'Successfully logged out' });
     } else {
+      console.log("User not logged in");
       return res.status(400).json({ message: 'User is not logged in on this system' });
     }
   } catch (error) {
