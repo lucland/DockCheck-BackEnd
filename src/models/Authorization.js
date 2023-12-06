@@ -4,8 +4,7 @@ class Authorization extends Model {
   static init(sequelize) {
     super.init({
       id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        type: DataTypes.STRING,
         primaryKey: true,
       },
       user_id: {
