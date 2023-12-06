@@ -15,11 +15,13 @@ exports.createPortal = async (req, res) => {
       ...req.body
     });
 
+    console.log("201 - portal created successfully");
     res.status(201).json({
       message: 'Portal created successfully',
       portal: newPortal,
     });
   } catch (error) {
+    console.log("400 - error creating portal");
     res.status(400).json({ message: 'Error creating portal', error });
   }
 };
@@ -29,10 +31,13 @@ exports.getPortal = async (req, res) => {
   try {
     const portal = await Portal.findByPk(req.params.id);
     if (!portal) {
+      console.log("404 - portal not found");
       return res.status(404).json({ message: 'Portal not found' });
     }
+    console.log("200 - portal fetched successfully");
     res.status(200).json(portal);
   } catch (error) {
+    console.log("400 - error fetching portal");
     res.status(400).json({ message: 'Error fetching portal', error });
   }
 };
@@ -42,6 +47,7 @@ exports.updatePortal = async (req, res) => {
     try {
       const portal = await Portal.findByPk(req.params.id);
       if (!portal) {
+        console.log("404 - portal not found");
         return res.status(404).json({ message: 'Portal not found' });
       }
   
@@ -52,8 +58,10 @@ exports.updatePortal = async (req, res) => {
       const portalRef = db.collection('portals').doc(req.params.id);
       await portalRef.update(req.body);
   
+      console.log("200 - portal updated successfully");
       res.status(200).json(updatedPortal);
     } catch (error) {
+      console.log("400 - error updating portal");
       res.status(400).json({ message: 'Error updating portal', error });
     }
   };
@@ -63,6 +71,7 @@ exports.updatePortal = async (req, res) => {
     try {
       const portal = await Portal.findByPk(req.params.id);
       if (!portal) {
+        console.log("404 - portal not found");
         return res.status(404).json({ message: 'Portal not found' });
       }
   
@@ -73,8 +82,10 @@ exports.updatePortal = async (req, res) => {
       const portalRef = db.collection('portals').doc(req.params.id);
       await portalRef.delete();
   
+      console.log("204 - portal deleted successfully");
       res.status(204).json({ message: 'Portal deleted successfully' });
     } catch (error) {
+      console.log("400 - error deleting portal");
       res.status(400).json({ message: 'Error deleting portal', error });
     }
   };
@@ -89,10 +100,13 @@ exports.getPortalsByVessel = async (req, res) => {
       }
     });
     if (portals.length === 0) {
+      console.log("404 - no portals found for this vessel");
       return res.status(404).json({ message: 'No portals found for this vessel' });
     }
+    console.log("200 - portals fetched successfully");
     res.status(200).json(portals);
   } catch (error) {
+    console.log("400 - error fetching portals");
     res.status(400).json({ message: 'Error fetching portals', error });
   }
 };
@@ -102,8 +116,10 @@ exports.getPortalsByVessel = async (req, res) => {
 exports.getAllPortals = async (req, res) => {
   try {
     const portals = await Portal.findAll();
+    console.log("200 - portals fetched successfully");
     res.status(200).json(portals);
   } catch (error) {
+    console.log("400 - error fetching portals");
     res.status(400).json({ message: 'Error fetching portals', error });
   }
 };
@@ -114,8 +130,10 @@ exports.getAllPortalsIds = async (req, res) => {
     const portals = await Portal.findAll({
       attributes: ['id']
     });
+    console.log("200 - portals fetched successfully");
     res.status(200).json(portals);
   } catch (error) {
+    console.log("400 - error fetching portals");
     res.status(400).json({ message: 'Error fetching portals', error });
   }
 };
