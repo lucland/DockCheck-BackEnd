@@ -8,7 +8,7 @@ class User extends Model {
         type: DataTypes.STRING,
         primaryKey: true,
       },
-      authorizations_id: DataTypes.ARRAY(DataTypes.UUID),
+      authorizations_id: DataTypes.ARRAY(DataTypes.STRING),
       name: DataTypes.STRING,
       company: DataTypes.STRING,
       role: DataTypes.STRING,
