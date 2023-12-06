@@ -16,11 +16,13 @@ exports.createVessel = async (req, res) => {
       ...req.body
     });
 
+    console.log("201 - vessel created successfully");
     res.status(201).json({
       message: 'Vessel created successfully',
       vessel: newVessel,
     });
   } catch (error) {
+    console.log("400 - error creating vessel");
     res.status(400).json({ message: 'Error creating vessel', error });
   }
 };
@@ -30,10 +32,13 @@ exports.getVessel = async (req, res) => {
   try {
     const vessel = await Vessel.findByPk(req.params.id);
     if (!vessel) {
+      console.log("404 - vessel not found");
       return res.status(404).json({ message: 'Vessel not found' });
     }
+    console.log("200 - vessel fetched successfully");
     res.status(200).json(vessel);
   } catch (error) {
+    console.log("400 - error fetching vessel");
     res.status(400).json({ message: 'Error fetching vessel', error });
   }
 };
@@ -46,10 +51,13 @@ exports.getVesselByName = async (req, res) => {
       }
     });
     if (!vessel) {
+      console.log("404 - vessel not found");
       return res.status(404).json({ message: 'Vessel not found' });
     }
+    console.log("200 - vessel fetched successfully");
     res.status(200).json(vessel);
   } catch (error) {
+    console.log("400 - error fetching vessel");
     res.status(400).json({ message: 'Error fetching vessel', error });
   }
 };
@@ -59,6 +67,7 @@ exports.updateVessel = async (req, res) => {
     try {
       const vessel = await Vessel.findByPk(req.params.id);
       if (!vessel) {
+        console.log("404 - vessel not found");
         return res.status(404).json({ message: 'Vessel not found' });
       }
   
@@ -69,8 +78,10 @@ exports.updateVessel = async (req, res) => {
       const vesselRef = db.collection('vessels').doc(req.params.id);
       await vesselRef.update(req.body);
   
+      console.log("200 - vessel updated successfully");
       res.status(200).json(updatedVessel);
     } catch (error) {
+      console.log("400 - error updating vessel");
       res.status(400).json({ message: 'Error updating vessel', error });
     }
   };
@@ -80,6 +91,7 @@ exports.updateVessel = async (req, res) => {
     try {
       const vessel = await Vessel.findByPk(req.params.id);
       if (!vessel) {
+        console.log("404 - vessel not found");
         return res.status(404).json({ message: 'Vessel not found' });
       }
   
@@ -90,8 +102,10 @@ exports.updateVessel = async (req, res) => {
       const vesselRef = db.collection('vessels').doc(req.params.id);
       await vesselRef.delete();
   
+      console.log("204 - vessel deleted successfully");
       res.status(204).json({ message: 'Vessel deleted successfully' });
     } catch (error) {
+      console.log("400 - error deleting vessel");
       res.status(400).json({ message: 'Error deleting vessel', error });
     }
   };
@@ -106,10 +120,13 @@ exports.getVesselsByCompany = async (req, res) => {
       }
     });
     if (vessels.length === 0) {
+      console.log("404 - no vessels found for this company");
       return res.status(404).json({ message: 'No vessels found for this company' });
     }
+    console.log("200 - vessels fetched successfully");
     res.status(200).json(vessels);
   } catch (error) {
+    console.log("400 - error fetching vessels");
     res.status(400).json({ message: 'Error fetching vessels', error });
   }
 };
@@ -118,8 +135,10 @@ exports.getVesselsByCompany = async (req, res) => {
 exports.getAllVessels = async (req, res) => {
   try {
     const vessels = await Vessel.findAll();
+    console.log("200 - vessels fetched successfully");
     res.status(200).json(vessels);
   } catch (error) {
+    console.log("400 - error fetching vessels");
     res.status(400).json({ message: 'Error fetching vessels', error });
   }
 };
@@ -130,8 +149,10 @@ exports.getAllVesselIds = async (req, res) => {
     const vessels = await Vessel.findAll({
       attributes: ['id']
     });
+    console.log("200 - vessels fetched successfully");
     res.status(200).json(vessels);
   } catch (error) {
+    console.log("400 - error fetching vessels");
     res.status(400).json({ message: 'Error fetching vessels', error });
   }
 };
@@ -141,11 +162,14 @@ exports.getOnboardedUsers = async (req, res) => {
   try {
     const vessel = await Vessel.findByPk(req.params.id);
     if (!vessel) {
+      console.log("404 - vessel not found");
       return res.status(404).json({ message: 'Vessel not found' });
     }
     const onboardedUsers = vessel.onboarded_users;
+    console.log("200 - onboarded users fetched successfully");
     res.status(200).json(onboardedUsers);
   } catch (error) {
+    console.log("400 - error fetching onboarded users");
     res.status(400).json({ message: 'Error fetching onboarded users', error });
   }
 };
