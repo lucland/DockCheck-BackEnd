@@ -58,6 +58,7 @@ exports.createUser = async (req, res) => {
         message: 'User created successfully',
         user: newUser,
       });
+      console.log("201 - User created successfully");
     } catch (innerError) {
       console.error("Inner catch block error:", innerError);
       // If any operation fails, rollback the transaction
@@ -74,6 +75,7 @@ exports.createUser = async (req, res) => {
       }
     }
     res.status(400).json({ message: 'Error creating user', error });
+    console.log("400 - Error creating user");
   }
 };
 
@@ -86,11 +88,16 @@ exports.getUser = async (req, res) => {
       include: ['authorizations'],  // Include related Authorizations
     });
     if (!user) {
+      console.log("404 - User not found");
       return res.status(404).json({ message: 'User not found' });
     }
     res.status(200).json(user);
+    //print the success message
+    console.log("200 - User found");
   } catch (error) {
     res.status(400).json({ message: 'Error fetching user', error });
+    //print the error message
+    console.log("400 - Error fetching user");
   }
 };
 
@@ -100,6 +107,7 @@ exports.updateUser = async (req, res) => {
     const { password, ...updateData } = req.body;
     const user = await User.findByPk(req.params.id);
     if (!user) {
+      console.log("404 - User not found");
       return res.status(404).json({ message: 'User not found' });
     }
 
@@ -119,8 +127,10 @@ exports.updateUser = async (req, res) => {
     const userRef = db.collection('users').doc(req.params.id);
     await userRef.update(updateData);
 
+    console.log("200 - User updated successfully");
     res.status(200).json(updatedUser);
   } catch (error) {
+    console.log("400 - Error updating user");
     res.status(400).json({ message: 'Error updating user', error });
   }
 };
@@ -130,6 +140,7 @@ exports.updateUser = async (req, res) => {
     try {
       const user = await User.findByPk(req.params.id);
       if (!user) {
+        console.log("404 - User not found");
         return res.status(404).json({ message: 'User not found' });
       }
   
@@ -140,8 +151,10 @@ exports.updateUser = async (req, res) => {
       const userRef = db.collection('users').doc(req.params.id);
       await userRef.delete();
   
+      console.log("204 - User deleted successfully");
       res.status(204).json({ message: 'User deleted successfully' });
     } catch (error) {
+      console.log("400 - Error deleting user");
       res.status(400).json({ message: 'Error deleting user', error });
     }
   };
@@ -157,8 +170,10 @@ exports.getAllUsers = async (req, res) => {
       offset
     });
 
+    console.log("200 - Users found");
     res.status(200).json(users);
   } catch (error) {
+    console.log("400 - Error fetching users");
     res.status(400).json({ message: 'Error fetching users', error });
   }
 };
@@ -170,10 +185,13 @@ exports.getUserAuthorizations = async (req, res) => {
       include: ['authorizations'],  // Include related Authorizations
     });
     if (!user) {
+      console.log("404 - User not found");
       return res.status(404).json({ message: 'User not found' });
     }
+    console.log("200 - Authorizations found");
     res.status(200).json(user.authorizations);
   } catch (error) {
+    console.log("400 - Error fetching authorizations");
     res.status(400).json({ message: 'Error fetching authorizations', error });
   }
 };
@@ -186,10 +204,13 @@ exports.checkUsername = async (req, res) => {
       where: { username: username }
     });
     if (user) {
+      console.log("200 - Username already taken");
       return res.status(200).json({ message: 'Username already taken' });
     }
+    console.log("200 - Username available");
     res.status(200).json({ message: 'Username available' });
   } catch (error) {
+    console.log("400 - Error checking username");
     res.status(400).json({ message: 'Error fetching user', error });
   }
 };
@@ -216,12 +237,14 @@ exports.searchUsers = async (req, res) => {
     });
 
     if (users.rows.length === 0) {
+      console.log("404 - No users found");
       return res.status(404).json({ message: 'No users found' });
     }
 
     // Calculate total pages
     const totalPages = Math.ceil(users.count / pageSize);
 
+    console.log("200 - Users found");
     res.status(200).json({
       users: users.rows,
       currentPage: page,
@@ -230,6 +253,7 @@ exports.searchUsers = async (req, res) => {
       totalPages: totalPages
     });
   } catch (error) {
+    console.log("400 - Error searching for users");
     res.status(400).json({ message: 'Error searching for users', error });
   }
 };
@@ -245,10 +269,13 @@ exports.getUserNumber = async (req, res) => {
       ]
     });
     if (!user) {
+      console.log("404 - User not found");
       return res.status(404).json({ message: 'User not found' });
     }
+    console.log("200 - User number found");
     res.status(200).json((user.number + 1).toString());
   } catch (error) {
+    console.log("400 - Error fetching user number");
     res.status(400).json({ message: 'Error fetching user', error });
   }
 };
@@ -291,11 +318,14 @@ exports.getValidUsersByVesselID = async (req, res) => {
     const uniqueRfids = [...new Set(rfids)];
 
     if (rfids.length === 0) {
+      console.log("404 - No RFIDs found for the given vessel ID");
       return res.status(404).json({ message: 'No RFIDs found for the given vessel ID' });
     }
     
+    console.log("200 - RFIDs found");
     res.status(200).json(uniqueRfids);
   } catch (error) {
+    console.log("400 - Error fetching RFIDs");
     res.status(400).json({ message: 'Error fetching RFIDs', error });
   }
 };
@@ -306,14 +336,17 @@ exports.blockUser = async (req, res) => {
     const { block_reason } = req.body;
     const user = await User.findByPk(req.params.id);
     if (!user) {
+      console.log("404 - User not found");
       return res.status(404).json({ message: 'User not found' });
     }
     const updatedUser = await user.update({
       is_blocked: true,
       block_reason: block_reason
     });
+    console.log("200 - User blocked successfully");
     res.status(200).json(updatedUser);
   } catch (error) {
+    console.log("400 - Error blocking user");
     res.status(400).json({ message: 'Error blocking user', error });
   }
 };
@@ -324,8 +357,10 @@ exports.getAllUserIds = async (req, res) => {
     const users = await User.findAll({
       attributes: ['id']
     });
+    console.log("200 - User IDs found");
     res.status(200).json(users);
   } catch (error) {
+    console.log("400 - Error fetching user IDs");
     res.status(400).json({ message: 'Error fetching users', error });
   }
 };
