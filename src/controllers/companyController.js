@@ -30,11 +30,13 @@ exports.createCompany = async (req, res) => {
       expiration_date
     });
 
+    console.log("201 - company created successfully");
     res.status(201).json({
       message: 'Company created successfully',
       company: newCompany,
     });
   } catch (error) {
+    console.log("400 - error creating company");
     res.status(400).json({
       message: 'Error creating company',
       error
@@ -47,10 +49,13 @@ exports.getCompany = async (req, res) => {
   try {
     const company = await Company.findByPk(req.params.id);
     if (!company) {
+      console.log("404 - company not found");
       return res.status(404).json({ message: 'Company not found' });
     }
+    console.log("200 - company fetched successfully");
     res.status(200).json(company);
   } catch (error) {
+    console.log("400 - error fetching company");
     res.status(400).json({ message: 'Error fetching company', error });
   }
 };
@@ -60,6 +65,7 @@ exports.updateCompany = async (req, res) => {
     try {
       const company = await Company.findByPk(req.params.id);
       if (!company) {
+        console.log("404 - company not found");
         return res.status(404).json({ message: 'Company not found' });
       }
   
@@ -70,8 +76,10 @@ exports.updateCompany = async (req, res) => {
       const companyRef = db.collection('companies').doc(req.params.id);
       await companyRef.update(req.body);
   
+      console.log("200 - company updated successfully");
       res.status(200).json(updatedCompany);
     } catch (error) {
+      console.log("400 - error updating company");
       res.status(400).json({ message: 'Error updating company', error });
     }
   };
@@ -81,6 +89,7 @@ exports.updateCompany = async (req, res) => {
     try {
       const company = await Company.findByPk(req.params.id);
       if (!company) {
+        console.log("404 - company not found");
         return res.status(404).json({ message: 'Company not found' });
       }
   
@@ -90,9 +99,11 @@ exports.updateCompany = async (req, res) => {
       // Delete from Firebase
       const companyRef = db.collection('companies').doc(req.params.id);
       await companyRef.delete();
-  
+    
+      console.log("204 - company deleted successfully");
       res.status(204).json({ message: 'Company deleted successfully' });
     } catch (error) {
+      console.log("400 - error deleting company");
       res.status(400).json({ message: 'Error deleting company', error });
     }
   };
@@ -101,8 +112,10 @@ exports.updateCompany = async (req, res) => {
 exports.getAllCompanies = async (req, res) => {
   try {
     const companies = await Company.findAll();
+    console.log("200 - companies fetched successfully");
     res.status(200).json(companies);
   } catch (error) {
+    console.log("400 - error fetching companies");
     res.status(400).json({ message: 'Error fetching companies', error });
   }
 };
@@ -113,8 +126,10 @@ exports.getAllCompaniesIds = async (req, res) => {
     const companies = await Company.findAll({
       attributes: ['id']
     });
+    console.log("200 - companies fetched successfully");
     res.status(200).json(companies);
   } catch (error) {
+    console.log("400 - error fetching companies");
     res.status(400).json({ message: 'Error fetching companies', error });
   }
 };
