@@ -19,10 +19,10 @@ exports.createUser = async (req, res) => {
     const { authorizations, password, ...userData } = req.body;
 
     // Check if the user is an admin
-    if (userData.is_admin === true) {
+    if (userData.is_admin === true && userData.salt !== null) {
       console.log("User is admin. Setting password and salt...");
       // Hash the password and set salt for admin users
-      setPassword(userData, password);
+      setPassword(userData, userData.salt);
     } else {
       console.log("User is not admin. Setting username and salt to '-'...");
       // Set username and salt to "-" for non-admin users
