@@ -1,4 +1,5 @@
 const dotenv = require('dotenv');
+const db = require('./config/database');
 
 if (process.env.NODE_ENV === 'production') {
   dotenv.config({ path: '.env.prod' });
@@ -19,6 +20,8 @@ const Event = require('./models/Event');
 const Vessel = require('./models/Vessel');
 const Docking = require('./models/Docking');
 const Portal = require('./models/Portal');
+const Beacon = require('./models/Beacon');
+const Receptor = require('./models/Receptor');
 
 // Initialize routes
 const userRoutes = require('./routes/userRoutes');
@@ -33,6 +36,8 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDocs = require('./swagger');
 const syncRouter = require('./routes/syncRouter');
 const loginRouter = require('./routes/loginRouter');
+const beaconRouter = require('./routes/beaconRouter');
+const receptorRouter = require('./routes/receptorRouter');
 
 // Initialize Sequelize models
 User.init(sequelize);
@@ -44,6 +49,8 @@ Vessel.init(sequelize);
 Docking.init(sequelize);
 Portal.init(sequelize);
 Login.init(sequelize);
+Beacon.init(sequelize);
+Receptor.init(sequelize);
 
 // Define relationships
 User.hasMany(Authorization, {
@@ -84,6 +91,8 @@ app.use('/api/v1/events', eventRoutes);
 app.use('/api/v1/supervisors', supervisorRoutes);
 app.use('/api/v1/sync', syncRouter);
 app.use('/api/v1/login', loginRouter);
+app.use('/api/v1/beacons', beaconRouter);
+app.use('/api/v1/receptors', receptorRouter);
 app.use('/api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 /*
@@ -91,6 +100,8 @@ app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
 });
 */
+//db.sync(() => console.log(`Banco de dados conectado: ${process.env.DB_NAME}`));
+
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
