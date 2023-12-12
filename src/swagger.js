@@ -51,6 +51,48 @@ const swaggerOptions = {
               },
             },
           },
+          Beacon: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'string',
+                description: 'The auto-generated ID of the docking',
+              },
+              rssi: {
+                type: 'integer',
+                description: 'The rssi of the beacon',
+              },
+              found: {
+                type: 'date',
+                description: 'The date of the last update',
+              },
+              user_id: {
+                type: 'string',
+                description: 'The user ID of the beacon',
+              },
+            },
+          },
+          Receptor: {
+            type: 'object',
+            properties: {
+              id: {
+                type: 'string',
+                description: 'The auto-generated ID of the docking',
+              },
+              beacons: {
+                type: 'array',
+                description: 'The beacons of the receptor',
+              },
+              vessel: {
+                type: 'string',
+                description: 'The vessel of the receptor',
+              },
+              updated_at: {
+                type: 'date',
+                description: 'The date of the last update',
+              },
+            },
+          },
           Vessel: {
             type: 'object',
             properties: {
