@@ -8,6 +8,7 @@ class Company extends Model {
       supervisors: DataTypes.ARRAY(DataTypes.STRING),
       vessels: DataTypes.ARRAY(DataTypes.STRING),
       updated_at: DataTypes.DATE,
+      status: DataTypes.STRING,
       id: {
         type: DataTypes.STRING,
         primaryKey: true,
