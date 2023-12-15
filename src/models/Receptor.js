@@ -10,6 +10,7 @@ class Receptor extends Model {
       beacons: DataTypes.ARRAY(DataTypes.STRING),
       vessel: DataTypes.STRING,
       updated_at: DataTypes.DATE,
+      status: DataTypes.STRING,
     }, {
       sequelize,
       modelName: 'Receptor',
