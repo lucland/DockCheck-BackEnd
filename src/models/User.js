@@ -50,6 +50,7 @@ class User extends Model {
       username: DataTypes.STRING,
       salt: DataTypes.STRING,
       hash: DataTypes.STRING,
+      status: DataTypes.STRING,
     }, {
       sequelize,
       modelName: 'User',
