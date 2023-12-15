@@ -15,6 +15,7 @@ class Portal extends Model {
       rfid_ip: DataTypes.STRING,
       created_at: DataTypes.DATE,
       updated_at: DataTypes.DATE,
+      status: DataTypes.STRING,
     }, {
       sequelize,
       modelName: 'Portal',
