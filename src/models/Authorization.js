@@ -17,6 +17,7 @@ class Authorization extends Model {
       },
       vessel_id: DataTypes.STRING,
       expiration_date: DataTypes.DATE,
+      status: DataTypes.STRING,
     }, {
       sequelize,
       modelName: 'Authorization',
