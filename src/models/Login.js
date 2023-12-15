@@ -14,6 +14,7 @@ class Login extends Model {
       system: DataTypes.STRING,
       created_at: DataTypes.DATE,
       updated_at: DataTypes.DATE,
+      status: DataTypes.STRING,
     }, {
       sequelize,
       modelName: 'Login',
