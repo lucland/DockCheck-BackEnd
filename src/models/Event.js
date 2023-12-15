@@ -18,6 +18,7 @@ class Event extends Model {
       justification: DataTypes.STRING,
       created_at: DataTypes.DATE,
       updated_at: DataTypes.DATE,
+      status: DataTypes.STRING,
     }, {
       sequelize,
       modelName: 'Event',
