@@ -12,7 +12,8 @@ exports.createReceptor = async (req, res) => {
       beacons,
       vessel,
       updated_at,
-      id
+      id,
+      status: 'active',
     });
 
     // Save to Firebase
@@ -21,7 +22,8 @@ exports.createReceptor = async (req, res) => {
       id: receptorRef.id, // Use auto-generated ID from Firebase
       beacons,
       vessel,
-      updated_at
+      updated_at,
+      status: 'active',
     });
 
     console.log("201 - receptor created successfully");
@@ -75,11 +77,12 @@ exports.updateReceptor = async (req, res) => {
       return res.status(404).json({ message: 'Receptor not found' });
     }
 
-    const { beacons, vessel, updated_at } = req.body;
+    const { beacons, vessel, updated_at, status } = req.body;
     await receptor.update({
       beacons,
       vessel,
-      updated_at
+      updated_at,
+      status,
     });
 
     // Update Firebase
@@ -87,7 +90,8 @@ exports.updateReceptor = async (req, res) => {
     await receptorRef.update({
       beacons,
       vessel,
-      updated_at
+      updated_at,
+      status,
     });
 
     console.log("200 - receptor updated successfully");
