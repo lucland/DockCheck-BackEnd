@@ -14,6 +14,7 @@ class Docking extends Model {
       vessel_id: DataTypes.STRING,
       updated_at: DataTypes.DATE,
       draft_meters: DataTypes.DOUBLE,
+      status: DataTypes.STRING,
     }, {
       sequelize,
       modelName: 'Docking',
