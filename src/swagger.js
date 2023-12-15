@@ -49,6 +49,10 @@ const swaggerOptions = {
                 type: 'date',
                 description: 'The date of the last update',
               },
+              status: {
+                type: 'string',
+                description: 'The status of the company',
+              },
             },
           },
           Beacon: {
@@ -70,6 +74,10 @@ const swaggerOptions = {
                 type: 'string',
                 description: 'The user ID of the beacon',
               },
+              status: {
+                type: 'string',
+                description: 'The status of the beacon',
+              },
             },
           },
           Receptor: {
@@ -90,6 +98,10 @@ const swaggerOptions = {
               updated_at: {
                 type: 'date',
                 description: 'The date of the last update',
+              },
+              status: {
+                type: 'string',
+                description: 'The status of the receptor',
               },
             },
           },
@@ -124,6 +136,10 @@ const swaggerOptions = {
                     type: 'array',
                     description: 'The portals of the vessel',
                 },
+                status: {
+                    type: 'string',
+                    description: 'The status of the vessel',
+                }
                         },
           },
           Docking: {
@@ -161,6 +177,9 @@ const swaggerOptions = {
                             type: 'double',
                             description: 'The draft in meters',
                         },
+                        status: {
+                            type: 'string',
+                            description: 'The status of the docking',
                     },
           },
           Portal: {
@@ -202,6 +221,11 @@ const swaggerOptions = {
                             type: 'date',
                             description: 'The date of the last update',
                         },
+                        status: {
+                            type: 'string',
+                            description: 'The status of the portal',
+                        },
+                        },
                         },
           },
           Authorization: {
@@ -225,6 +249,10 @@ const swaggerOptions = {
                 format: 'date-time',
                 description: 'The expiration date of this authorization',
               },
+              status: {
+                type: 'string',
+                description: 'The status of this authorization',
+              }
             },
           },
           Event: {
@@ -262,7 +290,10 @@ const swaggerOptions = {
                                 type: 'integer',
                                 description: 'The action of the event',
                             },
-    
+                            status: {
+                                type: 'string',
+                                description: 'The status of the event',
+                            },
                         },
           },
           Supervisor: {
@@ -295,6 +326,10 @@ const swaggerOptions = {
                             updated_at: {
                                 type: 'date',
                                 description: 'The date of the last update',
+                            },
+                            status: {
+                                type: 'string',
+                                description: 'The status of the supervisor',
                             },
                         },
           },
@@ -472,6 +507,10 @@ const swaggerOptions = {
                               type: 'string',
                               description: 'The hash for the user password',
                             },
+                            status: {
+                              type: 'string',
+                              description: 'The status of the user',
+                            },
                         },
                       },
                       Sync: {
@@ -513,6 +552,10 @@ const swaggerOptions = {
                           enum: ['windows', 'android', 'ios'],
                           description: 'The system from which the user is logging in.',
                         },
+                        status: {
+                          type: 'string',
+                          description: 'The status of the user.',
+                        },
                       },
                       required: ['username', 'password', 'role', 'system'],
                     },
@@ -535,6 +578,10 @@ const swaggerOptions = {
                           type: 'string',
                           format: 'date-time',
                           description: 'The expiration date of this authorization',
+                        },
+                        status: {
+                          type: 'string',
+                          description: 'The status of this authorization',
                         },
                       },
                     },
