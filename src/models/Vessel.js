@@ -14,6 +14,7 @@ class Vessel extends Model {
       onboarded_count: DataTypes.INTEGER,
       portals: DataTypes.ARRAY(DataTypes.STRING),
       onboarded_users: DataTypes.ARRAY(DataTypes.STRING),
+      status: DataTypes.STRING,
     }, {
       sequelize,
       modelName: 'Vessel',
