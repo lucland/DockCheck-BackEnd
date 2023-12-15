@@ -13,6 +13,8 @@ exports.createBeacon = async (req, res) => {
       rssi,
       found,
       updated_at,
+      user_id,
+      status: 'active',
     });
 
     // Save to Firebase
@@ -22,6 +24,8 @@ exports.createBeacon = async (req, res) => {
       rssi,
       found,
       updated_at,
+      user_id,
+      status: 'active',
     });
 
     console.log("201 - beacon created successfully");
@@ -74,11 +78,12 @@ exports.updateBeacon = async (req, res) => {
       console.log("404 - beacon not found");
       return res.status(404).json({ message: 'Beacon not found' });
     }
-    const { rssi, found, updated_at } = req.body;
+    const { rssi, found, updated_at, status } = req.body;
     await beacon.update({
       rssi,
       found,
-      updated_at
+      updated_at,
+      status,
     });
     console.log("200 - beacon updated successfully");
     res.status(200).json({
