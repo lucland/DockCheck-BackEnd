@@ -15,7 +15,8 @@ exports.createCompany = async (req, res) => {
       supervisors,
       vessels,
       updated_at,
-      expiration_date
+      expiration_date,
+      status: 'active',
     });
 
     // Save to Firebase
@@ -27,7 +28,8 @@ exports.createCompany = async (req, res) => {
       supervisors,
       vessels,
       updated_at,
-      expiration_date
+      expiration_date,
+      status: 'active',
     });
 
     console.log("201 - company created successfully");
