@@ -10,6 +10,7 @@ class Beacon extends Model {
       rssi: DataTypes.INTEGER,
       found: DataTypes.DATE,
       user_id: DataTypes.STRING,
+      status: DataTypes.STRING,
     }, {
       sequelize,
       modelName: 'Beacon',
