@@ -254,4 +254,63 @@ router.get('/ids', authenticateJWT, vesselController.getAllVesselIds);
  */
 router.get('/onboarded/:id', authenticateJWT, vesselController.getOnboardedUsers);
 
+//get all events of a vessel with pagination and swagger documentation
+/**
+ * @swagger
+ * /api/v1/vessels/events/{id}:
+ *  get:
+ *    summary: Get all events of a vessel with pagination
+ *    tags: [Vessels]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: Vessel ID
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *        required: false
+ *        description: Limit number of events. Default is 10.
+ *      - in: query
+ *        name: offset
+ *        schema:
+ *          type: integer
+ *        required: false
+ *        description: Starting index for events. Default is 0.
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *        content:
+ *          application/json:
+ *            example:
+ *              - id: "event123"
+ *                portal_id: "portal1"
+ *                user_id: "user1"
+ *                timestamp: "2023-10-25T00:00:00.000Z"
+ *                direction: 1
+ *                picture: "picture_url"
+ *                vessel_id: "vessel123"
+ *                action: 1
+ *              - id: "event124"
+ *                portal_id: "portal2"
+ *                user_id: "user2"
+ *                timestamp: "2023-10-26T00:00:00.000Z"
+ *                direction: 2
+ *                picture: "another_picture_url"
+ *                vessel_id: "vessel123"
+ *                action: 2
+ *      '400':
+ *        description: Bad request
+ *        content:
+ *          application/json:
+ *            example:
+ *              message: "Error fetching events"
+ *              error: "Details about the error"
+ */
+router.get('/events/:vessel_id', authenticateJWT, vesselController.getEventsByVessel);
+
+
 module.exports = router;
