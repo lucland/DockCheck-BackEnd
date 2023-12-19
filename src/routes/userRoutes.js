@@ -401,39 +401,6 @@ router.get('/:id/authorizations', authenticateJWT, userController.getUserAuthori
 
 /**
  * @swagger
- * /api/v1/users/checkUsername:
- *  post:
- *    summary: Check if a username is already taken
- *    tags: [Users]
- *    requestBody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            properties:
- *              username:
- *                type: string
- *                example: "johndoe"
- *    responses:
- *      '200':
- *        description: Username availability status
- *        content:
- *          application/json:
- *            example:
- *              message: "Username available"
- *      '400':
- *        description: Bad request
- *        content:
- *          application/json:
- *            example:
- *              message: "Error fetching user"
- *              error: "Details about the error"
- */
-router.post('/checkUsername', userController.checkUsername);
-
-/**
- * @swagger
  * /api/v1/users/search:
  *  get:
  *    summary: Search for users by name or id with pagination
@@ -665,5 +632,82 @@ router.put('/block/:id', authenticateJWT, userController.blockUser);
  *               error: "Details about the error"
  */
 router.get('/ids', authenticateJWT, userController.getAllUserIds);
+
+//getAllBlockedUserIds with swagger and pagination
+/**
+ * @swagger
+ * /api/v1/users/all/blocked:
+ *   get:
+ *     summary: Get all blocked user ids
+ *     tags: [Users]
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         required: false
+ *         description: Limit number of users. Default is 10.
+ *       - in: query
+ *         name: offset
+ *         schema:
+ *           type: integer
+ *         required: false
+ *         description: Starting index for users. Default is 0.
+ *     responses:
+ *       '200':
+ *         description: Successfully retrieved all blocked user ids
+ *         content:
+ *           application/json:
+ *             example:
+ *               - "user123"
+ *               - "user456"
+ *       '400':
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Error fetching blocked users"
+ *               error: "Details about the error"
+ */
+router.get('/all/blocked', authenticateJWT, userController.getAllBlockedUserIds);
+
+//getApprovedUserIds with swagger and pagination with limit, page and offset
+/**
+ * @swagger
+ * /api/v1/users/all/approved:
+ *   get:
+ *     summary: Get all approved user ids
+ *     tags: [Users]
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         required: false
+ *         description: Limit number of users. Default is 10.
+ *       - in: query
+ *         name: offset
+ *         schema:
+ *           type: integer
+ *         required: false
+ *         description: Starting index for users. Default is 0.
+ *     responses:
+ *       '200':
+ *         description: Successfully retrieved all approved user ids
+ *         content:
+ *           application/json:
+ *             example:
+ *               - "user123"
+ *               - "user456"
+ *       '400':
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Error fetching approved users"
+ *               error: "Details about the error"
+ */
+router.get('/all/approved', authenticateJWT, userController.getApprovedUserIds);
+
 
 module.exports = router;
