@@ -44,7 +44,7 @@ router.post('/', authorizationController.createAuthorization);
  *       200:
  *         description: Successfully fetched
  */
-router.get('/:user_id', authorizationController.getAuthorizations);
+router.get('/user/:user_id', authorizationController.getAuthorizations);
 
 /**
  * @swagger
