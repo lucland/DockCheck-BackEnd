@@ -1,4 +1,5 @@
 const Vessel = require('../models/Vessel');
+const Event = require('../models/Event');
 const admin = require('../firebase'); // Importing from src/firebase.js
 const db = admin.firestore();
 
@@ -171,5 +172,34 @@ exports.getOnboardedUsers = async (req, res) => {
   } catch (error) {
     console.log("400 - error fetching onboarded users");
     res.status(400).json({ message: 'Error fetching onboarded users', error });
+  }
+};
+
+exports.getEventsByVessel = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;  // Default limit is 10
+    const offset = parseInt(req.query.offset) || 0;  // Default offset is 0
+
+    console.log("Starting getEventsByVessel...");
+    console.log(req.params.vessel_id);
+
+   const events = await Event.findAll({
+      limit: limit,
+      offset: offset,
+      where: {
+        vessel_id: req.params.vessel_id
+      }
+    });
+
+    if (events.length === 0) {
+      console.log("404 - no events found for this vessel");
+      return res.status(404).json({ message: 'No events found for this vessel' });
+    }
+
+    console.log("200 - events fetched successfully");
+    res.status(200).json(events);
+  } catch (error) {
+    console.log("400 - error fetching events");
+    res.status(400).json({ message: 'Error fetching events', error });
   }
 };
