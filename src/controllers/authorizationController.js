@@ -1,8 +1,21 @@
 const Authorization = require('../models/Authorization');
+const User = require('../models/User');
 
 exports.createAuthorization = async (req, res) => {
   try {
     const authorization = await Authorization.create(req.body);
+    const user = await User.findByPk(req.body.user_id);
+    if (user) {
+      const currentAuthorizations = user.authorizations_id || [];
+      const updatedAuthorizations = [...currentAuthorizations, authorization.id];
+      user.set('authorizations_id', updatedAuthorizations);
+      await user.save();
+      console.log("User authorizations updated with new authorization ID:", updatedAuthorizations);
+    } else {
+      console.log("User not found");
+      res.status(404).json({ message: 'Error creating authorization', error });
+    }
+    
     console.log("201 - authorization created successfully");
     res.status(201).json(authorization);
   } catch (error) {
@@ -48,6 +61,7 @@ exports.updateAuthorization = async (req, res) => {
       return res.status(404).json({ message: 'Authorization not found' });
     }
     const updatedAuthorization = await authorization.update(req.body);
+    updatedAuthorization.save();
     console.log("200 - authorization updated successfully");
     res.status(200).json(updatedAuthorization);
   } catch (error) {
