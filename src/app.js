@@ -22,6 +22,7 @@ const Docking = require('./models/Docking');
 const Portal = require('./models/Portal');
 const Beacon = require('./models/Beacon');
 const Receptor = require('./models/Receptor');
+const Pic = require('./models/Pic');
 
 // Initialize routes
 const userRoutes = require('./routes/userRoutes');
@@ -38,6 +39,7 @@ const syncRouter = require('./routes/syncRouter');
 const loginRouter = require('./routes/loginRouter');
 const beaconRouter = require('./routes/beaconRouter');
 const receptorRouter = require('./routes/receptorRouter');
+const picRouter = require('./routes/pictureRouter');
 
 // Initialize Sequelize models
 User.init(sequelize);
@@ -51,6 +53,7 @@ Portal.init(sequelize);
 Login.init(sequelize);
 Beacon.init(sequelize);
 Receptor.init(sequelize);
+Pic.init(sequelize);
 
 // Define relationships
 User.hasMany(Authorization, {
@@ -93,6 +96,7 @@ app.use('/api/v1/sync', syncRouter);
 app.use('/api/v1/login', loginRouter);
 app.use('/api/v1/beacons', beaconRouter);
 app.use('/api/v1/receptors', receptorRouter);
+app.use('/api/v1/pictures', picRouter);
 app.use('/api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 /*
