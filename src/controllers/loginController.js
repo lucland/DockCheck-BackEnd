@@ -34,6 +34,7 @@ exports.login = async (req, res) => {
     const validPassword = (user.hash === hash);
     console.log("Password is valid:", validPassword);
     console.log(hash, user.hash);
+    console.log(password, user.salt, user.hash, hash);
 
     if (!validPassword) {
       console.log("Invalid credentials");
@@ -48,6 +49,7 @@ exports.login = async (req, res) => {
       console.log("Checking existing login...");
       // Check if the user is already logged in on the same system
       const existingLogin = await Login.findOne({ where: { user_id: user.id, system } }, { transaction: t });
+      /*
       if (existingLogin) {
         console.log("User already logged in");
         if (t && !t.finished) {
@@ -56,7 +58,7 @@ exports.login = async (req, res) => {
         console.log("400 - user already logged in");
         return res.status(400).json({ message: 'User is already logged in on this system' });
       }
-
+*/
       console.log("Creating login record...");
       // Save login info
       await Login.create({
@@ -72,10 +74,13 @@ exports.login = async (req, res) => {
       console.log("Committing transaction...");
       await t.commit();
 
+       //get list of authorizations from user.authorizations_id
+       let authorizations = user.authorizations_id;
+
       const token = jwt.sign({ id: user.id, role }, process.env.SECRET_KEY, { expiresIn: '2 days' });
       console.log("Login successful");
 
-      return res.json({ token, user_id: user.id });
+      return res.json({ token, user_id: user.id, authorizations_id: authorizations });
     } catch (innerError) {
       console.error("Inner catch block error:", innerError);
       if (t && !t.finished) {
