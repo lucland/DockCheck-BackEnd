@@ -13,45 +13,42 @@ const setPassword = (user, password) => {
 };
 
 exports.createUser = async (req, res) => {
-  let t; // Declare transaction variable here so it's accessible in the catch block
+  let t;
   try {
     console.log("Starting createUser...");
-    const { authorizations, password, ...userData } = req.body;
+    const { authorizations, ...userData } = req.body;
 
-    // Check if the user is an admin
-    if (userData.is_admin === true && userData.salt !== null) {
+    // Check if username is already taken
+    const existingUser = await User.findOne({ where: { username: userData.username } });
+    if (existingUser) {
+      console.log("400 - Username already taken");
+      return res.status(400).json({ message: 'Username already taken' });
+    }
+
+    if (userData.is_admin === true) {
       console.log("User is admin. Setting password and salt...");
-      // Hash the password and set salt for admin users
-      setPassword(userData, userData.salt);
+      setPassword(userData, userData.hash);
     } else {
       console.log("User is not admin. Setting username and salt to '-'...");
-      // Set username and salt to "-" for non-admin users
       userData.username = "-";
       userData.salt = "-";
-      // You may also want to set hash to "-" or null, as it won't be used
       userData.hash = "-";
     }
 
     console.log("Starting transaction...");
-    // Start a transaction
     t = await sequelize.transaction();
 
     try {
       console.log("Creating new user in PostgreSQL...");
-      // Save to PostgreSQL
       const newUser = await User.create(userData, { transaction: t });
 
       console.log("Committing transaction...");
-      // Commit the transaction
       await t.commit();
       console.log("Transaction committed");
 
       console.log("Creating new user in Firebase...");
-      // Save to Firebase
       const userRef = db.collection('users').doc(newUser.id);
-      await userRef.set({
-        ...userData,
-      });
+      await userRef.set({ ...userData });
       console.log("User created in Firebase");
 
       res.status(201).json({
@@ -61,7 +58,6 @@ exports.createUser = async (req, res) => {
       console.log("201 - User created successfully");
     } catch (innerError) {
       console.error("Inner catch block error:", innerError);
-      // If any operation fails, rollback the transaction
       if (t && !t.finished) {
         await t.rollback();
       }
@@ -69,17 +65,13 @@ exports.createUser = async (req, res) => {
     }
   } catch (error) {
     console.error("Outer catch block error:", error);
-    if (t) {
-      if (t && !t.finished) {
-        await t.rollback();
-      }
+    if (t && !t.finished) {
+      await t.rollback();
     }
     res.status(400).json({ message: 'Error creating user', error });
     console.log("400 - Error creating user");
   }
 };
-
-
 
 // Get a user by ID along with their authorizations
 exports.getUser = async (req, res) => {
@@ -193,25 +185,6 @@ exports.getUserAuthorizations = async (req, res) => {
   } catch (error) {
     console.log("400 - Error fetching authorizations");
     res.status(400).json({ message: 'Error fetching authorizations', error });
-  }
-};
-
-//check if username is already taken in postgresql
-exports.checkUsername = async (req, res) => {
-  try {
-    const { username } = req.params;
-    const user = await User.findOne({
-      where: { username: username }
-    });
-    if (user) {
-      console.log("200 - Username already taken");
-      return res.status(200).json({ message: 'Username already taken' });
-    }
-    console.log("200 - Username available");
-    res.status(200).json({ message: 'Username available' });
-  } catch (error) {
-    console.log("400 - Error checking username");
-    res.status(400).json({ message: 'Error fetching user', error });
   }
 };
 
@@ -364,3 +337,88 @@ exports.getAllUserIds = async (req, res) => {
     res.status(400).json({ message: 'Error fetching users', error });
   }
 };
+
+exports.getAllBlockedUserIds = async (req, res) => {
+  try {
+    const users = await User.findAll({
+      attributes: ['id'],  // Select only the 'id' attribute
+      where: {
+        is_blocked: true  // Condition to find only blocked users
+      }
+    });
+    
+    console.log("200 - Blocked user IDs found");
+    res.status(200).json(users.map(user => user.id));  // Return an array of user IDs
+  } catch (error) {
+    console.log("400 - Error fetching blocked user IDs", error);
+    res.status(400).json({ message: 'Error fetching blocked user IDs', error });
+  }
+};
+
+
+exports.getApprovedUserIds = async (req, res) => {
+  try {
+    // Pagination parameters
+    const limit = parseInt(req.query.limit) || 10; // Number of records per page
+    const page = parseInt(req.query.page) || 1; // Page number
+    const offset = (page - 1) * limit;
+
+    // Today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
+
+    const users = await User.findAndCountAll({
+      attributes: ['id'],
+      where: {
+        is_blocked: false,
+        aso: {
+          [Op.or]: {
+            [Op.eq]: null,
+            [Op.gt]: today
+          }
+        },
+        nr10: {
+          [Op.or]: [
+            { [Op.and]: { has_nr10: false } },
+            { [Op.and]: { has_nr10: true, [Op.gt]: today } }
+          ]
+        },
+        nr33: {
+          [Op.or]: [
+            { [Op.and]: { has_nr33: false } },
+            { [Op.and]: { has_nr33: true, [Op.gt]: today } }
+          ]
+        },
+        nr35: {
+          [Op.or]: [
+            { [Op.and]: { has_nr35: false } },
+            { [Op.and]: { has_nr35: true, [Op.gt]: today } }
+          ]
+        },
+        nr34: {
+          [Op.or]: [
+            { [Op.and]: { has_nr34: false } },
+            { [Op.and]: { has_nr34: true, [Op.gt]: today } }
+          ]
+        }
+      },
+      limit,
+      offset
+    });
+
+    // Calculate total pages
+    const totalPages = Math.ceil(users.count / limit);
+
+    console.log("200 - Approved user IDs found");
+    res.status(200).json({
+      ids: users.rows.map(user => user.id),
+      currentPage: page,
+      pageSize: limit,
+      totalCount: users.count,
+      totalPages: totalPages
+    });
+  } catch (error) {
+    console.log("400 - Error fetching approved user IDs");
+    res.status(400).json({ message: 'Error fetching approved user IDs', error });
+  }
+};
+
