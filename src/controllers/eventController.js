@@ -42,6 +42,35 @@ const db = admin.firestore();
       }
     };
 
+    //recieve multiple events from the front end SendEventsAsync function, and save them to the database
+    exports.syncEvents = async (req, res) => {
+      try {
+        const incomingEvents = req.body.events; // Assuming events is an array of objects
+        if (incomingEvents.length > 100) {
+          console.log("400 - batch size too large");
+          return res.status(400).json({ message: 'Batch size too large. Limit to 100 records.' });
+        } else if (incomingEvents.length === 0) {
+          console.log("400 - no events found");
+          return res.status(400).json({ message: 'No events found.' });
+        } else {
+          //same as createEvent, but for multiple events
+          for (const event of incomingEvents) {
+            // Update or Create in PostgreSQL
+            await Event.upsert(event);
+    
+            // Update or Create in Firebase
+            const eventRef = db.collection('events').doc(event.id || ''); // Use existing ID or create new
+            await eventRef.set(event, { merge: true }); // Merge true will update or create
+            return res.status(200).json({ message: 'Events synced successfully.' });
+          }
+        }
+      } catch (error) {
+        console.error("500 - error syncing events", error);
+        res.status(500).json({ message: 'Error syncing events', error: error.message });
+      }
+    };
+
+
 // Get an event by ID
 exports.getEvent = async (req, res) => {
   try {
