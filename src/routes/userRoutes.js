@@ -709,5 +709,6 @@ router.get('/all/blocked', authenticateJWT, userController.getAllBlockedUserIds)
  */
 router.get('/all/approved', authenticateJWT, userController.getApprovedUserIds);
 
+router.get('/user/rfid/:rfid', userController.getUserByRfid);
 
 module.exports = router;
