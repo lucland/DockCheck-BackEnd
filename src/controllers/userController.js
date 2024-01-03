@@ -201,7 +201,6 @@ exports.searchUsers = async (req, res) => {
       where: {
         [Op.or]: [
           { name: { [Op.iLike]: `%${searchTerm}%` } }, // case-insensitive
-          { id: searchTerm }
         ]
       },
       limit: pageSize,
