@@ -4,15 +4,14 @@ const db = admin.firestore();
 
 // Create a new beacon
 exports.createBeacon = async (req, res) => {
-  const { rssi, found, updated_at, id } = req.body;
+  const { itag, is_valid, user_id, id } = req.body;
   
   try {
     // Save to PostgreSQL
     const newBeacon = await Beacon.create({
       id,
-      rssi,
-      found,
-      updated_at,
+      itag,
+      is_valid,
       user_id,
       status: 'active',
     });
@@ -21,9 +20,8 @@ exports.createBeacon = async (req, res) => {
     const beaconRef = db.collection('beacons').doc(); // Create a new doc with auto-generated ID
     await beaconRef.set({
       id: beaconRef.id, // Use auto-generated ID from Firebase
-      rssi,
-      found,
-      updated_at,
+      itag,
+      is_valid,
       user_id,
       status: 'active',
     });
@@ -36,7 +34,7 @@ exports.createBeacon = async (req, res) => {
   } catch (error) {
     console.log("400 - error creating beacon");
     res.status(400).json({
-      message: 'Error creating beacon',
+      message: error.message,
       error
     });
   }
