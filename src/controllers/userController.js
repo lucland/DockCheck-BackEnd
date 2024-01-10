@@ -260,7 +260,7 @@ exports.getValidUsersByVesselID = async (req, res) => {
     const today = new Date().toISOString().split('T')[0];
 
     const users = await User.findAll({
-      attributes: ['rfid'],  // Select only the rfid field
+      attributes: ['itag'],  // Select only the rfid field
       include: [{
         model: Authorization,
         as: 'authorizations',
@@ -274,7 +274,7 @@ exports.getValidUsersByVesselID = async (req, res) => {
         aso: {
           [Op.gt]: today
         },
-        rfid: {
+        itag: {
           [Op.and]: {
             [Op.ne]: null,    // Not null
             [Op.ne]: ''       // Not an empty string
@@ -284,21 +284,21 @@ exports.getValidUsersByVesselID = async (req, res) => {
     });
 
     // Extract the rfid values from the user objects
-    const rfids = users.map(user => user.rfid);
+    const rfids = users.map(user => user.itag);
 
     //remove duplicates
     const uniqueRfids = [...new Set(rfids)];
 
     if (rfids.length === 0) {
-      console.log("404 - No RFIDs found for the given vessel ID");
-      return res.status(404).json({ message: 'No RFIDs found for the given vessel ID' });
+      console.log("404 - No iTags found for the given vessel ID");
+      return res.status(404).json({ message: 'No iTags found for the given vessel ID' });
     }
     
-    console.log("200 - RFIDs found");
+    console.log("200 - iTags found");
     res.status(200).json(uniqueRfids);
   } catch (error) {
-    console.log("400 - Error fetching RFIDs");
-    res.status(400).json({ message: 'Error fetching RFIDs', error });
+    console.log("400 - Error fetching iTags");
+    res.status(400).json({ message: 'Error fetching iTags', error });
   }
 };
 
@@ -424,7 +424,7 @@ exports.getApprovedUserIds = async (req, res) => {
 exports.getUserByRfid = async (req, res) => {
   try {
       const rfid = req.params.rfid;
-      const user = await User.findOne({ where: { rfid: rfid } });
+      const user = await User.findOne({ where: { itag: rfid } });
 
       if (!user) {
           console.log("404 - User not found");
