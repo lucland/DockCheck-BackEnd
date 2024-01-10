@@ -7,8 +7,8 @@ class Beacon extends Model {
         type: DataTypes.STRING,
         primaryKey: true,
       },
-      rssi: DataTypes.INTEGER,
-      found: DataTypes.DATE,
+      itag: DataTypes.STRING,
+      is_valid: DataTypes.BOOLEAN,
       user_id: DataTypes.STRING,
       status: DataTypes.STRING,
     }, {
