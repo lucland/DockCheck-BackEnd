@@ -22,20 +22,8 @@ const db = admin.firestore();
           console.log("Vessel not found");
         }
     
-        const user = await User.findByPk(req.body.user_id);
-        if (user) {
-          const currentEvents = user.events || [];
-          const updatedEvents = [...currentEvents, newEvent.id]; // Create a new array with the new event ID
-    
-          user.set('events', updatedEvents); // Explicitly set the updated events array
-          await user.save();
-    
-          console.log("User events updated with new event ID:", updatedEvents);
-    
           res.status(201).json({ message: 'Event created successfully', event: newEvent });
-        } else {
-          console.log("User not found");
-        }
+       
       } catch (error) {
         console.error("400 - error creating event", error);
         res.status(400).json({ message: 'Error creating event', error: error.message });
