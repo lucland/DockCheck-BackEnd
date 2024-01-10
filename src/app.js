@@ -104,7 +104,7 @@ app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
 });
 */
-//db.sync(() => console.log(`Banco de dados conectado: ${process.env.DB_NAME}`));
+db.sync(() => console.log(`Banco de dados conectado: ${process.env.DB_NAME}`));
 
 // Start the server
 const PORT = process.env.PORT || 3000;
