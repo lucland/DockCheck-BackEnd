@@ -10,7 +10,7 @@ const db = admin.firestore();
         if (!req.body.user_id && req.body.beacon_id) {
           User.findOne({
             where: {
-              beacon_id: req.body.beacon_id
+              itag: req.body.beacon_id
             }
           }).then(user => {
             if (user) {
