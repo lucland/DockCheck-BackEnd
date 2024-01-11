@@ -7,8 +7,8 @@ const db = admin.firestore();
     exports.createEvent = async (req, res) => {
       try {
 
-        if (!req.body.user_id && req.body.beacon_id) {
-          User.findOne({
+        if (req.body.user_id == "-" && req.body.beacon_id) {
+          await User.findOne({
             where: {
               itag: req.body.beacon_id
             }
