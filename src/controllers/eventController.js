@@ -149,7 +149,10 @@ exports.getEventsByUser = async (req, res) => {
     const events = await Event.findAll({
       where: {
         user_id: req.params.user_id
-      }
+      },
+      order: [
+        ['timestamp', 'DESC']
+      ]
     });
     if (events.length === 0) {
       console.log("404 - events not found");
