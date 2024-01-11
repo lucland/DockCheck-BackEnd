@@ -13,6 +13,7 @@ const sequelize = new Sequelize({
     timestamps: true,
     underscored: true,
   },
+  timezone: '-03:00',
 });
 
 module.exports = sequelize;
