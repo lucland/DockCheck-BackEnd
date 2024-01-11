@@ -6,14 +6,27 @@ const db = admin.firestore();
 
     exports.createEvent = async (req, res) => {
       try {
+
+        if (!req.body.user_id && req.body.beacon_id) {
+          User.findOne({
+            where: {
+              beacon_id: req.body.beacon_id
+            }
+          }).then(user => {
+            if (user) {
+              req.body.user_id = user.id;
+            }
+          });
+        }
+
         const newEvent = await Event.create(req.body);
         console.log("Event created in PostgreSQL");
     
         const vessel = await Vessel.findByPk(req.body.vessel_id);
         if (vessel) {
-          if (req.body.action == 1) {
+          if (req.body.action == 1 || req.body.action == 5) {
             vessel.onboarded_count += 1;
-          } else if (req.body.action == 2) {
+          } else if (req.body.action == 2 || req.body.action == 6) {
             vessel.onboarded_count -= 1;
           }
           await vessel.save();
@@ -21,7 +34,7 @@ const db = admin.firestore();
         } else {
           console.log("Vessel not found");
         }
-    
+
           res.status(201).json({ message: 'Event created successfully', event: newEvent });
        
       } catch (error) {
