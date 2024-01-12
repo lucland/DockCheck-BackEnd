@@ -711,4 +711,6 @@ router.get('/all/approved', authenticateJWT, userController.getApprovedUserIds);
 
 router.get('/user/rfid/:rfid', userController.getUserByRfid);
 
+router.get('/user/itag/:number', userController.checkIfUserExists);
+
 module.exports = router;
