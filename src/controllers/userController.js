@@ -439,3 +439,21 @@ exports.getUserByRfid = async (req, res) => {
   }
 };
 
+//check if there are any user with the given req body param in the itag collumn in the users table
+exports.checkIfUserExists = async (req, res) => {
+  try {
+    const { itag } = req.body;
+    const user = await User.findOne({ where: { itag: itag } });
+    if (!user) {
+      console.log("200 - User not found");
+      return res.status(200).json({ message: 'User not found' });
+    }
+    console.log("404 - User found");
+    res.status(404).json(user);
+  } catch (error) {
+    console.log("400 - Error fetching user");
+    res.status(400).json({ message: 'Error fetching user', error });
+  }
+}
+
+
