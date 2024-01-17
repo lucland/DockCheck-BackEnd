@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const Pic = require('.../models/Pic')
+const Pic = require('../models/Pic')
 const Authorization = require('../models/Authorization');
 const admin = require('../firebase');
 const crypto = require('crypto');
