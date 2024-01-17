@@ -16,7 +16,7 @@ exports.createUser = async (req, res) => {
   let t;
   try {
     console.log("Starting createUser...");
-    const { authorizations, ...userData } = req.body;
+    const { authorizations, picture, ...userData } = req.body;
 
     // Check if username is already taken
     const existingUser = await User.findOne({ where: { username: userData.username } });
@@ -25,6 +25,7 @@ exports.createUser = async (req, res) => {
       return res.status(400).json({ message: 'Username already taken' });
     }
 
+    // Set password and salt for admin users
     if (userData.is_admin === true) {
       console.log("User is admin. Setting password and salt...");
       setPassword(userData, userData.hash);
@@ -39,6 +40,12 @@ exports.createUser = async (req, res) => {
     t = await sequelize.transaction();
 
     try {
+      console.log("Creating new Pic object for user picture...");
+      const newPic = await Pic.create({ picture: picture, user_id: userData.id }, { transaction: t });
+
+      console.log("Updating user data with Pic id...");
+      userData.picture = newPic.id;
+
       console.log("Creating new user in PostgreSQL...");
       const newUser = await User.create(userData, { transaction: t });
 
@@ -48,7 +55,7 @@ exports.createUser = async (req, res) => {
 
       console.log("Creating new user in Firebase...");
       const userRef = db.collection('users').doc(newUser.id);
-      await userRef.set({ ...userData });
+      await userRef.set({ ...userData, picture: newPic.id });
       console.log("User created in Firebase");
 
       res.status(201).json({
