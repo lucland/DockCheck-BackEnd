@@ -406,7 +406,8 @@ exports.getApprovedUserIds = async (req, res) => {
 
     // Calculate total pages
     const totalPages = Math.ceil(users.count / limit);
-
+    
+    if(users.rows.length > 0) {
     console.log("200 - Approved user IDs found");
     res.status(200).json({
       ids: users.rows.map(user => user.id),
@@ -415,6 +416,10 @@ exports.getApprovedUserIds = async (req, res) => {
       totalCount: users.count,
       totalPages: totalPages
     });
+  } else {
+    console.log("404 - No approved users found");
+    res.status(404).json({ message: 'No approved users found' });
+  }
   } catch (error) {
     console.log("400 - Error fetching approved user IDs");
     res.status(400).json({ message: 'Error fetching approved user IDs', error });
