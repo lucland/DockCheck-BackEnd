@@ -44,7 +44,7 @@ exports.createUser = async (req, res) => {
       console.log("Creating new Pic object for user picture...");
       //new id
       const pic_id = crypto.randomBytes(16).toString('hex');
-      const newPic = await Pic.create({ picture: picture, user_id: userData.id }, { transaction: t });
+      const newPic = await Pic.create({ picture: picture, user_id: userData.id, id: pic_id }, { transaction: t });
 
       console.log("Updating user data with Pic id...");
       userData.picture = newPic.id;
