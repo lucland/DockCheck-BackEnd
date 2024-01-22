@@ -22,15 +22,14 @@ exports.createEvent = async (req, res) => {
       throw new Error("Vessel not found");
     }
 
-    // Onboarding or Offboarding User
     if ((req.body.action == 3 || req.body.action == 5) && userId !== "-") {
       const user = await User.findByPk(userId);
       if (user && !user.is_onboarded) {
         user.is_onboarded = true;
         await user.save();
-
+    
         if (!vessel.onboarded_users.includes(userId)) {
-          vessel.onboarded_users.push(userId);
+          vessel.onboarded_users = [...vessel.onboarded_users, userId];
           vessel.onboarded_count = vessel.onboarded_users.length;
           await vessel.save();
         }
@@ -40,7 +39,7 @@ exports.createEvent = async (req, res) => {
       if (user && user.is_onboarded) {
         user.is_onboarded = false;
         await user.save();
-
+    
         if (vessel.onboarded_users.includes(userId)) {
           vessel.onboarded_users = vessel.onboarded_users.filter(id => id !== userId);
           vessel.onboarded_count = vessel.onboarded_users.length;
