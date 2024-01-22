@@ -19,21 +19,39 @@ const db = admin.firestore();
           });
         }
 
+        //if req.body.action is 3, mark user as onboarded, if action is 7 and portal_id is 'P1', mark user as offboarded
+        if ((req.body.action == 3 || req.body.action == 5) && req.body.user_id != "-") {
+          await User.findByPk(req.body.user_id).then(user => {
+            if (user) {
+              user.onboarded = true;
+              user.save();
+              Vessel.findByPk(req.body.vessel_id).then(vessel => {
+                if (vessel) {
+                  vessel.onboarded_users.push(req.body.user_id);
+                  vessel.onboarded_count += 1;
+                  vessel.save();
+                }
+              });
+            }
+          });
+        } else if (req.body.action == 7 && req.body.portal_id == 'P1' && req.body.user_id != "-") {
+          await User.findByPk(req.body.user_id).then(user => {
+            if (user) {
+              user.onboarded = false;
+              user.save();
+              Vessel.findByPk(req.body.vessel_id).then(vessel => {
+                if (vessel) {
+                  vessel.onboarded_users = vessel.onboarded_users.filter(id => id != req.body.user_id);
+                  vessel.onboarded_count -= 1;
+                  vessel.save();
+                }
+              });
+            }
+          });
+        }
+
         const newEvent = await Event.create(req.body);
         console.log("Event created in PostgreSQL");
-    
-        const vessel = await Vessel.findByPk(req.body.vessel_id);
-        if (vessel) {
-          if (req.body.action == 1 || req.body.action == 5) {
-            vessel.onboarded_count += 1;
-          } else if (req.body.action == 2 || req.body.action == 6) {
-            vessel.onboarded_count -= 1;
-          }
-          await vessel.save();
-          console.log("Vessel onboarded_count updated");
-        } else {
-          console.log("Vessel not found");
-        }
 
           res.status(201).json({ message: 'Event created successfully', event: newEvent });
        
