@@ -4,79 +4,59 @@ const User = require('../models/User');
 const admin = require('../firebase'); // Importing from src/firebase.js
 const db = admin.firestore();
 
-    exports.createEvent = async (req, res) => {
-      try {
+exports.createEvent = async (req, res) => {
+  try {
+    let userId = req.body.user_id;
 
-        if (req.body.user_id == "-" && req.body.beacon_id) {
-          await User.findOne({
-            where: {
-              itag: req.body.beacon_id
-            }
-          }).then(user => {
-            if (user) {
-              req.body.user_id = user.id;
-            }
-          });
-        }
-
-        //if req.body.action is 3, mark user as onboarded, if action is 7 and portal_id is 'P1', mark user as offboarded
-        if (req.body.action == 3 || req.body.action == 5) {
-          await User.findByPk(req.body.user_id).then(user => {
-            if (user) {
-              user.is_onboarded = true;
-              console.log("user is onboarded");
-              Vessel.findByPk(req.body.vessel_id).then(vessel => {
-                if (vessel) {
-                  //if user is not already onboarded, add them to the onboarded_users array and increment the onboarded_count
-                  if (!vessel.onboarded_users.includes(req.body.user_id)) {
-                  vessel.onboarded_users.push(req.body.user_id);
-                  vessel.onboarded_count += 1;
-                  console.log("adding user from onboarded users array");
-                  console.log(req.body.user_id);
-                    console.log(vessel.onboarded_users);
-                    console.log(vessel.onboarded_users.includes(req.body.user_id));
-                    console.log("_____________________________________");
-                  vessel.save();
-                  }
-                }
-              });
-              user.save();
-            }
-          });
-        } else if (req.body.action == 7 && req.body.portal_id == 'P1') {
-          await User.findByPk(req.body.user_id).then(user => {
-            if (user) {
-              user.is_onboarded = false;
-              user.save();
-              Vessel.findByPk(req.body.vessel_id).then(vessel => {
-                if (vessel) {
-                  //if user is onboarded, remove them from the onboarded_users array and decrement the onboarded_count
-                  if (vessel.onboarded_users.includes(req.body.user_id)) {
-                  vessel.onboarded_users = vessel.onboarded_users.filter(id => id != req.body.user_id);
-                  vessel.onboarded_count -= 1;
-                  console.log("removing user from onboarded users array");
-                  console.log(req.body.user_id);
-                  console.log(vessel.onboarded_users);
-                  console.log(vessel.onboarded_users.includes(req.body.user_id));
-                  console.log("_____________________________________");
-                  vessel.save();
-                  }
-                }
-              });
-            }
-          });
-        }
-
-        const newEvent = await Event.create(req.body);
-        console.log("Event created in PostgreSQL");
-
-          res.status(201).json({ message: 'Event created successfully', event: newEvent });
-       
-      } catch (error) {
-        console.error("400 - error creating event", error);
-        res.status(400).json({ message: 'Error creating event', error: error.message });
+    // Finding user by beacon_id if user_id is not provided
+    if (userId == "-" && req.body.beacon_id) {
+      const user = await User.findOne({ where: { itag: req.body.beacon_id }});
+      if (user) {
+        userId = user.id;
+        req.body.user_id = user.id;
       }
-    };
+    }
+
+    const vessel = await Vessel.findByPk(req.body.vessel_id);
+    if (!vessel) {
+      throw new Error("Vessel not found");
+    }
+
+    // Onboarding or Offboarding User
+    if ((req.body.action == 3 || req.body.action == 5) && userId !== "-") {
+      const user = await User.findByPk(userId);
+      if (user && !user.is_onboarded) {
+        user.is_onboarded = true;
+        await user.save();
+
+        if (!vessel.onboarded_users.includes(userId)) {
+          vessel.onboarded_users.push(userId);
+          vessel.onboarded_count = vessel.onboarded_users.length;
+          await vessel.save();
+        }
+      }
+    } else if (req.body.action == 7 && req.body.portal_id == 'P1' && userId !== "-") {
+      const user = await User.findByPk(userId);
+      if (user && user.is_onboarded) {
+        user.is_onboarded = false;
+        await user.save();
+
+        if (vessel.onboarded_users.includes(userId)) {
+          vessel.onboarded_users = vessel.onboarded_users.filter(id => id !== userId);
+          vessel.onboarded_count = vessel.onboarded_users.length;
+          await vessel.save();
+        }
+      }
+    }
+
+    // Create the event
+    const newEvent = await Event.create(req.body);
+    res.status(201).json({ message: 'Event created successfully', event: newEvent });
+  } catch (error) {
+    console.error("Error creating event", error);
+    res.status(400).json({ message: 'Error creating event', error: error.message });
+  }
+};
 
     //recieve multiple events from the front end SendEventsAsync function, and save them to the database
     exports.syncEvents = async (req, res) => {
