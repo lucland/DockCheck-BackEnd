@@ -23,13 +23,16 @@ const db = admin.firestore();
         if ((req.body.action == 3 || req.body.action == 5) && req.body.user_id != "-") {
           await User.findByPk(req.body.user_id).then(user => {
             if (user) {
-              user.onboarded = true;
+              user.is_onboarded = true;
               user.save();
               Vessel.findByPk(req.body.vessel_id).then(vessel => {
                 if (vessel) {
+                  //if user is not already onboarded, add them to the onboarded_users array and increment the onboarded_count
+                  if (!vessel.onboarded_users.includes(req.body.user_id)) {
                   vessel.onboarded_users.push(req.body.user_id);
                   vessel.onboarded_count += 1;
                   vessel.save();
+                  }
                 }
               });
             }
@@ -37,13 +40,16 @@ const db = admin.firestore();
         } else if (req.body.action == 7 && req.body.portal_id == 'P1' && req.body.user_id != "-") {
           await User.findByPk(req.body.user_id).then(user => {
             if (user) {
-              user.onboarded = false;
+              user.is_onboarded = false;
               user.save();
               Vessel.findByPk(req.body.vessel_id).then(vessel => {
                 if (vessel) {
+                  //if user is onboarded, remove them from the onboarded_users array and decrement the onboarded_count
+                  if (vessel.onboarded_users.includes(req.body.user_id)) {
                   vessel.onboarded_users = vessel.onboarded_users.filter(id => id != req.body.user_id);
                   vessel.onboarded_count -= 1;
                   vessel.save();
+                  }
                 }
               });
             }
