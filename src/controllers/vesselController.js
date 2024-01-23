@@ -188,7 +188,8 @@ exports.getEventsByVessel = async (req, res) => {
       offset: offset,
       where: {
         vessel_id: req.params.vessel_id
-      }
+      },
+      order: [['updated_at', 'DESC']]
     });
 
     if (events.length === 0) {
