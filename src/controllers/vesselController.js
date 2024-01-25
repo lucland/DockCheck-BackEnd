@@ -183,14 +183,38 @@ exports.getEventsByVessel = async (req, res) => {
     console.log("Starting getEventsByVessel...");
     console.log(req.params.vessel_id);
 
-   const events = await Event.findAll({
-      limit: limit,
-      offset: offset,
-      where: {
-        vessel_id: req.params.vessel_id
-      },
-      order: [['updated_at', 'DESC']]
-    });
+    //return the last event where portal_id == P1, last event where portal_id == P2, last event where portal_id == P3
+     const events1 = await Event.findAll({
+       limit: 1,
+       offset: offset,
+       where: {
+         vessel_id: req.params.vessel_id,
+         portal_id: 'P1'
+       },
+       order: [['updated_at', 'DESC']]
+     });
+
+     const events2 = await Event.findAll({
+       limit: 1,
+       offset: offset,
+       where: {
+         vessel_id: req.params.vessel_id,
+         portal_id: 'P2'
+       },
+       order: [['updated_at', 'DESC']]
+     });
+
+     const events3 = await Event.findAll({
+       limit: 1,
+       offset: offset,
+       where: {
+         vessel_id: req.params.vessel_id,
+         portal_id: 'P3'
+       },
+       order: [['updated_at', 'DESC']]
+     });
+
+     const events = [events1, events2, events3];
 
     if (events.length === 0) {
       console.log("404 - no events found for this vessel");
