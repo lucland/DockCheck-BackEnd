@@ -184,9 +184,7 @@ exports.getEventsByVessel = async (req, res) => {
     console.log(req.params.vessel_id);
 
     //return the last event where portal_id == P1, last event where portal_id == P2, last event where portal_id == P3
-     const events1 = await Event.findAll({
-       limit: 1,
-       offset: offset,
+     const events1 = await Event.findOne({
        where: {
          vessel_id: req.params.vessel_id,
          portal_id: 'P1'
@@ -194,9 +192,7 @@ exports.getEventsByVessel = async (req, res) => {
        order: [['updated_at', 'DESC']]
      });
 
-     const events2 = await Event.findAll({
-       limit: 1,
-       offset: offset,
+     const events2 = await Event.findOne({
        where: {
          vessel_id: req.params.vessel_id,
          portal_id: 'P2'
@@ -204,9 +200,7 @@ exports.getEventsByVessel = async (req, res) => {
        order: [['updated_at', 'DESC']]
      });
 
-     const events3 = await Event.findAll({
-       limit: 1,
-       offset: offset,
+     const events3 = await Event.findOne({
        where: {
          vessel_id: req.params.vessel_id,
          portal_id: 'P3'
