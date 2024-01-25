@@ -189,7 +189,7 @@ exports.getEventsByVessel = async (req, res) => {
          vessel_id: req.params.vessel_id,
          portal_id: 'P1'
        },
-       order: [['updated_at', 'DESC']]
+       order: [['created_at', 'DESC']]
      });
 
      const events2 = await Event.findOne({
@@ -197,7 +197,7 @@ exports.getEventsByVessel = async (req, res) => {
          vessel_id: req.params.vessel_id,
          portal_id: 'P2'
        },
-       order: [['updated_at', 'DESC']]
+       order: [['created_at', 'DESC']]
      });
 
      const events3 = await Event.findOne({
@@ -205,7 +205,7 @@ exports.getEventsByVessel = async (req, res) => {
          vessel_id: req.params.vessel_id,
          portal_id: 'P3'
        },
-       order: [['updated_at', 'DESC']]
+       order: [['created_at', 'DESC']]
      });
 
      const events = [events1, events2, events3];
