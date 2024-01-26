@@ -174,6 +174,7 @@ exports.getEventsByUser = async (req, res) => {
   //receive user_id from req.params, search the event table for all events with that user_id, and return them
   try {
     const events = await Event.findAll({
+      limit: 100,
       where: {
         user_id: req.params.user_id
       },
