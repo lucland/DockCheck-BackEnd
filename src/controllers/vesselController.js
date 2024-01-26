@@ -208,6 +208,14 @@ exports.getEventsByVessel = async (req, res) => {
        order: [['created_at', 'DESC']]
      });
 
+     const events4 = await Event.findOne({
+      where: {
+        vessel_id: req.params.vessel_id,
+        portal_id: 'P4'
+      },
+      order: [['created_at', 'DESC']]
+    });
+
      const events = [events1, events2, events3];
 
     if (events.length === 0) {
