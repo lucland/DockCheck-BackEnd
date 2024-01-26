@@ -216,7 +216,7 @@ exports.getEventsByVessel = async (req, res) => {
       order: [['created_at', 'DESC']]
     });
 
-     const events = [events1, events2, events3];
+     const events = [events1, events2, events3, events4];
 
     if (events.length === 0) {
       console.log("404 - no events found for this vessel");
