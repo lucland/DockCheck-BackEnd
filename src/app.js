@@ -7,6 +7,8 @@ if (process.env.NODE_ENV === 'production') {
   dotenv.config({ path: '.env.dev' });
 }
 
+const cors = require('cors');
+
 const express = require('express');
 const sequelize = require('./config/database'); // Import Sequelize instance
 
@@ -77,6 +79,8 @@ const syncLimiter = rateLimit({
 
 app.use("/sync", syncLimiter);
 app.use(express.json());
+
+app.use(cors());
 
 app.get('/', (req, res) => {
   res.redirect('/api/v1/api-docs');
