@@ -22,7 +22,7 @@ exports.createEvent = async (req, res) => {
       throw new Error("Vessel not found");
     }
 
-    if ((req.body.action == 3 || req.body.action == 5) && userId !== "-") {
+    if ((req.body.action == 3 || req.body.action == 5) && userId !== "-" && req.body.portal_id !== 'P1') {
       const user = await User.findByPk(userId);
       if (user && !user.is_onboarded) {
         user.is_onboarded = true;
@@ -34,7 +34,7 @@ exports.createEvent = async (req, res) => {
           await vessel.save();
         }
       }
-    } else if (req.body.action == 7 && req.body.portal_id == 'P1' && userId !== "-") {
+    } else if (req.body.portal_id == 'P1' && userId !== "-") {
       const user = await User.findByPk(userId);
       if (user && user.is_onboarded) {
         user.is_onboarded = false;
