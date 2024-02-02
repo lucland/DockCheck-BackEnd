@@ -9,7 +9,7 @@ class Beacon extends Model {
       },
       itag: DataTypes.STRING,
       is_valid: DataTypes.BOOLEAN,
-      user_id: DataTypes.STRING,
+      employee_id: DataTypes.STRING,
       status: DataTypes.STRING,
     }, {
       sequelize,
