@@ -1,4 +1,4 @@
-const Receptor = require('../models/Receptor');
+const Receptor = require('../models/Sensor');
 const admin = require('../firebase'); // Importing from src/firebase.js
 const db = admin.firestore();
 
