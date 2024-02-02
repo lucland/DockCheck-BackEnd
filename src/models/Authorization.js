@@ -7,15 +7,8 @@ class Authorization extends Model {
         type: DataTypes.STRING,
         primaryKey: true,
       },
-      user_id: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        references: {
-          model: 'users',
-          key: 'id'
-        }
-      },
-      vessel_id: DataTypes.STRING,
+      third_project_id: DataTypes.STRING,
+      employee_id: DataTypes.STRING,
       expiration_date: DataTypes.DATE,
       status: DataTypes.STRING,
     }, {
