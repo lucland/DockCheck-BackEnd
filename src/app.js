@@ -20,10 +20,10 @@ const Supervisor = require('./models/Supervisor');
 const Login = require('./models/Login');
 const Event = require('./models/Event');
 const Vessel = require('./models/Vessel');
-const Docking = require('./models/Docking');
+const Docking = require('./models/Project');
 const Portal = require('./models/Portal');
 const Beacon = require('./models/Beacon');
-const Receptor = require('./models/Receptor');
+const Receptor = require('./models/Sensor');
 const Pic = require('./models/Pic');
 
 // Initialize routes
