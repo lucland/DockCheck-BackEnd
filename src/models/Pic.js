@@ -7,8 +7,9 @@ class Pic extends Model {
             type: DataTypes.STRING,
             primaryKey: true,
         },
-        user_id: DataTypes.STRING,
-        picture: DataTypes.TEXT,
+        employee_id: DataTypes.STRING,
+        base_64: DataTypes.TEXT,
+        doc_path: DataTypes.STRING,
         }, {
       sequelize,
       modelName: 'Pic',
