@@ -8,6 +8,8 @@ class Supervisor extends Model {
       salt: DataTypes.STRING,
       hash: DataTypes.STRING,
       company_id: DataTypes.STRING,
+      cellphone: DataTypes.STRING,
+      email: DataTypes.STRING,
       status: DataTypes.STRING,
       id: {
         type: DataTypes.STRING,
