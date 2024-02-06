@@ -11,6 +11,8 @@ class ThirdCompany extends Model {
       address: DataTypes.STRING,
       updated_at: DataTypes.DATE,
       is_vessel_company: DataTypes.BOOLEAN,
+      telephone: DataTypes.STRING,
+      email: DataTypes.STRING,
       status: DataTypes.STRING,
       id: {
         type: DataTypes.STRING,
