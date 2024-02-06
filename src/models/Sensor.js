@@ -8,7 +8,7 @@ class Sensor extends Model {
         primaryKey: true,
       },
       beacons_found: DataTypes.ARRAY(DataTypes.STRING),
-      area: DataTypes.STRING,
+      area_id: DataTypes.STRING,
       code: DataTypes.INTEGER,
       updated_at: DataTypes.DATE,
       status: DataTypes.STRING,
