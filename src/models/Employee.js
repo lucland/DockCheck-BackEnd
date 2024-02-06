@@ -9,8 +9,8 @@ class Employee extends Model {
         primaryKey: true,
       },
       name: DataTypes.STRING,
-      third_company: DataTypes.STRING,
-      visitor_company: DataTypes.STRING,
+      third_company_id: DataTypes.STRING,
+      visitor_company: DataTypes.STRING, //if employee is a visitor
       role: DataTypes.STRING,
       project: DataTypes.STRING,
       number: DataTypes.INTEGER,
