@@ -10,9 +10,9 @@ class Project extends Model {
       date_start: DataTypes.DATE,
       date_end: DataTypes.DATE,
       vessel_id: DataTypes.STRING,
-      third_companies: DataTypes.ARRAY(DataTypes.STRING),
+      third_companies_id: DataTypes.ARRAY(DataTypes.STRING),
       admins_id: DataTypes.ARRAY(DataTypes.STRING),
-      areas: DataTypes.ARRAY(DataTypes.STRING),
+      areas_id: DataTypes.ARRAY(DataTypes.STRING),
       status: DataTypes.STRING,
     }, {
       sequelize,
