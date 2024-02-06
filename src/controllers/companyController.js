@@ -4,18 +4,22 @@ const db = admin.firestore();
 
 // Create a new company
 exports.createCompany = async (req, res) => {
-  const { name, logo, id, supervisors, vessels, updated_at, expiration_date } = req.body;
+  const { id, name, logo, crew, projects, admins, razao_social, cnpj, address, email, telephone} = req.body;
   
   try {
     // Save to PostgreSQL
     const newCompany = await Company.create({
+      id,
       name,
       logo,
-      id,
-      supervisors,
-      vessels,
-      updated_at,
-      expiration_date,
+      crew_id: crew,
+      projects_id: projects,
+      admins_id: admins,
+      razao_social,
+      cnpj,
+      address,
+      telephone,
+      email,
       status: 'active',
     });
 
@@ -25,10 +29,14 @@ exports.createCompany = async (req, res) => {
       id: companyRef.id, // Use auto-generated ID from Firebase
       name,
       logo,
-      supervisors,
-      vessels,
-      updated_at,
-      expiration_date,
+      crew_id: crew,
+      projects_id: projects,
+      admins_id: admins,
+      razao_social,
+      cnpj,
+      address,
+      telephone,
+      email,
       status: 'active',
     });
 
