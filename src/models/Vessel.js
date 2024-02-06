@@ -10,7 +10,7 @@ class Vessel extends Model {
       name: DataTypes.STRING,
       company_id: DataTypes.STRING,
       onboarded_count: DataTypes.INTEGER,
-      areas: DataTypes.ARRAY(DataTypes.STRING),
+      areas_id: DataTypes.ARRAY(DataTypes.STRING),
       status: DataTypes.STRING,
     }, {
       sequelize,
