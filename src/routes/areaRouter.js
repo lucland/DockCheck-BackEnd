@@ -1,0 +1,1 @@
+//create area router with swagger documentation
