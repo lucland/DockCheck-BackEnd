@@ -9,7 +9,6 @@ class Document extends Model {
         primaryKey: true,
       },
       type: DataTypes.STRING,
-      company: DataTypes.STRING,
       expiration: DataTypes.DATE,
       path: DataTypes.STRING,
       employee_id: DataTypes.STRING,
