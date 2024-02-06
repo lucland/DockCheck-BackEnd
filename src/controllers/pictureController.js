@@ -1,4 +1,4 @@
-const Pic = require('../models/Pic');
+const Pic = require('../models/Picture');
 const User = require('../models/User');
 
 const pictureController = {
