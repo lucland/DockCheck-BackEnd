@@ -4,7 +4,7 @@ const db = admin.firestore();
 
 // Create a new beacon
 exports.createBeacon = async (req, res) => {
-  const { itag, is_valid, user_id, id } = req.body;
+  const { itag, is_valid, employee_id, id } = req.body;
   
   try {
     // Save to PostgreSQL
@@ -12,7 +12,7 @@ exports.createBeacon = async (req, res) => {
       id,
       itag,
       is_valid,
-      user_id,
+      employee_id,
       status: 'active',
     });
 
@@ -22,7 +22,7 @@ exports.createBeacon = async (req, res) => {
       id: beaconRef.id, // Use auto-generated ID from Firebase
       itag,
       is_valid,
-      user_id,
+      employee_id,
       status: 'active',
     });
 
@@ -68,7 +68,7 @@ exports.getAllBeacons = async (req, res) => {
   }
 };
 
-// Update a beacon by ID
+//make beacon invalid and clear employee_id
 exports.updateBeacon = async (req, res) => {
   try {
     const beacon = await Beacon.findByPk(req.params.id);
@@ -76,18 +76,15 @@ exports.updateBeacon = async (req, res) => {
       console.log("404 - beacon not found");
       return res.status(404).json({ message: 'Beacon not found' });
     }
-    const { rssi, found, updated_at, status } = req.body;
+    const { itag, is_valid, employee_id, status } = req.body;
     await beacon.update({
-      rssi,
-      found,
-      updated_at,
+      itag,
+      is_valid,
+      employee_id,
       status,
     });
     console.log("200 - beacon updated successfully");
-    res.status(200).json({
-      message: 'Beacon updated successfully',
-      beacon
-    });
+    res.status(200).json(beacon);
   } catch (error) {
     console.log("400 - error updating beacon");
     res.status(400).json({ message: 'Error updating beacon', error });
