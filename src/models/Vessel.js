@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
 class Vessel extends Model {
   static init(sequelize) {
@@ -9,6 +10,7 @@ class Vessel extends Model {
       },
       name: DataTypes.STRING,
       company_id: DataTypes.STRING,
+      crew_id: DataTypes.ARRAY(DataTypes.STRING),
       onboarded_count: DataTypes.INTEGER,
       areas_id: DataTypes.ARRAY(DataTypes.STRING),
       status: DataTypes.STRING,
