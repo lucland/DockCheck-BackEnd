@@ -46,11 +46,16 @@ exports.updateThirdProject = async (req, res) => {
             console.log("404 - thirdProject not found");
             return res.status(404).json({ message: 'ThirdProject not found' });
         }
-        const { name, description, updated_at, status } = req.body;
+        const { name, onboarded_count, date_start, date_end, third_company, project_id, allowed_areas_id, employees_id, status } = req.body;
         await thirdProject.update({
             name,
-            description,
-            updated_at,
+            onboarded_count,
+            date_start,
+            date_end,
+            third_company,
+            project_id,
+            allowed_areas_id,
+            employees_id,
             status,
         });
         console.log("200 - thirdProject updated successfully");
@@ -74,5 +79,43 @@ exports.deleteThirdProject = async (req, res) => {
     } catch (error) {
         console.log("400 - error deleting thirdProject");
         res.status(400).json({ message: 'Error deleting thirdProject', error });
+    }
+};
+
+//add employee to thirdProject
+exports.addEmployeeToThirdProject = async (req, res) => {
+    try {
+        const thirdProject = await ThirdProject.findByPk(req.params.id);
+        if (!thirdProject) {
+            console.log("404 - thirdProject not found");
+            return res.status(404).json({ message: 'ThirdProject not found' });
+        }
+        const { employee_id } = req.body;
+        thirdProject.employees_id.push(employee_id);
+        await thirdProject.save();
+        console.log("200 - employee added to thirdProject successfully");
+        res.status(200).json(thirdProject);
+    } catch (error) {
+        console.log("400 - error adding employee to thirdProject");
+        res.status(400).json({ message: 'Error adding employee to thirdProject', error });
+    }
+};
+
+//update allowed areas of thirdProject
+exports.updateAllowedAreasOfThirdProject = async (req, res) => {
+    try {
+        const thirdProject = await ThirdProject.findByPk(req.params.id);
+        if (!thirdProject) {
+            console.log("404 - thirdProject not found");
+            return res.status(404).json({ message: 'ThirdProject not found' });
+        }
+        const { allowed_areas_id } = req.body;
+        thirdProject.allowed_areas_id = allowed_areas_id;
+        await thirdProject.save();
+        console.log("200 - allowed areas updated successfully");
+        res.status(200).json(thirdProject);
+    } catch (error) {
+        console.log("400 - error updating allowed areas");
+        res.status(400).json({ message: 'Error updating allowed areas', error });
     }
 };
