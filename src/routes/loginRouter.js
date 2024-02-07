@@ -1,7 +1,6 @@
 require('dotenv').config(); // Make sure to require this at the top of your file
 const express = require('express');
 const User = require('../models/User');
-const Supervisor = require('../models/Supervisor');
 const authController = require('../controllers/loginController');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
@@ -34,7 +33,7 @@ const crypto = require('crypto');
  *                 description: The password of the user.
  *               role:
  *                 type: string
- *                 enum: [admin, supervisor]
+ *                 enum: [admin]
  *                 description: The role of the user.
  *               system:
  *                 type: string
