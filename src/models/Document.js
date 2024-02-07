@@ -9,7 +9,7 @@ class Document extends Model {
         primaryKey: true,
       },
       type: DataTypes.STRING,
-      expiration: DataTypes.DATE,
+      expiration_date: DataTypes.DATE,
       path: DataTypes.STRING,
       employee_id: DataTypes.STRING,
       status: DataTypes.STRING,
