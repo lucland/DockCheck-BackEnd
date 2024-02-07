@@ -1,22 +1,10 @@
 const Authorization = require('../models/Authorization');
 const Employee = require('../models/Employee');
 
-//create employee authorization and update employee authorizations_id
-exports.createEmployeeAuthorization = async (req, res) => {
+//create authorization
+exports.createAuthorization = async (req, res) => {
   try {
     const authorization = await Authorization.create(req.body);
-    const employee = await Employee.findByPk(req.body.user_id);
-    if (employee) {
-      const currentAuthorizations = employee.authorizations_id || [];
-      const updatedAuthorizations = [...currentAuthorizations, authorization.id];
-      employee.set('authorizations_id', updatedAuthorizations);
-      await employee.save();
-      console.log("Employee authorizations updated with new authorization ID:", updatedAuthorizations);
-    } else {
-      console.log("Employee not found");
-      res.status(404).json({ message: 'Error creating authorization', error });
-    }
-    
     console.log("201 - authorization created successfully");
     res.status(201).json(authorization);
   } catch (error) {
