@@ -23,6 +23,27 @@ const authenticateJWT = require('../middleware/auth');
  */
 router.post('/', authenticateJWT, documentController.createDocument);
 
+//getDocumentsByEmployeeId get a list of document_id by giving employee_id
+/**
+ * @swagger
+ * /api/v1/documents/employee/{employee_id}:
+ *  get:
+ *    summary: Get documents by employee ID
+ *    tags: [Documents]
+ *    parameters:
+ *      - in: path
+ *        name: employee_id
+ *        required: true
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *      '400':
+ *        description: Bad request
+ */
+router.get('/employee/:employee_id', authenticateJWT, documentController.getDocumentsByEmployeeId);
+
 /**
  * @swagger
  * /api/v1/documents/{id}:
