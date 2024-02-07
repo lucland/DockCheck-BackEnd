@@ -1,5 +1,4 @@
 const User = require('../models/User');
-const Supervisor = require('../models/Supervisor');
 const Login = require('../models/Login'); // Import the Login model
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
@@ -15,9 +14,7 @@ exports.login = async (req, res) => {
     let user;
     if (role === 'admin') {
       user = await User.findOne({ where: { username } });
-    } else if (role === 'supervisor') {
-      user = await Supervisor.findOne({ where: { username } });
-    } else {
+    }  else {
       console.log("Invalid role");
       console.log("400 - invalid role");
       return res.status(400).json({ message: 'Invalid role' });
