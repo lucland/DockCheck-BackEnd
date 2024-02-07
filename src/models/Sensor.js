@@ -15,6 +15,7 @@ class Sensor extends Model {
       },
       code: DataTypes.INTEGER,
       status: DataTypes.STRING,
+      in_vessel: DataTypes.BOOLEAN,
       location_x: DataTypes.INTEGER,
       location_y: DataTypes.INTEGER,
     }, {

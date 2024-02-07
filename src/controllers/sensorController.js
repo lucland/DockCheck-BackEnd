@@ -56,6 +56,7 @@ exports.updateSensor = async (req, res) => {
             beacons_found,
             area_id,
             code,
+            in_vessel,
             location_x,
             location_y,
             status,
