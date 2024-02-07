@@ -1,7 +1,6 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const Supervisor = require('../models/Supervisor');
 
 const SECRET_KEY = process.env.SECRET_KEY;
 const MASTER_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imx1Y2FzdmNhcm5laXJvIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjk5MzAwMTYxLCJleHAiOjE2OTk0NzI5NjF9.QytPS1faAJDDHVb9VuMRLeHXzBzb9ME_HGNThSpe1Lc"; // Hardcoded token
@@ -22,9 +21,7 @@ const authenticateJWT = async (req, res, next) => {
 
       let user;
       // Check if the user is a supervisor or a regular user
-      if (decoded.role === 'supervisor') {
-        user = await Supervisor.findByPk(decoded.id);
-      } else if (decoded.role === 'admin') {
+       if (decoded.role === 'admin') {
         user = await User.findByPk(decoded.id);
       }
 
