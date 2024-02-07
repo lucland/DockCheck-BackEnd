@@ -46,11 +46,18 @@ exports.updateSensor = async (req, res) => {
             console.log("404 - sensor not found");
             return res.status(404).json({ message: 'Sensor not found' });
         }
-        const { name, description, updated_at, status } = req.body;
+        const { name, beacons_found, area_id, code, location_x, location_y, status } = req.body;
+        //if beacons_found is not provided, do not update it
+        if (!beacons_found) {
+            delete req.body.beacons_found;
+        }
         await sensor.update({
             name,
-            description,
-            updated_at,
+            beacons_found,
+            area_id,
+            code,
+            location_x,
+            location_y,
             status,
         });
         console.log("200 - sensor updated successfully");
@@ -74,6 +81,47 @@ exports.deleteSensor = async (req, res) => {
     } catch (error) {
         console.log("400 - error deleting sensor");
         res.status(400).json({ message: 'Error deleting sensor', error });
+    }
+};
+
+//update beacons_found in sensor
+exports.updateBeaconsFound = async (req, res) => {
+    try {
+        const sensor = await Sensor.findByPk(req.params.id);
+        if (!sensor) {
+            console.log("404 - sensor not found");
+            return res.status(404).json({ message: 'Sensor not found' });
+        }
+        const { beacons_found } = req.body;
+        await sensor.update({
+            beacons_found,
+        });
+        console.log("200 - sensor updated successfully");
+        res.status(200).json(sensor);
+    } catch (error) {
+        console.log("400 - error updating sensor");
+        res.status(400).json({ message: 'Error updating sensor', error });
+    }
+};
+
+//update sensor location
+exports.updateSensorLocation = async (req, res) => {
+    try {
+        const sensor = await Sensor.findByPk(req.params.id);
+        if (!sensor) {
+            console.log("404 - sensor not found");
+            return res.status(404).json({ message: 'Sensor not found' });
+        }
+        const { location_x, location_y } = req.body;
+        await sensor.update({
+            location_x,
+            location_y,
+        });
+        console.log("200 - sensor updated successfully");
+        res.status(200).json(sensor);
+    } catch (error) {
+        console.log("400 - error updating sensor");
+        res.status(400).json({ message: 'Error updating sensor', error });
     }
 };
 
