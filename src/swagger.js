@@ -242,6 +242,8 @@ const swaggerOptions = {
             description: 'The location x of the sensor' },
               location_y: { type: 'integer',
             description: 'The location y of the sensor' },
+              in_vessel: { type: 'boolean',
+            description: 'The sensor is in vessel' },
               status: { type: 'string',
             description: 'The status of the sensor' },
             },
