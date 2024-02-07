@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const Pic = require('../models/Pic')
+const Pic = require('../models/Picture')
 const Authorization = require('../models/Authorization');
 const admin = require('../firebase');
 const crypto = require('crypto');
@@ -45,9 +45,6 @@ exports.createUser = async (req, res) => {
       //new id
       const pic_id = crypto.randomBytes(16).toString('hex');
       const newPic = await Pic.create({ picture: picture, user_id: userData.id, id: pic_id }, { transaction: t });
-
-      console.log("Updating user data with Pic id...");
-      userData.picture = newPic.id;
 
       console.log("Creating new user in PostgreSQL...");
       const newUser = await User.create(userData, { transaction: t });
