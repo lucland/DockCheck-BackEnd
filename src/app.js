@@ -16,57 +16,106 @@ const sequelize = require('./config/database'); // Import Sequelize instance
 const User = require('./models/User');
 const Authorization = require('./models/Authorization');
 const Company = require('./models/Company');
-const Supervisor = require('./models/Supervisor');
 const Login = require('./models/Login');
 const Event = require('./models/Event');
 const Vessel = require('./models/Vessel');
-const Docking = require('./models/Project');
-const Portal = require('./models/Portal');
 const Beacon = require('./models/Beacon');
-const Receptor = require('./models/Sensor');
-const Pic = require('./models/Pic');
+const Area = require('./models/Area');
+const Document = require('./models/Document');
+const Employee = require('./models/Employee');
+const Picture = require('./models/Picture');
+const Project = require('./models/Project');
+const Sensor = require('./models/Sensor');
+const ThirdCompany = require('./models/ThirdCompany');
+const ThirdProject = require('./models/ThirdProject');
 
 // Initialize routes
 const userRoutes = require('./routes/userRoutes');
 const authorizationRouter = require('./routes/authorizationRouter');
 const companyRoutes = require('./routes/companyRouter');
-const dockingRoutes = require('./routes/dockingRouter');
-const portalRoutes = require('./routes/portalRouter');
 const vesselRoutes = require('./routes/vesselRouter');
+const dashboardRouter = require('./routes/dashboardRouter');
 const eventRoutes = require('./routes/eventRouter');
-const supervisorRoutes = require('./routes/supervisorRouter');
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocs = require('./swagger');
-const syncRouter = require('./routes/syncRouter');
 const loginRouter = require('./routes/loginRouter');
 const beaconRouter = require('./routes/beaconRouter');
-const receptorRouter = require('./routes/receptorRouter');
-const picRouter = require('./routes/pictureRouter');
+const areaRouter = require('./routes/areaRouter');
+const documentRouter = require('./routes/documentRouter');
+const employeeRouter = require('./routes/employeeRouter');
+const pictureRouter = require('./routes/pictureRouter');
+const projectRouter = require('./routes/projectRouter');
+const sensorRouter = require('./routes/sensorRouter');
+const thirdCompanyRouter = require('./routes/thirdCompanyRouter');
+const thirdProjectRouter = require('./routes/thirdProjectRouter');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocs = require('./swagger');
 
 // Initialize Sequelize models
 User.init(sequelize);
 Authorization.init(sequelize);
 Company.init(sequelize);
-Supervisor.init(sequelize);
 Event.init(sequelize);
 Vessel.init(sequelize);
-Docking.init(sequelize);
-Portal.init(sequelize);
 Login.init(sequelize);
 Beacon.init(sequelize);
-Receptor.init(sequelize);
-Pic.init(sequelize);
+Area.init(sequelize);
+Document.init(sequelize);
+Employee.init(sequelize);
+Picture.init(sequelize);
+Project.init(sequelize);
+Sensor.init(sequelize);
+ThirdCompany.init(sequelize);
+ThirdProject.init(sequelize);
 
-// Define relationships
-User.hasMany(Authorization, {
-  foreignKey: 'user_id',
+// Define associations
+Area.hasMany(Sensor, {
+  foreignKey: 'area_id',
+  as: 'sensors'
+});
+Company.hasMany(Project, {
+  foreignKey: 'company_id', // This should be a field in the Project model
+  as: 'projects'
+});
+
+Company.hasMany(User, {
+  foreignKey: 'company_id', // This should be a field in the User model
+  as: 'admins'
+});
+
+Employee.hasMany(Event, {
+  foreignKey: 'employee_id',
+  as: 'events'
+});
+
+Employee.hasMany(Authorization, {
+  foreignKey: 'employee_id',
   as: 'authorizations'
 });
 
-Authorization.belongsTo(User, {
-  foreignKey: 'user_id',
-  as: 'user'
+Employee.hasMany(Document, {
+  foreignKey: 'employee_id',
+  as: 'documents'
 });
+
+Project.hasMany(Event, {
+  foreignKey: 'project_id',
+  as: 'events'
+});
+
+Sensor.hasMany(Event, {
+  foreignKey: 'sensor_id',
+  as: 'events'
+});
+
+ThirdCompany.hasMany(Employee, {
+  foreignKey: 'third_company_id',
+  as: 'employees'
+});
+
+ThirdCompany.hasMany(ThirdProject, {
+  foreignKey: 'third_company_id',
+  as: 'thirdProjects'
+});
+
 
 // Initialize Express and middleware
 const app = express();
@@ -87,20 +136,22 @@ app.get('/', (req, res) => {
 });
 
 // Define routes
-app.use('/api/v1/', require('./routes'));
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/authorizations', authorizationRouter);
 app.use('/api/v1/companies', companyRoutes);
-app.use('/api/v1/dockings', dockingRoutes);
-app.use('/api/v1/portals', portalRoutes);
 app.use('/api/v1/vessels', vesselRoutes);
+app.use('/api/v1/dashboard', dashboardRouter);
 app.use('/api/v1/events', eventRoutes);
-app.use('/api/v1/supervisors', supervisorRoutes);
-app.use('/api/v1/sync', syncRouter);
 app.use('/api/v1/login', loginRouter);
 app.use('/api/v1/beacons', beaconRouter);
-app.use('/api/v1/receptors', receptorRouter);
-app.use('/api/v1/pictures', picRouter);
+app.use('/api/v1/areas', areaRouter);
+app.use('/api/v1/documents', documentRouter);
+app.use('/api/v1/employees', employeeRouter);
+app.use('/api/v1/pictures', pictureRouter);
+app.use('/api/v1/projects', projectRouter);
+app.use('/api/v1/sensors', sensorRouter);
+app.use('/api/v1/thirdCompanies', thirdCompanyRouter);
+app.use('/api/v1/thirdProjects', thirdProjectRouter);
 app.use('/api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 /*
