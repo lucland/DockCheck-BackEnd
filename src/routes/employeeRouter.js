@@ -23,6 +23,38 @@ const authenticateJWT = require('../middleware/auth');
  */
 router.post('/', authenticateJWT, employeeController.createEmployee);
 
+//block employee endpoint sensind the id and a block_reason in the body
+/**
+ * @swagger
+ * /api/v1/employees/block/{id}:
+ *  put:
+ *    summary: Block an employee by ID
+ *    tags: [Employees]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        schema:
+ *          type: string
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              block_reason:
+ *                type: string
+ *    responses:
+ *      '200':
+ *        description: Employee blocked successfully
+ *      '404':
+ *        description: Employee not found
+ *      '400':
+ *        description: Bad request
+ */
+router.put('/block/:id', authenticateJWT, employeeController.blockEmployee);
+
 /**
  * @swagger
  * /api/v1/employees/{id}:
