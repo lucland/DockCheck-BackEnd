@@ -5,42 +5,6 @@ const authenticateJWT = require('../middleware/auth');
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     Company:
- *       type: object
- *       properties:
- *         name:
- *           type: string
- *         logo:
- *           type: string
- *         supervisors:
- *           type: array
- *           items:
- *             type: string
- *         vessels:
- *           type: array
- *           items:
- *             type: string
- *         updated_at:
- *           type: string
- *           format: date-time
- *         id:
- *           type: string
- *         expiration_date:
- *           type: string
- *           format: date-time
- *     CompanyResponse:
- *       allOf:
- *         - $ref: '#/components/schemas/Company'
- *         - type: object
- *           properties:
- *             message:
- *               type: string
- */
-
-/**
- * @swagger
  * /api/v1/companies/create:
  *  post:
  *    summary: Create a new company
@@ -57,7 +21,7 @@ const authenticateJWT = require('../middleware/auth');
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/CompanyResponse'
+ *              $ref: '#/components/schemas/Company'
  *            example:
  *              message: "Company created successfully"
  *              name: "Company A"
@@ -139,7 +103,7 @@ router.get('/:id', authenticateJWT, companyController.getCompany);
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/CompanyResponse'
+ *              $ref: '#/components/schemas/Company'
  *            example:
  *              message: "Company updated successfully"
  *              name: "Updated Company A"
