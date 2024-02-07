@@ -1,5 +1,3 @@
-//creae a complete CRUD controller for area
-
 const Area = require('../models/Area');
 
 exports.createArea = async (req, res) => {
@@ -46,11 +44,11 @@ exports.updateArea = async (req, res) => {
             console.log("404 - area not found");
             return res.status(404).json({ message: 'Area not found' });
         }
-        const { name, description, updated_at, status } = req.body;
+        const { name, count, is_portalo, status } = req.body;
         await area.update({
             name,
-            description,
-            updated_at,
+            count,
+            is_portalo,
             status,
         });
         console.log("200 - area updated successfully");
