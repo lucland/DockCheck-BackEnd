@@ -16,16 +16,6 @@ exports.createBeacon = async (req, res) => {
       status: 'active',
     });
 
-    // Save to Firebase
-    const beaconRef = db.collection('beacons').doc(); // Create a new doc with auto-generated ID
-    await beaconRef.set({
-      id: beaconRef.id, // Use auto-generated ID from Firebase
-      itag,
-      is_valid,
-      employee_id,
-      status: 'active',
-    });
-
     console.log("201 - beacon created successfully");
     res.status(201).json({
       message: 'Beacon created successfully',
@@ -105,5 +95,46 @@ exports.deleteBeacon = async (req, res) => {
   } catch (error) {
     console.log("400 - error deleting beacon");
     res.status(400).json({ message: 'Error deleting beacon', error });
+  }
+};
+
+//attach beacon to employee
+exports.attachBeacon = async (req, res) => {
+  try {
+    const beacon = await Beacon.findByPk(req.params.id);
+    if (!beacon) {
+      console.log("404 - beacon not found");
+      return res.status(404).json({ message: 'Beacon not found' });
+    }
+    const { employee_id } = req.body;
+    await beacon.update({
+      employee_id,
+      is_valid: true,
+    });
+    console.log("200 - beacon updated successfully");
+    res.status(200).json(beacon);
+  } catch (error) {
+    console.log("400 - error updating beacon");
+    res.status(400).json({ message: 'Error updating beacon', error });
+  }
+};
+
+//make beacon invalid and clear employee_id
+exports.detachBeacon = async (req, res) => {
+  try {
+    const beacon = await Beacon.findByPk(req.params.id);
+    if (!beacon) {
+      console.log("404 - beacon not found");
+      return res.status(404).json({ message: 'Beacon not found' });
+    }
+    await beacon.update({
+      employee_id: '',
+      is_valid: false,
+    });
+    console.log("200 - beacon updated successfully");
+    res.status(200).json(beacon);
+  } catch (error) {
+    console.log("400 - error updating beacon");
+    res.status(400).json({ message: 'Error updating beacon', error });
   }
 };
