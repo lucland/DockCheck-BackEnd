@@ -1,5 +1,3 @@
-//create complete crud controller for document
-
 const Document = require('../models/Document');
 
 exports.createDocument = async (req, res) => {
@@ -46,11 +44,12 @@ exports.updateDocument = async (req, res) => {
             console.log("404 - document not found");
             return res.status(404).json({ message: 'Document not found' });
         }
-        const { name, description, updated_at, status } = req.body;
+        const {type, expiration_date, path, employee_id, status } = req.body;
         await document.update({
-            name,
-            description,
-            updated_at,
+            type,
+            expiration_date,
+            path,
+            employee_id,
             status,
         });
         console.log("200 - document updated successfully");
