@@ -26,6 +26,23 @@ exports.getDocument = async (req, res) => {
     }
 };
 
+//get all documents ids of the documents of a specific employee id given in the body
+exports.getDocumentsByEmployeeId = async (req, res) => {
+    try {
+        const documents = await Document.findAll({
+            where: {
+                employee_id: req.body.employee_id
+            },
+            attributes: ['id']
+        });
+        console.log("200 - documents fetched successfully");
+        res.status(200).json(documents);
+    } catch (error) {
+        console.log("400 - error fetching documents");
+        res.status(400).json({ message: 'Error fetching documents', error });
+    }
+};
+
 exports.getAllDocuments = async (req, res) => {
     try {
         const documents = await Document.findAll();
