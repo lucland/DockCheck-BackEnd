@@ -8,11 +8,14 @@ class Employee extends Model {
         type: DataTypes.STRING,
         primaryKey: true,
       },
+      authorizations_id: DataTypes.ARRAY(DataTypes.STRING),
       name: DataTypes.STRING,
-      third_company_id: DataTypes.STRING,
-      visitor_company: DataTypes.STRING, //if employee is a visitor
+      third_company_id:  {
+        type: DataTypes.STRING,
+        index: true, // Add an index to improve query performance
+      },
+      visitor_company: DataTypes.STRING,
       role: DataTypes.STRING,
-      project: DataTypes.STRING,
       number: DataTypes.INTEGER,
       blood_type: DataTypes.STRING,
       cpf: DataTypes.STRING,
