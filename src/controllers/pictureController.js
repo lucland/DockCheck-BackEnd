@@ -1,19 +1,11 @@
 const Pic = require('../models/Picture');
-const User = require('../models/User');
 
 const pictureController = {
-    async createPicture(req, res) {
+    async createEmployeePicture(req, res) {
         try {
-            const { id, user_id, picture } = req.body;
-            const newPicture = await Pic.create({ id, user_id, picture });
+            const { id, employee_id, base_64, doc_path } = req.body;
+            const newPicture = await Pic.create({ id, employee_id, base_64, doc_path});
            
-            //add id in User.picture string field in User of id = userId from User table
-            const user = await User.findByPk(user_id);
-            if (user) {// Create a new array with the new event ID
-                user.set('picture', newPicture.id); // Explicitly set the updated events array
-                await user.save();
-                console.log("User pictures updated with new picture ID:", updatedPictures);
-            }
             console.log("201 - picture created successfully");
             return res.status(201).json(newPicture);
         } catch (error) {
@@ -21,7 +13,7 @@ const pictureController = {
             return res.status(500).json({ error: error.message });
         }
     },
-
+    
     async getPicture(req, res) {
         try {
             const { id } = req.params;
