@@ -1,15 +1,50 @@
 //create complete crud controller for employee
 
 const Employee = require('../models/Employee');
+const Vessel = require('../models/Vessel');
 
 exports.createEmployee = async (req, res) => {
     try {
-        const employee = await Employee.create(req.body);
-        console.log("201 - employee created successfully");
+        const { is_crew, project_id, ...employeeData } = req.body;
+        const employee = await Employee.create(employeeData);
+
+        if (is_crew) {
+            const project = await Project.findByPk(project_id);
+            const vessel = await Vessel.findByPk(project.vessel_id);
+            if (vessel) {
+                vessel.crew_id.push(employee.id);
+                await vessel.save();
+            }
+        }
+
+        console.log("201 - Employee created successfully");
         res.status(201).json(employee);
     } catch (error) {
-        console.log("400 - error creating employee");
+        console.log("400 - Error creating employee");
         res.status(400).json({ message: 'Error creating employee', error });
+    }
+};
+
+exports.blockEmployee = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { block_reason } = req.body;
+
+        const employee = await Employee.findByPk(id);
+        if (!employee) {
+            console.log("404 - Employee not found");
+            return res.status(404).json({ message: 'Employee not found' });
+        }
+
+        employee.blocked = true;
+        employee.block_reason = block_reason;
+        await employee.save();
+
+        console.log("200 - Employee blocked successfully");
+        res.status(200).json({ message: 'Employee blocked successfully' });
+    } catch (error) {
+        console.log("500 - Server error");
+        res.status(500).json({ message: 'Server error', error });
     }
 };
 
