@@ -5,9 +5,9 @@ const authenticateJWT = require('../middleware/auth');
 
 /**
  * @swagger
- * /api/v1/authorizations/employee:
+ * /api/v1/authorizations/:
  *  post:
- *    summary: Create a new employee authorization
+ *    summary: Create a new authorization
  *    tags: [Authorizations]
  *    requestBody:
  *      required: true
@@ -25,7 +25,7 @@ const authenticateJWT = require('../middleware/auth');
  *      '400':
  *        description: Bad request
  */
-router.post('/employee', authenticateJWT, authorizationController.createEmployeeAuthorization);
+router.post('/', authenticateJWT, authorizationController.createAuthorization);
 
 /**
  * @swagger
