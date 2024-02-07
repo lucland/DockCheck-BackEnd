@@ -1,5 +1,3 @@
-//create complete CRUD controller for thirdCompany
-
 const ThirdCompany = require('../models/ThirdCompany');
 
 exports.createThirdCompany = async (req, res) => {
@@ -46,11 +44,17 @@ exports.updateThirdCompany = async (req, res) => {
             console.log("404 - thirdCompany not found");
             return res.status(404).json({ message: 'ThirdCompany not found' });
         }
-        const { name, description, updated_at, status } = req.body;
+        const { name, logo, razao_social, cnpj, admis_id, address, is_vessel_company, telephone, email, status } = req.body;
         await thirdCompany.update({
             name,
-            description,
-            updated_at,
+            logo,
+            razao_social,
+            cnpj,
+            admis_id,
+            address,
+            is_vessel_company,
+            telephone,
+            email,
             status,
         });
         console.log("200 - thirdCompany updated successfully");
@@ -74,5 +78,41 @@ exports.deleteThirdCompany = async (req, res) => {
     } catch (error) {
         console.log("400 - error deleting thirdCompany");
         res.status(400).json({ message: 'Error deleting thirdCompany', error });
+    }
+};
+
+//add new admin to the third company
+exports.addAdmin = async (req, res) => {
+    try {
+        const thirdCompany = await ThirdCompany.findByPk(req.params.id);
+        if (!thirdCompany) {
+            console.log("404 - thirdCompany not found");
+            return res.status(404).json({ message: 'ThirdCompany not found' });
+        }
+        const { admin_id } = req.body;
+        await thirdCompany.addAdmin(admin_id);
+        console.log("200 - admin added successfully");
+        res.status(200).json({ message: 'Admin added successfully' });
+    } catch (error) {
+        console.log("400 - error adding admin");
+        res.status(400).json({ message: 'Error adding admin', error });
+    }
+};
+
+//remove admin from the third company
+exports.removeAdmin = async (req, res) => {
+    try {
+        const thirdCompany = await ThirdCompany.findByPk(req.params.id);
+        if (!thirdCompany) {
+            console.log("404 - thirdCompany not found");
+            return res.status(404).json({ message: 'ThirdCompany not found' });
+        }
+        const { admin_id } = req.body;
+        await thirdCompany.removeAdmin(admin_id);
+        console.log("200 - admin removed successfully");
+        res.status(200).json({ message: 'Admin removed successfully' });
+    } catch (error) {
+        console.log("400 - error removing admin");
+        res.status(400).json({ message: 'Error removing admin', error });
     }
 };
