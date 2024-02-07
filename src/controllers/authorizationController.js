@@ -1,18 +1,19 @@
 const Authorization = require('../models/Authorization');
-const User = require('../models/User');
+const Employee = require('../models/Employee');
 
-exports.createAuthorization = async (req, res) => {
+//create employee authorization and update employee authorizations_id
+exports.createEmployeeAuthorization = async (req, res) => {
   try {
     const authorization = await Authorization.create(req.body);
-    const user = await User.findByPk(req.body.user_id);
-    if (user) {
-      const currentAuthorizations = user.authorizations_id || [];
+    const employee = await Employee.findByPk(req.body.user_id);
+    if (employee) {
+      const currentAuthorizations = employee.authorizations_id || [];
       const updatedAuthorizations = [...currentAuthorizations, authorization.id];
-      user.set('authorizations_id', updatedAuthorizations);
-      await user.save();
-      console.log("User authorizations updated with new authorization ID:", updatedAuthorizations);
+      employee.set('authorizations_id', updatedAuthorizations);
+      await employee.save();
+      console.log("Employee authorizations updated with new authorization ID:", updatedAuthorizations);
     } else {
-      console.log("User not found");
+      console.log("Employee not found");
       res.status(404).json({ message: 'Error creating authorization', error });
     }
     
@@ -23,20 +24,6 @@ exports.createAuthorization = async (req, res) => {
     res.status(400).json({ message: 'Error creating authorization', error });
   }
 };
-
-exports.getAuthorizations = async (req, res) => {
-    try {
-      const userId = req.params.user_id;
-      const authorizations = await Authorization.findAll({
-        where: { user_id: userId }
-      });
-      console.log("200 - authorizations fetched successfully");
-      res.status(200).json(authorizations);
-    } catch (error) {
-      console.log("400 - error fetching authorizations");
-      res.status(400).json({ message: 'Error fetching authorizations', error });
-    }
-  };
 
 exports.getAuthorizationById = async (req, res) => {
   try {
@@ -107,5 +94,45 @@ exports.getAllAuthorizationIds = async (req, res) => {
   } catch (error) {
     console.log("400 - error fetching authorizations");
     res.status(400).json({ message: 'Error fetching authorizations', error });
+  }
+};
+
+//add authorization to the employee
+exports.addAuthorizationToEmployee = async (req, res) => {
+  try {
+    const employee = await Employee.findByPk(req.params.id);
+    if (!employee) {
+      console.log("404 - employee not found");
+      return res.status(404).json({ message: 'Employee not found' });
+    }
+    const currentAuthorizations = employee.authorizations_id || [];
+    const updatedAuthorizations = [...currentAuthorizations, req.params.auth_id];
+    employee.set('authorizations_id', updatedAuthorizations);
+    await employee.save();
+    console.log("200 - authorization added to employee successfully");
+    res.status(200).json(employee);
+  } catch (error) {
+    console.log("400 - error adding authorization to employee");
+    res.status(400).json({ message: 'Error adding authorization to employee', error });
+  }
+};
+
+//remove authorization from the employee
+exports.removeAuthorizationFromEmployee = async (req, res) => {
+  try {
+    const employee = await Employee.findByPk(req.params.id);
+    if (!employee) {
+      console.log("404 - employee not found");
+      return res.status(404).json({ message: 'Employee not found' });
+    }
+    const currentAuthorizations = employee.authorizations_id || [];
+    const updatedAuthorizations = currentAuthorizations.filter(auth => auth !== req.params.auth_id);
+    employee.set('authorizations_id', updatedAuthorizations);
+    await employee.save();
+    console.log("200 - authorization removed from employee successfully");
+    res.status(200).json(employee);
+  } catch (error) {
+    console.log("400 - error removing authorization from employee");
+    res.status(400).json({ message: 'Error removing authorization from employee', error });
   }
 };
