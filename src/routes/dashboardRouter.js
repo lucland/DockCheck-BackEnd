@@ -162,4 +162,106 @@ router.post('/third-company-access-count', dashboardController.getThirdCompanyAc
  */
 router.post('/total-unique-employees', dashboardController.getTotalUniqueEmployees);
 
+/**
+ * @swagger
+ * /api/v1/dashboard/current-people-onboarded:
+ *   post:
+ *     summary: Get current people onboarded
+ *     tags: [Dashboard]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - projectId
+ *             properties:
+ *               projectId:
+ *                 type: string
+ *                 description: The project ID
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             example:
+ *               totalOnboarded: 20
+ *               crewOnboarded: 10
+ *               employeeOnboarded: 10
+ *       500:
+ *         description: Server error
+ */
+router.post('/current-people-onboarded', dashboardController.getCurrentPeopleOnboarded);
+
+/**
+ * @swagger
+ * /api/v1/dashboard/unique-third-companies-onboarded:
+ *   post:
+ *     summary: Get unique third companies onboarded
+ *     tags: [Dashboard]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - projectId
+ *             properties:
+ *               projectId:
+ *                 type: string
+ *                 description: The project ID
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             example:
+ *               - thirdCompanyName: "Third Company A"
+ *                 totalEmployees: 10
+ *               - thirdCompanyName: "Third Company B"
+ *                 totalEmployees: 15
+ *       500:
+ *         description: Server error
+ */
+router.post('/unique-third-companies-onboarded', dashboardController.getUniqueThirdCompaniesOnboarded);
+
+/**
+ * @swagger
+ * /api/v1/dashboard/onboarded-employees-details:
+ *   post:
+ *     summary: Get details of onboarded employees
+ *     tags: [Dashboard]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - projectId
+ *             properties:
+ *               projectId:
+ *                 type: string
+ *                 description: The project ID
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             example:
+ *               - name: "John Doe"
+ *                 number: "EMP001"
+ *                 lastAreaFound: "Main Hall"
+ *                 thirdCompanyName: "Third Company A"
+ *               - name: "Jane Smith"
+ *                 number: "EMP002"
+ *                 lastAreaFound: "Conference Room"
+ *                 thirdCompanyName: "Third Company B"
+ *       500:
+ *         description: Server error
+ */
+router.post('/onboarded-employees-details', dashboardController.getOnboardedEmployeesDetails);
+
 module.exports = router;
