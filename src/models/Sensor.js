@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
 class Sensor extends Model {
   static init(sequelize) {
@@ -8,9 +9,11 @@ class Sensor extends Model {
         primaryKey: true,
       },
       beacons_found: DataTypes.ARRAY(DataTypes.STRING),
-      area_id: DataTypes.STRING,
+      area_id: {
+        type: DataTypes.STRING,
+        index: true,
+      },
       code: DataTypes.INTEGER,
-      updated_at: DataTypes.DATE,
       status: DataTypes.STRING,
       location_x: DataTypes.INTEGER,
       location_y: DataTypes.INTEGER,
