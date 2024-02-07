@@ -1,11 +1,15 @@
 const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
 class Company extends Model {
   static init(sequelize) {
     super.init({
+      id: {
+        type: DataTypes.STRING,
+        primaryKey: true,
+      },
       name: DataTypes.STRING,
       logo: DataTypes.STRING,
-      crew_id: DataTypes.ARRAY(DataTypes.STRING),
       projects_id: DataTypes.ARRAY(DataTypes.STRING),
       admins_id: DataTypes.ARRAY(DataTypes.STRING),
       razao_social: DataTypes.STRING,
@@ -14,10 +18,6 @@ class Company extends Model {
       telephone: DataTypes.STRING,
       email: DataTypes.STRING,
       status: DataTypes.STRING,
-      id: {
-        type: DataTypes.STRING,
-        primaryKey: true,
-      },
     }, {
       sequelize,
       modelName: 'Company',
