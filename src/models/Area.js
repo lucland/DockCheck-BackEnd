@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
 class Area extends Model {
   static init(sequelize) {
@@ -10,6 +11,7 @@ class Area extends Model {
       count: DataTypes.INTEGER,
       name: DataTypes.STRING,
       is_portalo: DataTypes.BOOLEAN,
+      status: DataTypes.STRING,
     }, {
       sequelize,
       modelName: 'Area',
