@@ -93,30 +93,6 @@ exports.updateCompany = async (req, res) => {
       res.status(400).json({ message: 'Error updating company', error });
     }
   };
-  
-  // Delete a company by ID
-  exports.deleteCompany = async (req, res) => {
-    try {
-      const company = await Company.findByPk(req.params.id);
-      if (!company) {
-        console.log("404 - company not found");
-        return res.status(404).json({ message: 'Company not found' });
-      }
-  
-      // Delete from PostgreSQL
-      await company.destroy();
-  
-      // Delete from Firebase
-      const companyRef = db.collection('companies').doc(req.params.id);
-      await companyRef.delete();
-    
-      console.log("204 - company deleted successfully");
-      res.status(204).json({ message: 'Company deleted successfully' });
-    } catch (error) {
-      console.log("400 - error deleting company");
-      res.status(400).json({ message: 'Error deleting company', error });
-    }
-  };
 
 // Get all companies
 exports.getAllCompanies = async (req, res) => {
