@@ -89,28 +89,6 @@ router.put('/:id', authenticateJWT, thirdCompanyController.updateThirdCompany);
 
 /**
  * @swagger
- * /api/v1/thirdCompanies/{id}:
- *  delete:
- *    summary: Delete a third company by ID
- *    tags: [ThirdCompanies]
- *    parameters:
- *      - in: path
- *        name: id
- *        required: true
- *        schema:
- *          type: string
- *    responses:
- *      '200':
- *        description: Third company deleted successfully
- *      '404':
- *        description: Third company not found
- *      '400':
- *        description: Bad request
- */
-router.delete('/:id', authenticateJWT, thirdCompanyController.deleteThirdCompany);
-
-/**
- * @swagger
  * /api/v1/thirdCompanies/{id}/addAdmin:
  *  put:
  *    summary: Add a new admin to a third company
