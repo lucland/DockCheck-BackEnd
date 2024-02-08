@@ -4,6 +4,12 @@ const Sensor = require('../models/Sensor');
 
 exports.createSensor = async (req, res) => {
     try {
+        //check if sensor with code already exists
+        const sensorWithCode = await Sensor.findOne({ where: { code: req.body.code } });
+        if (sensorWithCode) {
+            console.log("400 - sensor with code already exists");
+            return res.status(400).json({ message: 'Sensor with code already exists' });
+        }
         const sensor = await Sensor.create(req.body);
         console.log("201 - sensor created successfully");
         res.status(201).json(sensor);
@@ -69,22 +75,6 @@ exports.updateSensor = async (req, res) => {
     }
 };
 
-exports.deleteSensor = async (req, res) => {
-    try {
-        const sensor = await Sensor.findByPk(req.params.id);
-        if (!sensor) {
-            console.log("404 - sensor not found");
-            return res.status(404).json({ message: 'Sensor not found' });
-        }
-        await sensor.destroy();
-        console.log("200 - sensor deleted successfully");
-        res.status(200).json({ message: 'Sensor deleted successfully' });
-    } catch (error) {
-        console.log("400 - error deleting sensor");
-        res.status(400).json({ message: 'Error deleting sensor', error });
-    }
-};
-
 //update beacons_found in sensor
 exports.updateBeaconsFound = async (req, res) => {
     try {
@@ -125,4 +115,3 @@ exports.updateSensorLocation = async (req, res) => {
         res.status(400).json({ message: 'Error updating sensor', error });
     }
 };
-
