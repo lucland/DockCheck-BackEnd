@@ -1,7 +1,6 @@
 const Pic = require('../models/Picture');
 
-const pictureController = {
-    async createEmployeePicture(req, res) {
+exports.createEmployeePicture = async (req, res) => {
         try {
             const { id, employee_id, base_64, doc_path } = req.body;
             const newPicture = await Pic.create({ id, employee_id, base_64, doc_path});
@@ -12,9 +11,9 @@ const pictureController = {
             console.log("400 - error creating picture");
             return res.status(500).json({ error: error.message });
         }
-    },
+    };
     
-    async getPicture(req, res) {
+    exports.getPicture = async (req, res) => {
         try {
             const { id } = req.params;
             //id is user_id in Picture table
@@ -26,9 +25,9 @@ const pictureController = {
         } catch (error) {
             return res.status(500).json({ error: error.message });
         }
-    },
+    };
 
-    async updatePicture(req, res) {
+    exports.updatePicture = async (req, res) => {
         try {
             const { id } = req.params;
             const { pic } = req.body;
@@ -40,9 +39,9 @@ const pictureController = {
         } catch (error) {
             return res.status(500).json({ error: error.message });
         }
-    },
+    };
 
-    async deletePicture(req, res) {
+    exports.deletePicture = async (req, res) => {
         try {
             const { id } = req.params;
             const deleteResult = await Pic.destroy({ where: { id } });
@@ -53,7 +52,4 @@ const pictureController = {
         } catch (error) {
             return res.status(500).json({ error: error.message });
         }
-    }
-};
-
-module.exports = pictureController;
+    };
