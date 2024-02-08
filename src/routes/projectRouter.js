@@ -138,4 +138,50 @@ router.delete('/:id', authenticateJWT, projectController.deleteProject);
  */
 router.put('/:id/addThirdCompany', authenticateJWT, projectController.addThirdCompany);
 
+/**
+ * @swagger
+ * /api/v1/projects/{projectId}/approved-employees:
+ *  post:
+ *    summary: Get a list of approved employees' itags for a given project
+ *    tags: [Projects]
+ *    parameters:
+ *      - in: path
+ *        name: projectId
+ *        required: true
+ *        schema:
+ *          type: string
+ *        description: The ID of the project
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - projectId
+ *            properties:
+ *              projectId:
+ *                type: string
+ *                description: The project ID
+ *    responses:
+ *      '200':
+ *        description: List of approved employees' itags
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                approvedItags:
+ *                  type: array
+ *                  items:
+ *                    type: string
+ *      '400':
+ *        description: Bad request
+ *      '404':
+ *        description: Project not found
+ *      '500':
+ *        description: Internal Server Error
+ */
+router.post('/:projectId/approved-employees', authenticateJWT, projectController.approvedEmployeesOfTheDay);
+
 module.exports = router;
