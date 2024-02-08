@@ -121,28 +121,6 @@ router.put('/:id', authenticateJWT, employeeController.updateEmployee);
 
 /**
  * @swagger
- * /api/v1/employees/{id}:
- *  delete:
- *    summary: Delete an employee by ID
- *    tags: [Employees]
- *    parameters:
- *      - in: path
- *        name: id
- *        required: true
- *        schema:
- *          type: string
- *    responses:
- *      '204':
- *        description: Employee deleted successfully
- *      '404':
- *        description: Employee not found
- *      '400':
- *        description: Bad request
- */
-router.delete('/:id', authenticateJWT, employeeController.deleteEmployee);
-
-/**
- * @swagger
  * /api/v1/employees/area/{id}:
  *  put:
  *    summary: Update an employee's last area found and last time found
