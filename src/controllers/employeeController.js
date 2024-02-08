@@ -106,22 +106,6 @@ exports.updateEmployee = async (req, res) => {
     }
 };
 
-exports.deleteEmployee = async (req, res) => {
-    try {
-        const employee = await Employee.findByPk(req.params.id);
-        if (!employee) {
-            console.log("404 - employee not found");
-            return res.status(404).json({ message: 'Employee not found' });
-        }
-        await employee.destroy();
-        console.log("200 - employee deleted successfully");
-        res.status(200).json({ message: 'Employee deleted successfully' });
-    } catch (error) {
-        console.log("400 - error deleting employee");
-        res.status(400).json({ message: 'Error deleting employee', error });
-    }
-};
-
 //update last area found and last time found
 exports.updateEmployeeArea = async (req, res) => {
     try {
