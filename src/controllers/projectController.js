@@ -1,6 +1,11 @@
 //create complete CRUD controller for project
 
 const Project = require('../models/Project');
+const Authorization = require('../models/Authorization');
+const ThirdProject = require('../models/ThirdProject');
+const Employee = require('../models/Employee');
+const Document = require('../models/Document');
+const Beacon = require('../models/Beacon');
 
 exports.createProject = async (req, res) => {
     try {
@@ -98,5 +103,46 @@ exports.addThirdCompany = async (req, res) => {
     } catch (error) {
         console.log("400 - error adding third company");
         res.status(400).json({ message: 'Error adding third company', error });
+    }
+};
+
+exports.approvedEmployeesOfTheDay = async (req, res) => {
+    try {
+        const { projectId } = req.body;
+        const approvedItags = [];
+
+        const thirdProjects = await ThirdProject.findAll({
+            where: { project_id: projectId }
+        });
+
+        for (const thirdProject of thirdProjects) {
+            const authorizations = await Authorization.findAll({
+                where: { third_project_id: thirdProject.id }
+            });
+
+            for (const authorization of authorizations) {
+                const employee = await Employee.findByPk(authorization.employee_id);
+                const documents = await Document.findAll({
+                    where: { employee_id: employee.id }
+                });
+
+                const areDocumentsValid = documents.every(doc => new Date(doc.expiration_date) >= new Date());
+
+                if (areDocumentsValid) {
+                    const beacon = await Beacon.findOne({
+                        where: { employee_id: employee.id }
+                    });
+
+                    if (beacon) {
+                        approvedItags.push(beacon.itag);
+                    }
+                }
+            }
+        }
+
+        res.status(200).json({ approvedItags });
+    } catch (error) {
+        console.log("500 - error getting approved employees");
+        res.status(500).json({ message: 'Error getting approved employees', error });
     }
 };
