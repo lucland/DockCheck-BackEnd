@@ -89,28 +89,6 @@ router.put('/:id', authenticateJWT, sensorController.updateSensor);
 
 /**
  * @swagger
- * /api/v1/sensors/{id}:
- *  delete:
- *    summary: Delete a sensor by ID
- *    tags: [Sensors]
- *    parameters:
- *      - in: path
- *        name: id
- *        required: true
- *        schema:
- *          type: string
- *    responses:
- *      '200':
- *        description: Sensor deleted successfully
- *      '404':
- *        description: Sensor not found
- *      '400':
- *        description: Bad request
- */
-router.delete('/:id', authenticateJWT, sensorController.deleteSensor);
-
-/**
- * @swagger
  * /api/v1/sensors/{id}/updateBeaconsFound:
  *  put:
  *    summary: Update beacons found in a sensor
