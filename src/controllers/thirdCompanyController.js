@@ -65,22 +65,6 @@ exports.updateThirdCompany = async (req, res) => {
     }
 };
 
-exports.deleteThirdCompany = async (req, res) => {
-    try {
-        const thirdCompany = await ThirdCompany.findByPk(req.params.id);
-        if (!thirdCompany) {
-            console.log("404 - thirdCompany not found");
-            return res.status(404).json({ message: 'ThirdCompany not found' });
-        }
-        await thirdCompany.destroy();
-        console.log("200 - thirdCompany deleted successfully");
-        res.status(200).json({ message: 'ThirdCompany deleted successfully' });
-    } catch (error) {
-        console.log("400 - error deleting thirdCompany");
-        res.status(400).json({ message: 'Error deleting thirdCompany', error });
-    }
-};
-
 //add new admin to the third company
 exports.addAdmin = async (req, res) => {
     try {
