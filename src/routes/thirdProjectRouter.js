@@ -5,26 +5,6 @@ const authenticateJWT = require('../middleware/auth');
 
 /**
  * @swagger
- * /api/v1/thirdProjects:
- *  post:
- *    summary: Create a new third project
- *    tags: [ThirdProjects]
- *    requestBody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            $ref: '#/components/schemas/ThirdProject'
- *    responses:
- *      '201':
- *        description: Third project created successfully
- *      '400':
- *        description: Bad request
- */
-router.post('/', authenticateJWT, thirdProjectController.createThirdProject);
-
-/**
- * @swagger
  * /api/v1/thirdProjects/{id}:
  *  get:
  *    summary: Get a third project by ID
@@ -86,28 +66,6 @@ router.get('/', authenticateJWT, thirdProjectController.getAllThirdProjects);
  *        description: Bad request
  */
 router.put('/:id', authenticateJWT, thirdProjectController.updateThirdProject);
-
-/**
- * @swagger
- * /api/v1/thirdProjects/{id}:
- *  delete:
- *    summary: Delete a third project by ID
- *    tags: [ThirdProjects]
- *    parameters:
- *      - in: path
- *        name: id
- *        required: true
- *        schema:
- *          type: string
- *    responses:
- *      '200':
- *        description: Third project deleted successfully
- *      '404':
- *        description: Third project not found
- *      '400':
- *        description: Bad request
- */
-router.delete('/:id', authenticateJWT, thirdProjectController.deleteThirdProject);
 
 /**
  * @swagger
