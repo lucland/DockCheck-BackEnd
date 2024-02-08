@@ -125,27 +125,6 @@ router.put('/:id', authenticateJWT, companyController.updateCompany);
 
 /**
  * @swagger
- * /api/v1/companies/{id}:
- *  delete:
- *    summary: Delete a company by ID
- *    tags: [Companies]
- *    parameters:
- *      - in: path
- *        name: id
- *        schema:
- *          type: string
- *        required: true
- *        description: Company ID
- *    responses:
- *      '204':
- *        description: Company deleted successfully
- *      '404':
- *        description: Company not found
- */
-router.delete('/:id', authenticateJWT, companyController.deleteCompany);
-
-/**
- * @swagger
  * /api/v1/companies:
  *  get:
  *    summary: Get all companies
