@@ -17,6 +17,10 @@ class Picture extends Model {
       modelName: 'Picture',
     });
   }
+  static associate(models) {
+    this.belongsTo(models.Employee, { foreignKey: 'employee_id' });
+  }
+  
 }
 
 module.exports = Picture;
