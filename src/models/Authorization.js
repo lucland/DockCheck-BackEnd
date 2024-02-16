@@ -17,6 +17,18 @@ class Authorization extends Model {
       modelName: 'Authorization',
     });
   }
+
+  static associate(models) {
+    this.belongsTo(models.ThirdProject, { 
+      foreignKey: 'third_project_id', 
+      as: 'thirdProject' 
+    });
+
+    this.belongsTo(models.Employee, { 
+      foreignKey: 'employee_id', 
+      as: 'employee' 
+    });
+  }
 }
 
 module.exports = Authorization;
