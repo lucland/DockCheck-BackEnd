@@ -14,7 +14,6 @@ class ThirdCompany extends Model {
       cnpj: DataTypes.STRING,
       address: DataTypes.STRING,
       is_vessel_company: DataTypes.BOOLEAN,
-      admins_id: DataTypes.ARRAY(DataTypes.STRING),
       telephone: DataTypes.STRING,
       email: DataTypes.STRING,
       status: DataTypes.STRING,
