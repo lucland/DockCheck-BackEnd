@@ -28,6 +28,10 @@ class User extends Model {
     });
   }
 
+  static associate(models) {
+    this.belongsTo(models.Company, { foreignKey: 'company_id' });
+  }  
+
   setPassword(password) {
     this.salt = crypto.randomBytes(16).toString('hex');
     this.hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, 'sha512').toString('hex');
