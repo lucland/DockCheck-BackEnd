@@ -184,4 +184,34 @@ router.put('/:id/addThirdCompany', authenticateJWT, projectController.addThirdCo
  */
 router.post('/:projectId/approved-employees', authenticateJWT, projectController.approvedEmployeesOfTheDay);
 
+//add a new admin to the project
+/**
+ * @swagger
+ * /api/v1/projects/{id}/addAdmin:
+ *  put:
+ *    summary: Add an admin to a project
+ *    tags: [Projects]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        schema:
+ *          type: string
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              admin_id:
+ *                type: string
+ *    responses:
+ *      '200':
+ *        description: Admin added successfully
+ *      '400':
+ *        description: Bad request
+ */
+router.put('/:id/addAdmin', authenticateJWT, projectController.addAdminToProject);
+
 module.exports = router;
