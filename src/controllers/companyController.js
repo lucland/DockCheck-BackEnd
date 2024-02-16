@@ -1,20 +1,15 @@
 const Company = require('../models/Company');
-const admin = require('../firebase'); // Importing from src/firebase.js
-const db = admin.firestore();
+const { CompanyAdmin, CompanyProject } = require('../models');
 
 // Create a new company
 exports.createCompany = async (req, res) => {
-  const { id, name, logo, crew, projects, admins, razao_social, cnpj, address, email, telephone} = req.body;
-  
+  const { id, name, logo, razao_social, cnpj, address, email, telephone, user_id,project_id } = req.body;
+
   try {
-    // Save to PostgreSQL
     const newCompany = await Company.create({
       id,
       name,
       logo,
-      crew_id: crew,
-      projects_id: projects,
-      admins_id: admins,
       razao_social,
       cnpj,
       address,
@@ -23,22 +18,18 @@ exports.createCompany = async (req, res) => {
       status: 'active',
     });
 
-    // Save to Firebase
-    const companyRef = db.collection('companies').doc(); // Create a new doc with auto-generated ID
-    await companyRef.set({
-      id: companyRef.id, // Use auto-generated ID from Firebase
-      name,
-      logo,
-      crew_id: crew,
-      projects_id: projects,
-      admins_id: admins,
-      razao_social,
-      cnpj,
-      address,
-      telephone,
-      email,
-      status: 'active',
-    });
+    if (id && user_id) {
+    await CompanyAdmin.create({
+        id,
+        user_id,
+      });
+    }
+    if (id && project_id) {
+      await CompanyProject.create({
+        id,
+        project_id,
+      });
+    }
 
     console.log("201 - company created successfully");
     res.status(201).json({
@@ -79,12 +70,7 @@ exports.updateCompany = async (req, res) => {
         return res.status(404).json({ message: 'Company not found' });
       }
   
-      // Update in PostgreSQL
       const updatedCompany = await company.update(req.body);
-  
-      // Update in Firebase
-      const companyRef = db.collection('companies').doc(req.params.id);
-      await companyRef.update(req.body);
   
       console.log("200 - company updated successfully");
       res.status(200).json(updatedCompany);
