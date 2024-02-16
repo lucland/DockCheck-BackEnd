@@ -20,6 +20,10 @@ class Login extends Model {
       modelName: 'Login',
     });
   }
+  static associate(models) {
+    this.belongsTo(models.User, { foreignKey: 'user_id' });
+  }
+  
 }
 
 module.exports = Login;
