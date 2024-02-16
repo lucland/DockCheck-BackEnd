@@ -10,8 +10,6 @@ class Company extends Model {
       },
       name: DataTypes.STRING,
       logo: DataTypes.STRING,
-      projects_id: DataTypes.ARRAY(DataTypes.STRING),
-      admins_id: DataTypes.ARRAY(DataTypes.STRING),
       razao_social: DataTypes.STRING,
       cnpj: DataTypes.STRING,
       address: DataTypes.STRING,
