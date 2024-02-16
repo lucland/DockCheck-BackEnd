@@ -1,6 +1,4 @@
 const Beacon = require('../models/Beacon');
-const admin = require('../firebase'); // Importing from src/firebase.js
-const db = admin.firestore();
 
 // Create a new beacon
 exports.createBeacon = async (req, res) => {
