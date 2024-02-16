@@ -23,6 +23,11 @@ class ThirdProject extends Model {
       modelName: 'ThirdProject',
     });
   }
+  static associate(models) {
+    this.belongsTo(models.ThirdCompany, { foreignKey: 'third_company_id' });
+    this.belongsTo(models.Project, { foreignKey: 'project_id' });
+  }
+  
 }
 
 module.exports = ThirdProject;
