@@ -17,6 +17,9 @@ class Beacon extends Model {
       modelName: 'Beacon',
     });
   }
+  static associate(models) {
+    this.belongsTo(models.Employee, { foreignKey: 'employee_id' });
+  }
 }
 
 module.exports = Beacon;
