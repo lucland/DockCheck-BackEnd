@@ -28,6 +28,16 @@ const Project = require('./models/Project');
 const Sensor = require('./models/Sensor');
 const ThirdCompany = require('./models/ThirdCompany');
 const ThirdProject = require('./models/ThirdProject');
+const CompanyAdmin = require('./models/CompanyAdmin');
+const CompanyProject = require('./models/CompanyProject');
+const ProjectAdmin = require('./models/ProjectAdmin');
+const ProjectArea = require('./models/ProjectArea');
+const ProjectThirdCompany = require('./models/ProjectThirdCompany');
+const ThirdCompanyAdmin = require('./models/ThirdCompanyAdmin');
+const ThirdProjectArea = require('./models/ThirdProjectArea');
+const ThirdProjectThirdCompany = require('./models/ThirdProjectThirdCompany');
+const VesselArea = require('./models/VesselArea');
+const VesselCrew = require('./models/VesselCrew');
 
 // Initialize routes
 const userRoutes = require('./routes/userRoutes');
@@ -65,57 +75,16 @@ Project.init(sequelize);
 Sensor.init(sequelize);
 ThirdCompany.init(sequelize);
 ThirdProject.init(sequelize);
-
-// Define associations
-Area.hasMany(Sensor, {
-  foreignKey: 'area_id',
-  as: 'sensors'
-});
-Company.hasMany(Project, {
-  foreignKey: 'company_id', // This should be a field in the Project model
-  as: 'projects'
-});
-
-Company.hasMany(User, {
-  foreignKey: 'company_id', // This should be a field in the User model
-  as: 'admins'
-});
-
-Employee.hasMany(Event, {
-  foreignKey: 'employee_id',
-  as: 'events'
-});
-
-Employee.hasMany(Authorization, {
-  foreignKey: 'employee_id',
-  as: 'authorizations'
-});
-
-Employee.hasMany(Document, {
-  foreignKey: 'employee_id',
-  as: 'documents'
-});
-
-Project.hasMany(Event, {
-  foreignKey: 'project_id',
-  as: 'events'
-});
-
-Sensor.hasMany(Event, {
-  foreignKey: 'sensor_id',
-  as: 'events'
-});
-
-ThirdCompany.hasMany(Employee, {
-  foreignKey: 'third_company_id',
-  as: 'employees'
-});
-
-ThirdCompany.hasMany(ThirdProject, {
-  foreignKey: 'third_company_id',
-  as: 'thirdProjects'
-});
-
+CompanyAdmin.init(sequelize);
+CompanyProject.init(sequelize);
+ProjectAdmin.init(sequelize);
+ProjectArea.init(sequelize);
+ProjectThirdCompany.init(sequelize);
+ThirdCompanyAdmin.init(sequelize);
+ThirdProjectArea.init(sequelize);
+ThirdProjectThirdCompany.init(sequelize);
+VesselArea.init(sequelize);
+VesselCrew.init(sequelize);
 
 // Initialize Express and middleware
 const app = express();
