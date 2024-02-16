@@ -2,6 +2,7 @@
 
 const Employee = require('../models/Employee');
 const Vessel = require('../models/Vessel');
+const Project = require('../models/Project');
 
 exports.createEmployee = async (req, res) => {
     try {
@@ -9,12 +10,12 @@ exports.createEmployee = async (req, res) => {
         const employee = await Employee.create(employeeData);
 
         if (is_crew) {
+            //fetch project and the vessel it belongs to
             const project = await Project.findByPk(project_id);
-            const vessel = await Vessel.findByPk(project.vessel_id);
-            if (vessel) {
-                vessel.crew_id.push(employee.id);
-                await vessel.save();
-            }
+            await VesselCrew.create({
+                vessel_id: project.vessel_id, // Assuming project_id maps to vessel_id
+                employee_id: employee.id,
+            });
         }
 
         console.log("201 - Employee created successfully");
