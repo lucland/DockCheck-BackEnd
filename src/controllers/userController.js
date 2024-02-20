@@ -1,9 +1,7 @@
 const User = require('../models/User');
 const Pic = require('../models/Picture')
 const Authorization = require('../models/Authorization');
-const admin = require('../firebase');
 const crypto = require('crypto');
-const db = admin.firestore();
 const sequelize = require('../config/database'); // Make sure to import sequelize
 const { Op } = require('sequelize');
 const CompanyAdmin = require('../models/CompanyAdmin');
