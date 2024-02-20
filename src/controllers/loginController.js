@@ -2,7 +2,6 @@ const User = require('../models/User');
 const Login = require('../models/Login'); // Import the Login model
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const admin = require('../firebase');
 const sequelize = require('../config/database');
 
 exports.login = async (req, res) => {
