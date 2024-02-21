@@ -9,15 +9,6 @@ exports.createEmployee = async (req, res) => {
         const { is_crew, project_id, ...employeeData } = req.body;
         const employee = await Employee.create(employeeData);
 
-        if (is_crew) {
-            //fetch project and the vessel it belongs to
-            const project = await Project.findByPk(project_id);
-            await VesselCrew.create({
-                vessel_id: project.vessel_id, // Assuming project_id maps to vessel_id
-                employee_id: employee.id,
-            });
-        }
-
         console.log("201 - Employee created successfully");
         res.status(201).json(employee);
     } catch (error) {
