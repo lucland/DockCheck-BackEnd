@@ -3,6 +3,10 @@ const { Model, DataTypes } = require('sequelize');
 class CompanyProject extends Model {
     static init(sequelize) {
       super.init({
+        id: {
+          type: DataTypes.STRING,
+          primaryKey: true,
+        },
         company_id: {
           type: DataTypes.STRING,
           references: { model: 'companies', key: 'id' },
