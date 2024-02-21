@@ -4,7 +4,7 @@ const CompanyProject = require('../models/CompanyProject');
 
 // Create a new company
 exports.createCompany = async (req, res) => {
-  const { id, name, logo, razao_social, cnpj, address, email, telephone, user_id,project_id } = req.body;
+  const { id, name, logo, razao_social, cnpj, address, email, telephone } = req.body;
 
   try {
     const newCompany = await Company.create({
@@ -18,19 +18,6 @@ exports.createCompany = async (req, res) => {
       email,
       status: 'active',
     });
-
-    if (id && user_id) {
-    await CompanyAdmin.create({
-        id,
-        user_id,
-      });
-    }
-    if (id && project_id) {
-      await CompanyProject.create({
-        id,
-        project_id,
-      });
-    }
 
     console.log("201 - company created successfully");
     res.status(201).json({
