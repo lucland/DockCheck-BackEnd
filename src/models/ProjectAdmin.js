@@ -3,6 +3,10 @@ const { Model, DataTypes } = require('sequelize');
 class ProjectAdmin extends Model {
     static init(sequelize) {
       super.init({
+        id: {
+          type: DataTypes.STRING,
+          primaryKey: true,
+        },
         project_id: {
           type: DataTypes.STRING,
           references: { model: 'projects', key: 'id' },
