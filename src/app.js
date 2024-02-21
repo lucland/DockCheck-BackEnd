@@ -31,13 +31,8 @@ const ThirdProject = require('./models/ThirdProject');
 const CompanyAdmin = require('./models/CompanyAdmin');
 const CompanyProject = require('./models/CompanyProject');
 const ProjectAdmin = require('./models/ProjectAdmin');
-const ProjectArea = require('./models/ProjectArea');
-const ProjectThirdCompany = require('./models/ProjectThirdCompany');
 const ThirdCompanyAdmin = require('./models/ThirdCompanyAdmin');
-const ThirdProjectArea = require('./models/ThirdProjectArea');
-const ThirdProjectThirdCompany = require('./models/ThirdProjectThirdCompany');
-const VesselArea = require('./models/VesselArea');
-const VesselCrew = require('./models/VesselCrew');
+const Invite = require('./models/Invite');
 
 // Initialize routes
 const userRoutes = require('./routes/userRoutes');
@@ -56,6 +51,7 @@ const projectRouter = require('./routes/projectRouter');
 const sensorRouter = require('./routes/sensorRouter');
 const thirdCompanyRouter = require('./routes/thirdCompanyRouter');
 const thirdProjectRouter = require('./routes/thirdProjectRouter');
+const inviteRouter = require('./routes/inviteRouter');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocs = require('./swagger');
 
@@ -78,13 +74,8 @@ ThirdProject.init(sequelize);
 CompanyAdmin.init(sequelize);
 CompanyProject.init(sequelize);
 ProjectAdmin.init(sequelize);
-ProjectArea.init(sequelize);
-ProjectThirdCompany.init(sequelize);
 ThirdCompanyAdmin.init(sequelize);
-ThirdProjectArea.init(sequelize);
-ThirdProjectThirdCompany.init(sequelize);
-VesselArea.init(sequelize);
-VesselCrew.init(sequelize);
+Invite.init(sequelize);
 
 // Initialize Express and middleware
 const app = express();
@@ -121,6 +112,7 @@ app.use('/api/v1/projects', projectRouter);
 app.use('/api/v1/sensors', sensorRouter);
 app.use('/api/v1/thirdCompanies', thirdCompanyRouter);
 app.use('/api/v1/thirdProjects', thirdProjectRouter);
+app.use('/api/v1/invites', inviteRouter);
 app.use('/api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 /*
