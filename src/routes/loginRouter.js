@@ -1,11 +1,7 @@
 require('dotenv').config(); // Make sure to require this at the top of your file
 const express = require('express');
-const User = require('../models/User');
 const authController = require('../controllers/loginController');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
 const router = express.Router();
-const crypto = require('crypto');
 
 /**
  * @swagger
