@@ -91,6 +91,23 @@ router.get('/:id', authenticateJWT, employeeController.getEmployee);
  */
 router.get('/', authenticateJWT, employeeController.getAllEmployees);
 
+//getLastEmployeeNumber endpoint with swagger documentation
+/**
+ * @swagger
+ * /api/v1/employees/lastnumber:
+ *  get:
+ *    summary: Get the last employee number
+ *    tags: [Employees]
+ *    responses:
+ *      '200':
+ *        description: Employee fetched successfully
+ *      '404':
+ *        description: Employee not found
+ *      '400':
+ *        description: Bad request
+ */
+router.get('/lastnumber', authenticateJWT, employeeController.getLastEmployeeNumber);
+
 /**
  * @swagger
  * /api/v1/employees/{id}:
