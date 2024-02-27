@@ -17,6 +17,22 @@ exports.createEmployee = async (req, res) => {
     }
 };
 
+//getLastEmployeeNumber
+exports.getLastEmployeeNumber = async (req, res) => {
+    try {
+        const lastEmployee = await Employee.findOne({ order: [['number', 'DESC']] });
+        if (!lastEmployee) {
+            console.log("404 - Employee not found");
+            return res.status(404).json({ message: 'Employee not found' });
+        }
+        console.log("200 - Employee fetched successfully");
+        res.status(200).json(lastEmployee);
+    } catch (error) {
+        console.log("400 - Error fetching employee");
+        res.status(400).json({ message: 'Error fetching employee', error });
+    }
+};
+
 exports.blockEmployee = async (req, res) => {
     try {
         const { id } = req.params;
