@@ -24,6 +24,8 @@ class Employee extends Model {
       last_area_found: DataTypes.STRING,
       last_time_found: DataTypes.DATE,
       is_blocked: DataTypes.BOOLEAN,
+      documents_ok: DataTypes.BOOLEAN,
+      is_blocked: DataTypes.BOOLEAN,
       block_reason: DataTypes.STRING,
       status: DataTypes.STRING,
     }, {
