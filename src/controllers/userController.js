@@ -24,7 +24,7 @@ exports.createUser = async (req, res) => {
       if (existingUser) {
           return res.status(400).json({ message: 'Username already taken' });
       }
-
+/*
       //update CompanyAdmin if user.company_id is a Company or update ThirdCompanyAdmin if user.company_id is a ThirdCompany
         if (userData.company_id) {
             const company = await Company.findByPk(userData.company_id);
@@ -38,7 +38,7 @@ exports.createUser = async (req, res) => {
                 await CompanyAdmin.create({ user_id: userData.id, company_id: userData.company_id });
             }
         }
-
+*/
       // Set password for users with a password field
       if (userData.password) {
           setPassword(userData, userData.password);

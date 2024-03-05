@@ -18,10 +18,11 @@ class Document extends Model {
       modelName: 'Document',
     });
   }
+  /*
   static associate(models) {
     this.belongsTo(models.Employee, { foreignKey: 'employee_id' });
   }
-  
+  */
 }
 
 module.exports = Document;

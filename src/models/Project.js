@@ -23,11 +23,12 @@ class Project extends Model {
       modelName: 'Project',
     });
   }
+  /*
   static associate(models) {
     this.belongsTo(models.Company, { foreignKey: 'company_id' });
     this.belongsTo(models.Vessel, { foreignKey: 'vessel_id' });
   }
-  
+  */
 }
 
 module.exports = Project;

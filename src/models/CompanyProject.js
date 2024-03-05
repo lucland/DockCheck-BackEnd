@@ -22,10 +22,11 @@ class CompanyProject extends Model {
         timestamps: false,
       });
     }
+    /*
     static associate(models) {
         this.belongsTo(models.Company, { foreignKey: 'company_id' });
         this.belongsTo(models.Project, { foreignKey: 'project_id' });
-      }      
+      }      */
   }
 
 module.exports = CompanyProject;

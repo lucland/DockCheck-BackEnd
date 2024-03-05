@@ -95,3 +95,32 @@ exports.updateInvite = async (req, res) => {
         res.status(500).json({ error: 'Failed to update invite' });
     }
 };
+
+//cancel invite
+exports.cancelInvite = async (req, res) => {
+    try {
+        // Extract the invite ID from the request parameters
+        const { inviteId } = req.params;
+
+        // Find the invite in the database by ID
+        const invite = await Invite.findByPk(inviteId);
+
+        // If the invite is found, update its properties based on the request body
+        if (invite) {
+            invite.sent = false;
+            invite.dateSent = null;
+
+            // Save the updated invite in the database
+            await invite.save();
+
+            // Send the updated invite as the response
+            res.json(invite);
+        } else {
+            // If the invite is not found, send a 404 response
+            res.status(404).json({ error: 'Invite not found' });
+        }
+    } catch (error) {
+        // Handle any errors that occur during the update process
+        res.status(500).json({ error: 'Failed to cancel invite' });
+    }
+};

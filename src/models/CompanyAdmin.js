@@ -21,12 +21,12 @@ class CompanyAdmin extends Model {
         tableName: 'company_admins',
         timestamps: false,
       });
-    }
+    }/*
     static associate(models) {
         this.belongsTo(models.Company, { foreignKey: 'company_id' });
         this.belongsTo(models.User, { foreignKey: 'user_id' });
     }
-      
+      */
 }
 
 module.exports = CompanyAdmin;

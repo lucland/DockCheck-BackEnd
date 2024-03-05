@@ -18,7 +18,6 @@ class Invite extends Model {
         modelName: 'Invite',
       });
     }
-      
 }
 
 module.exports = Invite;

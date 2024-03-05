@@ -22,11 +22,12 @@ class ProjectAdmin extends Model {
         timestamps: false,
       });
     }
+    /*
     static associate(models) {
         this.belongsTo(models.Project, { foreignKey: 'project_id' });
         this.belongsTo(models.User, { foreignKey: 'user_id' });
       }
-      
+      */
   }
 
 module.exports = ProjectAdmin;

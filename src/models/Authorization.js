@@ -17,7 +17,7 @@ class Authorization extends Model {
       modelName: 'Authorization',
     });
   }
-
+/*
   static associate(models) {
     this.belongsTo(models.ThirdProject, { 
       foreignKey: 'third_project_id', 
@@ -28,7 +28,7 @@ class Authorization extends Model {
       foreignKey: 'employee_id', 
       as: 'employee' 
     });
-  }
+  }*/
 }
 
 module.exports = Authorization;

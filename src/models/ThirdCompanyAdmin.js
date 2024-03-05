@@ -22,11 +22,12 @@ class ThirdCompanyAdmin extends Model {
         timestamps: false,
       });
     }
+    /*
     static associate(models) {
         this.belongsTo(models.ThirdCompany, { foreignKey: 'third_company_id' });
         this.belongsTo(models.User, { foreignKey: 'user_id' });
       }      
-      
+      */
   }
 
 module.exports = ThirdCompanyAdmin;
