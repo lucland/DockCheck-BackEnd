@@ -11,6 +11,7 @@ class Project extends Model {
       name: DataTypes.STRING,
       date_start: DataTypes.DATE,
       date_end: DataTypes.DATE,
+      address: DataTypes.STRING,
       vessel_id: DataTypes.STRING,
       company_id: DataTypes.STRING,
       third_companies_id: DataTypes.ARRAY(DataTypes.STRING),
