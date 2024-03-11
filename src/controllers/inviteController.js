@@ -112,9 +112,8 @@ exports.cancelInvite = async (req, res) => {
 
             // Save the updated invite in the database
             await invite.save();
-
-            // Send the updated invite as the response
-            res.json(invite);
+            //send the response with a status == success
+            res.status(200).json({ message: 'Invite cancelled successfully' });
         } else {
             // If the invite is not found, send a 404 response
             res.status(404).json({ error: 'Invite not found' });
