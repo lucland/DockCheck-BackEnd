@@ -108,4 +108,28 @@ router.get('/', InviteController.getAllInvites);
  */
 router.put('/:id', InviteController.updateInvite);
 
+//cancelInvite with proper swagger documentation
+/**
+ * @swagger
+ * /invites/{id}:
+ *   delete:
+ *     summary: Cancel an invite by ID
+ *     tags: [Invites]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the invite
+ *     responses:
+ *       200:
+ *         description: Invite cancelled successfully
+ *       404:
+ *         description: Invite not found
+ *       500:
+ *         description: Internal server error
+ */
+router.delete('/:id', InviteController.cancelInvite);
+
 module.exports = router;
