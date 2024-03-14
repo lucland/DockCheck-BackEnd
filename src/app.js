@@ -120,10 +120,11 @@ app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
 });
 */
-db.sync(() => console.log(`Banco de dados conectado: ${process.env.DB_NAME}`));
+//db.sync(() => console.log(`Banco de dados conectado: ${process.env.DB_NAME}`));
 
 // Start the server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, '168.121.76.54:80', () => {
-  console.log(`Server is running on port ${PORT}`);
+const PORT = 3000;
+const HOST = '0.0.0.0'; // Listen on all available network interfaces
+app.listen(PORT, HOST, () => {
+    console.log(`Server running on http://${HOST}:${PORT}/`);
 });

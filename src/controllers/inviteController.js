@@ -108,7 +108,6 @@ exports.cancelInvite = async (req, res) => {
         // If the invite is found, update its properties based on the request body
         if (invite) {
             invite.sent = false;
-            invite.dateSent = null;
 
             // Save the updated invite in the database
             await invite.save();
