@@ -1,8 +1,6 @@
 //create complete crud controller for employee
 
 const Employee = require('../models/Employee');
-const Vessel = require('../models/Vessel');
-const Project = require('../models/Project');
 
 exports.createEmployee = async (req, res) => {
     try {
