@@ -14,7 +14,7 @@ exports.createProject = async (req, res) => {
     try {
         const project = await Project.create(req.body);
         //add project to companyProject table
-         await CompanyProject.create({ company_id: req.body.company_id, project_id: project.id });
+         await CompanyProject.create({ company_id: project.company_id, project_id: project.id });
 
         console.log("201 - project created successfully");
         res.status(201).json(project);
