@@ -96,6 +96,20 @@ exports.updateInvite = async (req, res) => {
     }
 };
 
+//get all invites by project_id where invite.project_id = project_id
+exports.getAllInvitesByProjectId = async (req, res) => {
+    try {
+        // Find all invites in the database by project ID
+        const invites = await Invite.findAll({ where: { project_id: req.params.projectId } });
+
+        // Send the invites as the response
+        res.json(invites);
+    } catch (error) {
+        // Handle any errors that occur during the retrieval process
+        res.status(500).json({ error: 'Failed to get invites' });
+    }
+};
+
 //cancel invite
 exports.cancelInvite = async (req, res) => {
     try {

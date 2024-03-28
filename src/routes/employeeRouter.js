@@ -170,4 +170,25 @@ router.put('/:id', authenticateJWT, employeeController.updateEmployee);
  */
 router.put('/area/:id', authenticateJWT, employeeController.updateEmployeeArea);
 
+//get all employees by user_id where employee.user_id = user_id
+/**
+ * @swagger
+ * /api/v1/employees/user/{userId}:
+ *  get:
+ *    summary: Get all employees by user ID
+ *    tags: [Employees]
+ *    parameters:
+ *      - in: path
+ *        name: userId
+ *        required: true
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *      '400':
+ *        description: Bad request
+ */
+router.get('/user/:userId', authenticateJWT, employeeController.getAllEmployeesByUserId);
+
 module.exports = router;

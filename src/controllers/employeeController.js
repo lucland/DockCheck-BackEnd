@@ -130,3 +130,18 @@ exports.updateEmployeeArea = async (req, res) => {
         res.status(400).json({ message: 'Error updating employee', error });
     }
 };
+
+//get all employyes by user_id where employee.user_id = user_id
+exports.getAllEmployeesByUserId = async (req, res) => {
+    try {
+        console.log(req.params);
+        // Find all employees in the database by user ID
+        const employees = await Employee.findAll({ where: { user_id: req.params.userId } });
+
+        // Send the employees as the response
+        res.json(employees);
+    } catch (error) {
+        // Handle any errors that occur during the retrieval process
+        res.status(500).json({ error: 'Failed to get employees' });
+    }
+};

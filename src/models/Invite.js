@@ -10,6 +10,7 @@ class Invite extends Model {
         email: DataTypes.STRING,
         accepted: DataTypes.BOOLEAN,
         sent: DataTypes.BOOLEAN,
+        project_id: DataTypes.STRING,
         thirdCompanyName: DataTypes.STRING,
         dateSent: DataTypes.DATE,
         viewed: DataTypes.BOOLEAN,

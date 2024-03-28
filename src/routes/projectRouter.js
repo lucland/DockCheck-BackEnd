@@ -214,4 +214,24 @@ router.post('/:projectId/approved-employees', authenticateJWT, projectController
  */
 router.put('/:id/addAdmin', authenticateJWT, projectController.addAdminToProject);
 
+/**
+ * @swagger
+ * /api/v1/projects/user/{userId}:
+ *  get:
+ *    summary: Get all projects by user ID
+ *    tags: [Projects]
+ *    parameters:
+ *      - in: path
+ *        name: userId
+ *        required: true
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *      '400':
+ *        description: Bad request
+ */
+router.get('/user/:userId', authenticateJWT, projectController.getAllProjectsByUserId);
+
 module.exports = router;

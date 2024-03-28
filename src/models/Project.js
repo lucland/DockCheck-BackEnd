@@ -19,6 +19,7 @@ class Project extends Model {
       areas_id: DataTypes.ARRAY(DataTypes.STRING),
       is_docking: DataTypes.BOOLEAN,
       status: DataTypes.STRING,
+      user_id: DataTypes.STRING,
     }, {
       sequelize,
       modelName: 'Project',

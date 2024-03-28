@@ -15,7 +15,7 @@ exports.createProject = async (req, res) => {
         const project = await Project.create(req.body);
         //add project to companyProject table
          //await CompanyProject.create({ company_id: project.company_id, project_id: project.id });
-
+         
         console.log("201 - project created successfully");
         res.status(201).json(project);
     } catch (error) {
@@ -196,5 +196,18 @@ exports.addAreaToProject = async (req, res) => {
     } catch (error) {
         console.log("400 - error adding area");
         res.status(400).json({ message: 'Error adding area', error });
+    }
+};
+//get all projects by user_id where project.user_id = user_id extracted from the endpoint /api/v1/projects/user/{userId}
+exports.getAllProjectsByUserId = async (req, res) => {
+    try {
+        const projects = await Project.findAll({
+            where: { user_id: req.params.userId }
+        });
+        console.log("200 - projects fetched successfully");
+        res.status(200).json(projects);
+    } catch (error) {
+        console.log("400 - error fetching projects");
+        res.status(400).json({ message: 'Error fetching projects', error });
     }
 };

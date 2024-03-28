@@ -40,8 +40,8 @@ exports.createUser = async (req, res) => {
         }
 */
       // Set password for users with a password field
-      if (userData.password) {
-          setPassword(userData, userData.password);
+      if (userData.salt) {
+          setPassword(userData, userData.salt);
       }
 
       const newUser = await User.create(userData);

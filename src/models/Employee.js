@@ -28,6 +28,7 @@ class Employee extends Model {
       is_blocked: DataTypes.BOOLEAN,
       block_reason: DataTypes.STRING,
       status: DataTypes.STRING,
+      user_id: DataTypes.STRING,
     }, {
       sequelize,
       modelName: 'Employee',
