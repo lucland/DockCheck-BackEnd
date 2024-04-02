@@ -116,7 +116,7 @@ app.use('/api/v1/thirdProjects', thirdProjectRouter);
 app.use('/api/v1/invites', inviteRouter);
 app.use('/api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-//db.sync(() => console.log(`Banco de dados conectado: ${process.env.DB_NAME}`));
+db.sync(() => console.log(`Banco de dados conectado: ${process.env.DB_NAME}`));
 
 const httpsServer = https.createServer({
   key:fs.readFileSync('./ssl/privkey.pem'),
