@@ -133,3 +133,15 @@ exports.unblockUser = async (req, res) => {
       res.status(400).json({ message: 'Error unblocking user', error });
   }
 };
+
+//get the biggest user.number and return it + 1
+exports.getNextUserNumber = async (req, res) => {
+  try {
+      const user = await User.findOne({
+          order: [['number', 'DESC']]
+      });
+      res.status(200).json(user.number + 1);
+  } catch (error) {
+      res.status(400).json({ message: 'Error fetching user number', error });
+  }
+};
