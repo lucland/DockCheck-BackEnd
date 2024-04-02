@@ -5,7 +5,8 @@ const Invite = require('../models/Invite');
 exports.createInvite = async (req, res) => {
     try {
         // Extract the invite data from the request body
-        const { id, email, accepted, sent, thirdCompanyName, dateSent, viewed, projectId } = req.body;
+        const { id, email, accepted, sent, thirdCompanyName, dateSent, viewed, project_id } = req.body;
+        console.log(req.body);
 
         // Create the invite in the database
         const invite = await Invite.create({
@@ -16,7 +17,7 @@ exports.createInvite = async (req, res) => {
             thirdCompanyName,
             dateSent,
             viewed,
-            projectId,
+            project_id,
         });
 
         // Send the created invite as the response
