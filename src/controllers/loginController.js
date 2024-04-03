@@ -76,7 +76,7 @@ exports.login = async (req, res) => {
       const token = jwt.sign({ id: user.id, role }, process.env.SECRET_KEY, { expiresIn: '2 days' });
       console.log("Login successful");
 
-      return res.json({ token, user_id: user.id, authorizations_id: authorizations });
+      return res.json({ token, user_id: user.id, authorizations_id: authorizations, is_admin: user.number === 1 });
     } catch (innerError) {
       console.error("Inner catch block error:", innerError);
       if (t && !t.finished) {
