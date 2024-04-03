@@ -9,6 +9,7 @@ const Beacon = require('../models/Beacon');
 const Company = require('../models/Company');
 const CompanyProject = require('../models/CompanyProject');
 const ProjectAdmin = require('../models/ProjectAdmin');
+const sequelize = require('../config/database');
 
 exports.createProject = async (req, res) => {
     try {
@@ -19,7 +20,7 @@ exports.createProject = async (req, res) => {
         console.log("201 - project created successfully");
         res.status(201).json(project);
     } catch (error) {
-        print(error.toString());
+        console.log(error);
         console.log("400 - error creating project");
         res.status(400).json({ message: 'Error creating project', error });
     }
@@ -58,7 +59,7 @@ exports.updateProject = async (req, res) => {
             console.log("404 - project not found");
             return res.status(404).json({ message: 'Project not found' });
         }
-        const { name, description, date_start, date_end, vessel_id, third_companies_id, admins_id, areas_id, status } = req.body;
+        const { name, description, date_start, date_end, vessel_id, third_companies_id, admins_id, employees_id, areas_id, status } = req.body;
         await project.update({
             name,
             description,
@@ -67,6 +68,7 @@ exports.updateProject = async (req, res) => {
             vessel_id,
             third_companies_id,
             admins_id,
+            employees_id,
             areas_id,
             status,
         });
@@ -209,5 +211,66 @@ exports.getAllProjectsByUserId = async (req, res) => {
     } catch (error) {
         console.log("400 - error fetching projects");
         res.status(400).json({ message: 'Error fetching projects', error });
+    }
+};
+
+//add employee to project
+exports.addEmployeeToProject = async (req, res) => {
+    try {
+        const { id: projectId } = req.params;
+        const { employee_id: employeeId } = req.body;
+
+        // Verificar se o projeto e o empregado existem
+        const projectExists = await Project.findByPk(projectId);
+        const employeeExists = await Employee.findByPk(employeeId);
+        if (!projectExists || !employeeExists) {
+            console.log("404 - Project or employee not found");
+            return res.status(404).json({ message: 'Project or employee not found' });
+        }
+
+        // Adiciona employee_id ao array employees_id do projeto
+        await sequelize.query(
+            `UPDATE projects SET employees_id = array_append(employees_id, :employeeId) WHERE id = :projectId`,
+            { replacements: { employeeId, projectId } }
+        );
+
+        // Adiciona project.id ao array authorizations_id do empregado
+        await sequelize.query(
+            `UPDATE employees SET authorizations_id = array_append(authorizations_id, :projectId) WHERE id = :employeeId`,
+            { replacements: { projectId, employeeId } }
+        );
+
+        console.log("200 - Employee added successfully");
+        res.status(200).json({ message: 'Employee added successfully' });
+    } catch (error) {
+        console.log("400 - Error adding employee");
+        res.status(400).json({ message: 'Error adding employee', error });
+    }
+};
+
+// Remove employee from project using direct SQL query
+exports.removeEmployeeFromProject = async (req, res) => {
+    try {
+        const { id: projectId } = req.params;
+        const { employee_id: employeeId } = req.body;
+
+        // Remover employee_id do array de employees_id do projeto
+        await sequelize.query(
+            `UPDATE projects SET employees_id = array_remove(employees_id, :employeeId) WHERE id = :projectId`,
+            { replacements: { employeeId, projectId } }
+        );
+
+        // Remover project.id do array de authorizations_id do empregado
+        await sequelize.query(
+            `UPDATE employees SET authorizations_id = array_remove(authorizations_id, :projectId) WHERE id = :employeeId`,
+            { replacements: { projectId, employeeId } }
+        );
+
+        console.log("200 - Employee removed successfully");
+        res.status(200).json({ message: 'Employee removed successfully' });
+    } catch (error) {
+        console.log(error);
+        console.log("400 - Error removing employee");
+        res.status(400).json({ message: 'Error removing employee', error });
     }
 };
