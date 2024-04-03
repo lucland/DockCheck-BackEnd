@@ -10,6 +10,7 @@ exports.createEmployee = async (req, res) => {
         console.log("201 - Employee created successfully");
         res.status(201).json(employee);
     } catch (error) {
+        console.log(error);
         console.log("400 - Error creating employee");
         res.status(400).json({ message: 'Error creating employee', error });
     }
@@ -18,11 +19,12 @@ exports.createEmployee = async (req, res) => {
 //getLastEmployeeNumber
 exports.getLastEmployeeNumber = async (req, res) => {
     try {
-       
-        //return the total count of rows in the table
-        const total = await Employee.count();
+       //return the biggest employee.number from the database
+        const employee = await Employee.findOne({
+            order: [['number', 'DESC']]
+        });
         console.log("200 - Employee fetched successfully");
-        res.status(200).json(total);
+        res.status(200).json(employee.number);
     } catch (error) {
         console.log("400 - Error fetching employee");
         res.status(400).json({ message: 'Error fetching employee', error });
@@ -143,5 +145,22 @@ exports.getAllEmployeesByUserId = async (req, res) => {
     } catch (error) {
         // Handle any errors that occur during the retrieval process
         res.status(500).json({ error: 'Failed to get employees' });
+    }
+};
+
+//approve employee function where we receive the employee id and set its is_blocked param to false
+exports.approveEmployee = async (req, res) => {
+    try {
+        const employee = await Employee.findByPk(req.params.id);
+        if (!employee) {
+            console.log("404 - employee not found");
+            return res.status(404).json({ message: 'Employee not found' });
+        }
+        await employee.update({ is_blocked: false });
+        console.log("200 - employee approved successfully");
+        res.status(200).json(employee);
+    } catch (error) {
+        console.log("400 - error approving employee");
+        res.status(400).json({ message: 'Error approving employee', error });
     }
 };
