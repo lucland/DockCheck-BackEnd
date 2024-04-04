@@ -19,7 +19,26 @@ exports.createInvite = async (req, res) => {
             viewed,
             project_id,
         });
+/*
+        //send email to the invitee using mailchimp
+        if (!sent) {
+            //send email to the invitee
+            const mailchimp = require('../config/mailchimp');
+            const mailchimpListId = process.env.MAILCHIMP_LIST_ID;
+            const mailchimpAudienceId = process.env.MAILCHIMP_AUDIENCE_ID;
+            const mailchimpTemplateId = process.env.MAILCHIMP_TEMPLATE_ID;
 
+            const mailchimpData = {
+                email: email,
+                thirdCompanyName: thirdCompanyName,
+                dateSent: dateSent,
+                viewed: viewed,
+                project_id: project_id
+            };
+
+            mailchimp.sendMail(mailchimpListId, mailchimpAudienceId, mailchimpTemplateId, mailchimpData);
+        }
+*/
         // Send the created invite as the response
         res.status(201).json(invite);
     } catch (error) {
