@@ -143,3 +143,6 @@ app.listen(process.env.PORT, () => {
 httpsServer.listen(443, () => {
     console.log('HTTPS Server running on port 443');
 });
+
+
+//$env:NODE_ENV="production";node app.js
