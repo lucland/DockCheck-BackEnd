@@ -8,7 +8,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const cors = require('cors');
-
+const https = require('https');
+const fs = require('fs');
 const express = require('express');
 const sequelize = require('./config/database'); // Import Sequelize instance
 
@@ -114,6 +115,10 @@ app.use('/api/v1/thirdCompanies', thirdCompanyRouter);
 app.use('/api/v1/thirdProjects', thirdProjectRouter);
 app.use('/api/v1/invites', inviteRouter);
 app.use('/api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+const httpsServer = https.createServer({
+  key:fs.readFileSync('./ssl/privkey.pem'),
+  cert:fs.readFileSync('./ssl/fullchain.pem'),
+},app)
 
 /*
 app.listen(process.env.PORT, () => {
@@ -123,8 +128,12 @@ app.listen(process.env.PORT, () => {
 //db.sync(() => console.log(`Banco de dados conectado: ${process.env.DB_NAME}`));
 
 // Start the server
-const PORT = 3000;
-const HOST = '0.0.0.0'; // Listen on all available network interfaces
-app.listen(PORT, HOST, () => {
-    console.log(`Server running on http://${HOST}:${PORT}/`);
+// const PORT = 80;
+// const HOST = '192.168.0.100'; // Listen on all available network interfaces
+// app.listen(PORT, HOST, () => {
+//     console.log(`Server running on https://${HOST}:${PORT}/`);
+// });
+
+httpsServer.listen(443, () => {
+    console.log('HTTPS Server running on port 443');
 });
