@@ -120,12 +120,18 @@ const httpsServer = https.createServer({
   cert:fs.readFileSync('./ssl/fullchain.pem'),
 },app)
 
+db.sync(() => console.log(`Banco de dados conectado: ${process.env.DB_NAME}`));
+/*
+const httpsServer = https.createServer({
+  key:fs.readFileSync('./ssl/privkey.pem'),
+  cert:fs.readFileSync('./ssl/fullchain.pem'),
+},app)*/
+
 /*
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`);
 });
 */
-//db.sync(() => console.log(`Banco de dados conectado: ${process.env.DB_NAME}`));
 
 // Start the server
 // const PORT = 80;

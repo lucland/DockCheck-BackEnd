@@ -106,7 +106,7 @@ router.get('/', authenticateJWT, employeeController.getAllEmployees);
  *      '400':
  *        description: Bad request
  */
-router.get('/lastnumber', authenticateJWT, employeeController.getLastEmployeeNumber);
+router.get('/number/lastnumber', authenticateJWT, employeeController.getLastEmployeeNumber);
 
 /**
  * @swagger
@@ -169,5 +169,49 @@ router.put('/:id', authenticateJWT, employeeController.updateEmployee);
  *        description: Bad request
  */
 router.put('/area/:id', authenticateJWT, employeeController.updateEmployeeArea);
+
+//get all employees by user_id where employee.user_id = user_id
+/**
+ * @swagger
+ * /api/v1/employees/user/{userId}:
+ *  get:
+ *    summary: Get all employees by user ID
+ *    tags: [Employees]
+ *    parameters:
+ *      - in: path
+ *        name: userId
+ *        required: true
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *      '400':
+ *        description: Bad request
+ */
+router.get('/user/:userId', authenticateJWT, employeeController.getAllEmployeesByUserId);
+
+//approve employee endpoint
+/**
+ * @swagger
+ * /api/v1/employees/approve/{id}:
+ *  put:
+ *    summary: Approve an employee by ID
+ *    tags: [Employees]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        description: Employee approved successfully
+ *      '404':
+ *        description: Employee not found
+ *      '400':
+ *        description: Bad request
+ */
+router.put('/approve/:id', authenticateJWT, employeeController.approveEmployee);
 
 module.exports = router;

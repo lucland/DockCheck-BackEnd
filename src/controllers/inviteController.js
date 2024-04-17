@@ -5,7 +5,8 @@ const Invite = require('../models/Invite');
 exports.createInvite = async (req, res) => {
     try {
         // Extract the invite data from the request body
-        const { id, email, accepted, sent, thirdCompanyName, dateSent, viewed } = req.body;
+        const { id, email, accepted, sent, thirdCompanyName, dateSent, viewed, project_id } = req.body;
+        console.log(req.body);
 
         // Create the invite in the database
         const invite = await Invite.create({
@@ -16,8 +17,28 @@ exports.createInvite = async (req, res) => {
             thirdCompanyName,
             dateSent,
             viewed,
+            project_id,
         });
+/*
+        //send email to the invitee using mailchimp
+        if (!sent) {
+            //send email to the invitee
+            const mailchimp = require('../config/mailchimp');
+            const mailchimpListId = process.env.MAILCHIMP_LIST_ID;
+            const mailchimpAudienceId = process.env.MAILCHIMP_AUDIENCE_ID;
+            const mailchimpTemplateId = process.env.MAILCHIMP_TEMPLATE_ID;
 
+            const mailchimpData = {
+                email: email,
+                thirdCompanyName: thirdCompanyName,
+                dateSent: dateSent,
+                viewed: viewed,
+                project_id: project_id
+            };
+
+            mailchimp.sendMail(mailchimpListId, mailchimpAudienceId, mailchimpTemplateId, mailchimpData);
+        }
+*/
         // Send the created invite as the response
         res.status(201).json(invite);
     } catch (error) {
@@ -93,6 +114,20 @@ exports.updateInvite = async (req, res) => {
     } catch (error) {
         // Handle any errors that occur during the update process
         res.status(500).json({ error: 'Failed to update invite' });
+    }
+};
+
+//get all invites by project_id where invite.project_id = project_id
+exports.getAllInvitesByProjectId = async (req, res) => {
+    try {
+        // Find all invites in the database by project ID
+        const invites = await Invite.findAll({ where: { project_id: req.params.projectId } });
+
+        // Send the invites as the response
+        res.json(invites);
+    } catch (error) {
+        // Handle any errors that occur during the retrieval process
+        res.status(500).json({ error: 'Failed to get invites' });
     }
 };
 

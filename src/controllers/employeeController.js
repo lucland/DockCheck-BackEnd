@@ -10,6 +10,7 @@ exports.createEmployee = async (req, res) => {
         console.log("201 - Employee created successfully");
         res.status(201).json(employee);
     } catch (error) {
+        console.log(error);
         console.log("400 - Error creating employee");
         res.status(400).json({ message: 'Error creating employee', error });
     }
@@ -18,11 +19,19 @@ exports.createEmployee = async (req, res) => {
 //getLastEmployeeNumber
 exports.getLastEmployeeNumber = async (req, res) => {
     try {
-       
-        //return the total count of rows in the table
-        const total = await Employee.count();
+       //return the biggest employee.number from the database
+       //if there is no employee in the database Employee table return 1
+       if (await Employee.count() === 0) {
+            console.log("200 - Employee fetched successfully");
+            return res.status(200).json(1);
+        }
+
+
+        const employee = await Employee.findOne({
+            order: [['number', 'DESC']]
+        });
         console.log("200 - Employee fetched successfully");
-        res.status(200).json(total);
+        res.status(200).json(employee.number);
     } catch (error) {
         console.log("400 - Error fetching employee");
         res.status(400).json({ message: 'Error fetching employee', error });
@@ -31,22 +40,18 @@ exports.getLastEmployeeNumber = async (req, res) => {
 
 exports.blockEmployee = async (req, res) => {
     try {
-        const { id } = req.params;
-        const { block_reason } = req.body;
-
-        const employee = await Employee.findByPk(id);
+        const employee = await Employee.findByPk(req.params.id);
         if (!employee) {
-            console.log("404 - Employee not found");
+            console.log("404 - employee not found");
             return res.status(404).json({ message: 'Employee not found' });
         }
-
-        employee.blocked = true;
-        employee.block_reason = block_reason;
-        await employee.save();
+        const { block_reason } = req.body;
+        await employee.update({ is_blocked: true, block_reason });
 
         console.log("200 - Employee blocked successfully");
         res.status(200).json({ message: 'Employee blocked successfully' });
     } catch (error) {
+        console.log(error);
         console.log("500 - Server error");
         res.status(500).json({ message: 'Server error', error });
     }
@@ -128,5 +133,44 @@ exports.updateEmployeeArea = async (req, res) => {
     } catch (error) {
         console.log("400 - error updating employee");
         res.status(400).json({ message: 'Error updating employee', error });
+    }
+};
+
+//get all employyes by user_id where employee.user_id = user_id
+exports.getAllEmployeesByUserId = async (req, res) => {
+    try {
+        console.log(req.params);
+        // Find all employees in the database by user ID
+        
+        const employees = await Employee.findAll({ where: { user_id: req.params.userId } });
+        const allEmployees = await Employee.findAll();
+           
+       // if userId is 'userId' return all employees
+        if (req.params.userId === 'userId' || req.params.userId === 'all') {
+            console.log("200 - employees fetched successfully");
+            return res.status(200).json(allEmployees);
+        }
+        console.log("200 - employees fetched successfully");
+        res.status(200).json(employees);
+    } catch (error) {
+        // Handle any errors that occur during the retrieval process
+        res.status(500).json({ error: 'Failed to get employees' });
+    }
+};
+
+//approve employee function where we receive the employee id and set its is_blocked param to false
+exports.approveEmployee = async (req, res) => {
+    try {
+        const employee = await Employee.findByPk(req.params.id);
+        if (!employee) {
+            console.log("404 - employee not found");
+            return res.status(404).json({ message: 'Employee not found' });
+        }
+        await employee.update({ is_blocked: false });
+        console.log("200 - employee approved successfully");
+        res.status(200).json(employee);
+    } catch (error) {
+        console.log("400 - error approving employee");
+        res.status(400).json({ message: 'Error approving employee', error });
     }
 };

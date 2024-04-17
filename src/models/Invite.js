@@ -13,6 +13,7 @@ class Invite extends Model {
         thirdCompanyName: DataTypes.STRING,
         dateSent: DataTypes.DATE,
         viewed: DataTypes.BOOLEAN,
+        project_id: DataTypes.STRING,
       }, {
         sequelize,
         modelName: 'Invite',

@@ -132,4 +132,26 @@ router.put('/:id', InviteController.updateInvite);
  */
 router.delete('/:id', InviteController.cancelInvite);
 
+//get all invites by project_id where invite.project_id = project_id
+/**
+ * @swagger
+ * /invites/project/{projectId}:
+ *   get:
+ *     summary: Get all invites by project ID
+ *     tags: [Invites]
+ *     parameters:
+ *       - in: path
+ *         name: projectId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the project
+ *     responses:
+ *       200:
+ *         description: Invites found
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/project/:projectId', InviteController.getAllInvitesByProjectId);
+
 module.exports = router;

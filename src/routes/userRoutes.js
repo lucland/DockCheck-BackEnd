@@ -162,4 +162,19 @@ router.put('/block/:id', authenticateJWT, userController.blockUser);
  */
 router.put('/unblock/:id', authenticateJWT, userController.unblockUser);
 
+//getNextUserNumber
+/**
+ * @swagger
+ * /api/v1/users/getNextUserNumber:
+ *   get:
+ *     summary: Get the next user number
+ *     tags: [Users]
+ *     responses:
+ *       '200':
+ *         description: Successful operation
+ *       '400':
+ *         description: Bad request
+ */
+router.get('/getNextUserNumber', userController.getNextUserNumber);
+
 module.exports = router;

@@ -214,4 +214,84 @@ router.post('/:projectId/approved-employees', authenticateJWT, projectController
  */
 router.put('/:id/addAdmin', authenticateJWT, projectController.addAdminToProject);
 
+/**
+ * @swagger
+ * /api/v1/projects/user/{userId}:
+ *  get:
+ *    summary: Get all projects by user ID
+ *    tags: [Projects]
+ *    parameters:
+ *      - in: path
+ *        name: userId
+ *        required: true
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *      '400':
+ *        description: Bad request
+ */
+router.get('/user/:userId', authenticateJWT, projectController.getAllProjectsByUserId);
+
+//swagger documentation for adding an employee to a project where we receive the project id as req.params.id and the employee id as req.body.employee_id
+/**
+ * @swagger
+ * /api/v1/projects/{id}/addEmployee:
+ *  put:
+ *    summary: Add an employee to a project
+ *    tags: [Projects]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        schema:
+ *          type: string
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              employee_id:
+ *                type: string
+ *    responses:
+ *      '200':
+ *        description: Employee added successfully
+ *      '400':
+ *        description: Bad request
+ */
+router.put('/:id/addEmployee', authenticateJWT, projectController.addEmployeeToProject);
+
+//endpoint with swagger documentation for removeEmployeeFromProject receiving the project id as req.params.id and the employee id as req.body.employee_id
+/**
+ * @swagger
+ * /api/v1/projects/{id}/removeEmployee:
+ *  put:
+ *    summary: Remove an employee from a project
+ *    tags: [Projects]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        schema:
+ *          type: string
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              employee_id:
+ *                type: string
+ *    responses:
+ *      '200':
+ *        description: Employee removed successfully
+ *      '400':
+ *        description: Bad request
+ */
+router.put('/:id/removeEmployee', authenticateJWT, projectController.removeEmployeeFromProject);
+
 module.exports = router;
