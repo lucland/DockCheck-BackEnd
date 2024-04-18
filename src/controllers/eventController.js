@@ -9,11 +9,11 @@ const sequelize = require('../config/database');
 
 exports.createEvent = async (req, res) => {
     try {
-        const { itag, code, action, project_id, timestamp } = req.body;
+        const { id, employee_id, timestamp, project_id, action, sensor_id, status, beacon_id } = req.body;
 
-        // 1 - retrieve the employee id of the given itag
+        // 1 - retrieve the employee id of the given beacon_id where req.body.beacon_id = employee.area
         const employee = await Employee.findOne({
-            where: { itag },
+            where: { area: beacon_id },
             attributes: ['id']
         });
 
@@ -22,19 +22,18 @@ exports.createEvent = async (req, res) => {
         }
 
         // 2 - retrieve the beacon id of the given itag
-        const beacon = await Beacon.findOne({
+        /*const beacon = await Beacon.findOne({
             where: { itag },
             attributes: ['id']
         });
 
         if (!beacon) {
             return res.status(404).json({ error: 'Beacon not found with the given itag.' });
-        }
+        }*/
 
         // 3 - retrieve the sensor_id from the sensor table
         const sensor = await Sensor.findOne({
-            where: { code },
-            attributes: ['id']
+            where: { id: sensor_id },
         });
 
         if (!sensor) {
@@ -43,18 +42,27 @@ exports.createEvent = async (req, res) => {
 
         // 4 - create a event object
         const event = await Event.create({
+            id: id,
             employee_id: employee.id,
             timestamp,
             project_id,
             action,
-            sensor_id: sensor.id,
-            status: 'created',
+            sensor_id,
+            status,
+            beacon_id
         });
 
         // 5 - update the sensor.beacons_found array
         if (action === 3) {
+            //check if the beacon_id is already in the beacons_found array
+            
+
+            if (sensor.beacons_found.includes(beacon_id)) {
+                return res.status(400).json({ error: 'Beacon already found.' });
+            }
+    
             await sensor.update({
-                beacons_found: sequelize.fn('array_append', sequelize.col('beacons_found'), beacon.id)
+                beacons_found: sequelize.fn('array_append', sequelize.col('beacons_found'), beacon_id)
             });
         }
 
@@ -62,7 +70,6 @@ exports.createEvent = async (req, res) => {
         if (action === 3) {
             const area = await Area.findOne({
                 where: { id: sensor.area_id },
-                attributes: ['name']
             });
             await employee.update({ last_area_found: area.name });
         }
@@ -75,10 +82,14 @@ exports.createEvent = async (req, res) => {
         // 8 - update vessel.onboarded_count
         const project = await Project.findByPk(project_id);
         const vessel = await Vessel.findByPk(project.vessel_id);
+
+
         const lastEvent = await Event.findOne({
             where: { employee_id: employee.id },
             order: [['timestamp', 'DESC']]
         });
+
+        
         if (action === 3 && lastEvent && lastEvent.action !== 3) {
             const lastSensor = await Sensor.findOne({
                 where: { id: lastEvent.sensor_id }
