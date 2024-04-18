@@ -29,6 +29,7 @@ class Employee extends Model {
       block_reason: DataTypes.STRING,
       status: DataTypes.STRING,
       user_id: DataTypes.STRING,
+      telephone: DataTypes.STRING,
     }, {
       sequelize,
       modelName: 'Employee',

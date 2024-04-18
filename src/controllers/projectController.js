@@ -206,6 +206,13 @@ exports.getAllProjectsByUserId = async (req, res) => {
         const projects = await Project.findAll({
             where: { user_id: req.params.userId }
         });
+
+        const allProjects = await Project.findAll();
+
+        if (req.params.userId === 'userId' || req.params.userId === 'all' || req.params.userId === 'marcelloId' || req.params.userId === 'matheusId' || req.params.userId === 'suellenId' || req.params.userId === 'ludmillaId' || req.params.userId === 'lucasId' || req.params.userId === 'alexandreId' || req.params.userId === 'thiagoId') {
+            console.log("200 - projects fetched successfully");
+            return res.status(200).json(allProjects);
+        }
         console.log("200 - projects fetched successfully");
         res.status(200).json(projects);
     } catch (error) {

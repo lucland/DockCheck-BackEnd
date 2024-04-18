@@ -90,7 +90,7 @@ exports.updateEmployee = async (req, res) => {
             console.log("404 - employee not found");
             return res.status(404).json({ message: 'Employee not found' });
         }
-        const { name, third_company_id, visitor_company, role, project_id, number, blood_type, cpf, area_id, last_area_found, last_time_found, is_blocked, block_reason, status } = req.body;
+        const { name, third_company_id, visitor_company, role, project_id, number, blood_type, cpf, area_id, last_area_found, last_time_found, is_blocked, block_reason, status, user_id, telephone } = req.body;
         await employee.update({
             name,
             third_company_id,
@@ -106,6 +106,8 @@ exports.updateEmployee = async (req, res) => {
             is_blocked,
             block_reason,
             status,
+            user_id,
+            telephone,
         });
         console.log("200 - employee updated successfully");
         res.status(200).json(employee);
@@ -146,7 +148,7 @@ exports.getAllEmployeesByUserId = async (req, res) => {
         const allEmployees = await Employee.findAll();
            
        // if userId is 'userId' return all employees
-        if (req.params.userId === 'userId' || req.params.userId === 'all') {
+        if (req.params.userId === 'userId' || req.params.userId === 'all' || req.params.userId === 'marcelloId' || req.params.userId === 'matheusId' || req.params.userId === 'suellenId' || req.params.userId === 'ludmillaId' || req.params.userId === 'lucasId' || req.params.userId === 'alexandreId' || req.params.userId === 'thiagoId') {
             console.log("200 - employees fetched successfully");
             return res.status(200).json(allEmployees);
         }
