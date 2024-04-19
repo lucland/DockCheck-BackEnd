@@ -23,11 +23,6 @@ class Sensor extends Model {
       modelName: 'Sensor',
     });
   }
-  /*
-  static associate(models) {
-    this.belongsTo(models.Area, { foreignKey: 'area_id' });
-  }
-  */
 }
 
 module.exports = Sensor;

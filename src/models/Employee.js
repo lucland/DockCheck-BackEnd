@@ -35,10 +35,6 @@ class Employee extends Model {
       modelName: 'Employee',
     });
   }
-  /*
-  static associate(models) {
-    this.belongsTo(models.ThirdCompany, { foreignKey: 'third_company_id' });
-  }  */
 }
 
 module.exports = Employee;

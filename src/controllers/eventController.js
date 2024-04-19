@@ -7,121 +7,85 @@ const Project = require('../models/Project');
 const Vessel = require('../models/Vessel');
 const sequelize = require('../config/database');
 
+
 exports.createEvent = async (req, res) => {
     try {
-        const { id, employee_id, timestamp, project_id, action, sensor_id, status, beacon_id } = req.body;
+        console.log("Creating event...");
+        const { id, employee_id, timestamp, project_id, action, sensor_id, beacon_id } = req.body;
 
-        // 1 - retrieve the employee id of the given beacon_id where req.body.beacon_id = employee.area
-        const employee = await Employee.findOne({
-            where: { area: beacon_id },
-            attributes: ['id']
-        });
-
-        if (!employee) {
-            return res.status(404).json({ error: 'Employee not found with the given itag.' });
+        // Normalize sensor_id if it contains "B" at the end
+        if (sensor_id.includes("B")) {
+            sensor_id = sensor_id.slice(0, -1);
         }
 
-        // 2 - retrieve the beacon id of the given itag
-        /*const beacon = await Beacon.findOne({
-            where: { itag },
-            attributes: ['id']
-        });
-
-        if (!beacon) {
-            return res.status(404).json({ error: 'Beacon not found with the given itag.' });
-        }*/
-
-        // 3 - retrieve the sensor_id from the sensor table
-        const sensor = await Sensor.findOne({
-            where: { id: sensor_id },
-        });
-
-        if (!sensor) {
-            return res.status(404).json({ error: 'Sensor not found with the given code.' });
+        if (action !== 3) {
+            console.log(`Action is not 3, creating event without array manipulation. Action: ${action}`);
+            const eventQuery = `INSERT INTO events (id, employee_id, timestamp, project_id, action, sensor_id, beacon_id, created_at, updated_at)
+                                 VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW()) RETURNING *;`;
+            const event = await sequelize.query(eventQuery, { bind: [id, employee_id, timestamp, project_id, action, sensor_id, beacon_id], type: sequelize.QueryTypes.INSERT });
+            return res.status(201).json(event[0][0]);
         }
 
-        // 4 - create a event object
-        const event = await Event.create({
-            id: id,
-            employee_id: employee.id,
-            timestamp,
-            project_id,
-            action,
-            sensor_id,
-            status,
-            beacon_id
-        });
+        const employeeQuery = `SELECT * FROM employees WHERE id = $1 LIMIT 1;`;
+        const employeeResults = await sequelize.query(employeeQuery, { bind: [employee_id], type: sequelize.QueryTypes.SELECT });
 
-        // 5 - update the sensor.beacons_found array
-        if (action === 3) {
-            //check if the beacon_id is already in the beacons_found array
-            
-
-            if (sensor.beacons_found.includes(beacon_id)) {
-                return res.status(400).json({ error: 'Beacon already found.' });
-            }
-    
-            await sensor.update({
-                beacons_found: sequelize.fn('array_append', sequelize.col('beacons_found'), beacon_id)
-            });
+        if (employeeResults.length === 0) {
+            console.log(`No employee found with ID: ${employee_id}`);
+            return res.status(404).json({ error: 'Employee not found.' });
         }
+        const employee = employeeResults[0];
 
-        // 6 - update employee.last_area_found
-        if (action === 3) {
-            const area = await Area.findOne({
-                where: { id: sensor.area_id },
-            });
-            await employee.update({ last_area_found: area.name });
+        const sensorQuery = `SELECT * FROM sensors WHERE id = $1 LIMIT 1;`;
+        const sensorResults = await sequelize.query(sensorQuery, { bind: [sensor_id], type: sequelize.QueryTypes.SELECT });
+
+        if (sensorResults.length === 0) {
+            console.log(`No sensor found with id: ${sensor_id}`);
+            return res.status(404).json({ error: 'Sensor not found.' });
         }
+        const sensor = sensorResults[0];
 
-        // 7 - update employee.last_time_found
-        if (action === 3) {
-            await employee.update({ last_time_found: timestamp });
-        }
+        const eventInsertQuery = `INSERT INTO events (id, employee_id, timestamp, project_id, action, sensor_id, beacon_id, created_at, updated_at)
+                                  VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW()) RETURNING *;`;
+        const event = await sequelize.query(eventInsertQuery, { bind: [id, employee.id, timestamp, project_id, action, sensor_id, beacon_id], type: sequelize.QueryTypes.INSERT });
 
-        // 8 - update vessel.onboarded_count
-        const project = await Project.findByPk(project_id);
-        const vessel = await Vessel.findByPk(project.vessel_id);
+        // Retrieve the vessel ID from the project
+        const projectQuery = `SELECT vessel_id FROM projects WHERE id = $1;`;
+        const projectResults = await sequelize.query(projectQuery, { bind: [project_id], type: sequelize.QueryTypes.SELECT });
+        const vessel_id = projectResults[0].vessel_id;
 
+        // Update the employee's last found area
+        const updateEmployeeQuery = `UPDATE employees SET last_area_found = $1, last_time_found = $2 WHERE id = $3;`;
+        await sequelize.query(updateEmployeeQuery, { bind: [sensor.area_id, timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
 
-        const lastEvent = await Event.findOne({
-            where: { employee_id: employee.id },
-            order: [['timestamp', 'DESC']]
-        });
+        // Assuming `beacon_id` is the id of the beacon detected by the sensor
+const beaconCountQuery = `SELECT beacons_found FROM sensors WHERE id = $1;`;
+const beaconCountResults = await sequelize.query(beaconCountQuery, { bind: [sensor_id], type: sequelize.QueryTypes.SELECT });
+if (beaconCountResults.length > 0) {
+    const beaconsFound = beaconCountResults[0].beacons_found;
+    const numberOfBeacons = beaconsFound.length; // Count the number of beacons found
 
-        
-        if (action === 3 && lastEvent && lastEvent.action !== 3) {
-            const lastSensor = await Sensor.findOne({
-                where: { id: lastEvent.sensor_id }
-            });
-            const currentSensor = await Sensor.findOne({
-                where: { id: sensor.id }
-            });
-            if (lastSensor.in_vessel === false && currentSensor.in_vessel === true) {
-                await vessel.update({ onboarded_count: sequelize.literal('onboarded_count + 1') });
-            }
-        }
+    // Update the count in the area specifically where the sensor's area_id matches the area.id
+    const updateAreaCountQuery = `UPDATE areas SET count = $1 WHERE id = (SELECT area_id FROM sensors WHERE id = $2);`;
+    await sequelize.query(updateAreaCountQuery, { bind: [numberOfBeacons, sensor_id], type: sequelize.QueryTypes.UPDATE });
+} else {
+    console.log("No beacons found for the sensor.");
+}
 
-        // 9 - update the area.count
-        if (action === 3) {
-            const area = await Area.findByPk(sensor.area_id);
-            const sensorsInArea = await Sensor.findAll({
-                where: { area_id: sensor.area_id },
-                attributes: ['beacons_found']
-            });
-            let totalCount = 0;
-            sensorsInArea.forEach(s => {
-                totalCount += s.beacons_found.length;
-            });
-            await area.update({ count: totalCount });
-        }
+// Continue with your logic to update the vessel's onboard count if needed
+const totalOnboardedQuery = `SELECT SUM(count) as total FROM areas WHERE in_vessel = true;`;
+const totalOnboardedResult = await sequelize.query(totalOnboardedQuery, { type: sequelize.QueryTypes.SELECT });
+const totalOnboarded = totalOnboardedResult[0].total;
+await sequelize.query(`UPDATE vessels SET onboarded_count = $1 WHERE id = $2;`, { bind: [totalOnboarded, vessel_id], type: sequelize.QueryTypes.UPDATE });
 
-        res.status(201).json(event);
+        console.log("Completed event creation and updates.");
+        res.status(201).json(event[0][0]);
     } catch (error) {
-        console.error(error);
+        console.error('Error in createEvent function:', error);
         res.status(500).json({ error: 'Server error' });
     }
 };
+
+
 
 exports.getEventsByEmployeeId = async (req, res) => {
     try {
