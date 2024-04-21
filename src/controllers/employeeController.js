@@ -1,6 +1,8 @@
 //create complete crud controller for employee
 
+const e = require('cors');
 const Employee = require('../models/Employee');
+const { QueryTypes } = require('sequelize');
 
 exports.createEmployee = async (req, res) => {
     try {
@@ -174,5 +176,23 @@ exports.approveEmployee = async (req, res) => {
     } catch (error) {
         console.log("400 - error approving employee");
         res.status(400).json({ message: 'Error approving employee', error });
+    }
+};
+
+//retrieve a list of every employee.area values where the employee.area starts with ff
+exports.getEmployeeAreas = async (req, res) => {
+    try {
+        // Find all employees in the database by user ID
+        const employees = await Employee.sequelize.query("SELECT area FROM Employees WHERE area LIKE 'ff%'", { type: QueryTypes.SELECT });
+
+        //return just a list of areas values, a list of string
+        const areas = employees.map(employee => employee.area);
+
+        console.log("200 - employees fetched successfully");
+        res.status(200).json(areas);
+    } catch (error) {
+        // Handle any errors that occur during the retrieval process
+        console.log(error);
+        res.status(500).json({ error: 'Failed to get employees' });
     }
 };
