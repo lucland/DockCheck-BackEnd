@@ -57,7 +57,7 @@ router.put('/block/:id', authenticateJWT, employeeController.blockEmployee);
 
 /**
  * @swagger
- * /api/v1/employees/{id}:
+ * /api/v1/employees/byid/{id}:
  *  get:
  *    summary: Get an employee by ID
  *    tags: [Employees]
@@ -75,11 +75,11 @@ router.put('/block/:id', authenticateJWT, employeeController.blockEmployee);
  *      '400':
  *        description: Bad request
  */
-router.get('/:id', authenticateJWT, employeeController.getEmployee);
+router.get('/byid/:id', authenticateJWT, employeeController.getEmployee);
 
 /**
  * @swagger
- * /api/v1/employees:
+ * /api/v1/employees/all:
  *  get:
  *    summary: Get all employees
  *    tags: [Employees]
@@ -89,7 +89,7 @@ router.get('/:id', authenticateJWT, employeeController.getEmployee);
  *      '400':
  *        description: Bad request
  */
-router.get('/', authenticateJWT, employeeController.getAllEmployees);
+router.get('/all', authenticateJWT, employeeController.getAllEmployees);
 
 //getLastEmployeeNumber endpoint with swagger documentation
 /**
@@ -213,5 +213,20 @@ router.get('/user/:userId', authenticateJWT, employeeController.getAllEmployeesB
  *        description: Bad request
  */
 router.put('/approve/:id', authenticateJWT, employeeController.approveEmployee);
+
+//getEmployeeAreas
+/**
+ * @swagger
+ * /api/v1/employees/areas:
+ *  get:
+ *    summary: Get all employee areas
+ *    tags: [Employees]
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *      '400':
+ *        description: Bad request
+ */
+router.get('/areas', employeeController.getEmployeeAreas);
 
 module.exports = router;
