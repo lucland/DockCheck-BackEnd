@@ -84,6 +84,25 @@ exports.createEvent = async (req, res) => {
         const updateEmployeeQuery = `UPDATE employees SET last_area_found = $1, last_time_found = $2 WHERE id = $3;`;
         await sequelize.query(updateEmployeeQuery, { bind: [sensor.area_id, timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
 
+        //if received action from req.body is equal 7, update the last_area_found to ""
+        if (action === 7 && sensor_id === "P3") {
+            const updateEmployeeQuery = `UPDATE employees SET last_area_found = $1, last_time_found = $2 WHERE id = $3;`;
+            await sequelize.query(updateEmployeeQuery, { bind: ["", timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
+
+            //remove the beacon from the sensor's beacons_found
+            const removeBeaconQuery = `UPDATE sensors SET beacons_found = array_remove(beacons_found, $1) WHERE id = $2;`;
+            await sequelize.query(removeBeaconQuery, { bind: [beacon_id, sensor_id], type: sequelize.QueryTypes.UPDATE });
+        }
+
+        if (action === 7 && sensor_id === "P1") {
+            const updateEmployeeQuery = `UPDATE employees SET last_area_found = $1, last_time_found = $2 WHERE id = $3;`;
+            await sequelize.query(updateEmployeeQuery, { bind: ["", timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
+
+            //remove the beacon from the sensor's beacons_found
+            const removeBeaconQuery = `UPDATE sensors SET beacons_found = array_remove(beacons_found, $1) WHERE id = $2;`;
+            await sequelize.query(removeBeaconQuery, { bind: [beacon_id, sensor_id], type: sequelize.QueryTypes.UPDATE });
+        }
+
          // Retrieve all sensors in the same area and sum their beacons_found
          const sensorsInAreaQuery = `SELECT beacons_found FROM sensors WHERE area_id = $1;`;
          const sensorsInAreaResults = await sequelize.query(sensorsInAreaQuery, { bind: [sensor.area_id], type: sequelize.QueryTypes.SELECT });
