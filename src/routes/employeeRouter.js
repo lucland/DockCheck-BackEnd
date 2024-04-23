@@ -229,4 +229,36 @@ router.put('/approve/:id', authenticateJWT, employeeController.approveEmployee);
  */
 router.get('/areas', employeeController.getEmployeeAreas);
 
+//update employee area by employee id with area: value body
+/**
+ * @swagger
+ * /api/v1/employees/area/{id}:
+ *  put:
+ *    summary: Update an employee's area by ID
+ *    tags: [Employees]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        schema:
+ *          type: string
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              area:
+ *                type: string
+ *    responses:
+ *      '200':
+ *        description: Employee updated successfully
+ *      '404':
+ *        description: Employee not found
+ *      '400':
+ *        description: Bad request
+ */
+router.put('/area/:id', employeeController.updateEmployeeArea);
+
 module.exports = router;
