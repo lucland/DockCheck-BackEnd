@@ -196,3 +196,21 @@ exports.getEmployeeAreas = async (req, res) => {
         res.status(500).json({ error: 'Failed to get employees' });
     }
 };
+
+//update employee area by employee id
+exports.updateEmployeeArea = async (req, res) => {
+    try {
+        const employee = await Employee.findByPk(req.params.id);
+        if (!employee) {
+            console.log("404 - employee not found");
+            return res.status(404).json({ message: 'Employee not found' });
+        }
+        const { area } = req.body;
+        await employee.update({ area });
+        console.log("200 - employee updated successfully");
+        res.status(200).json(employee);
+    } catch (error) {
+        console.log("400 - error updating employee");
+        res.status(400).json({ message: 'Error updating employee', error });
+    }
+};
