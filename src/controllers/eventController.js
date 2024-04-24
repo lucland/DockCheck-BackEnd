@@ -18,7 +18,7 @@ exports.createEvent = async (req, res) => {
             sensor_id = sensor_id.slice(0, -1);
         }
 
-        if (action !== 3) {
+        if (action !== 3 && action !== 7) {
             console.log(`Action is not 3, creating event without array manipulation. Action: ${action}`);
             const eventQuery = `INSERT INTO events (id, employee_id, timestamp, project_id, action, sensor_id, beacon_id, created_at, updated_at)
                                  VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW()) RETURNING *;`;
