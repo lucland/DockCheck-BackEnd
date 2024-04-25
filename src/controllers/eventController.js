@@ -49,6 +49,16 @@ exports.createEvent = async (req, res) => {
                                   VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW()) RETURNING *;`;
         const event = await sequelize.query(eventInsertQuery, { bind: [id, employee.id, timestamp, project_id, action, sensor_id, beacon_id], type: sequelize.QueryTypes.INSERT });
 
+       // Convert both timestamps to ISO String format (YYYY-MM-DDTHH:MM:SS.sssZ)
+const receivedTimeISO = new Date(timestamp).toISOString();
+const lastTimeFoundISO = new Date(employee.last_time_found).toISOString();
+
+// Compare ISO strings directly
+if (employee.last_time_found !== null && receivedTimeISO < lastTimeFoundISO) {
+    console.log("Received timestamp is earlier than last recorded time, skipping updates.");
+    return res.status(201).json({ message: "No update needed as event is older." });
+}
+
         // Retrieve the vessel ID from the project
         const projectQuery = `SELECT vessel_id FROM projects WHERE id = $1;`;
         const projectResults = await sequelize.query(projectQuery, { bind: [project_id], type: sequelize.QueryTypes.SELECT });
@@ -85,7 +95,7 @@ exports.createEvent = async (req, res) => {
         await sequelize.query(updateEmployeeQuery, { bind: [sensor.area_id, timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
 
         //if received action from req.body is equal 7, update the last_area_found to ""
-        if (action === 7 && sensor_id === "P3") {
+        if (action === 7 && sensor_id === "P2") {
             const updateEmployeeQuery = `UPDATE employees SET last_area_found = $1, last_time_found = $2 WHERE id = $3;`;
             await sequelize.query(updateEmployeeQuery, { bind: ["", timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
 
