@@ -14,7 +14,7 @@ const sequelize = new Sequelize({
     underscored: true,
     timezone: false,
   },
-  timezone: '00:00',
+  timezone: '-03:00',
 });
 
 module.exports = sequelize;
