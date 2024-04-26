@@ -53,6 +53,18 @@ exports.createEvent = async (req, res) => {
 const receivedTimeISO = new Date(timestamp).toISOString();
 const lastTimeFoundISO = new Date(employee.last_time_found).toISOString();
 
+//if action is 7 and sesor_id is P1, retun
+if (action === 7 && sensor_id === "P1") {
+    console.log("Received action is 7 and sensor_id is P1, skipping updates.");
+    return res.status(201).json({ message: "No update needed as event is older." });
+}
+
+//if action is 0 or lower than 0, return
+if (action <= 0) {
+    console.log("Received action is 0 or lower, skipping updates.");
+    return res.status(201).json({ message: "No update needed as event is older." });
+}
+
 // Compare ISO strings directly
 if (employee.last_time_found !== null && receivedTimeISO < lastTimeFoundISO) {
     console.log("Received timestamp is earlier than last recorded time, skipping updates.");
@@ -105,7 +117,7 @@ if (employee.last_time_found !== null && receivedTimeISO < lastTimeFoundISO) {
         await sequelize.query(updateEmployeeQuery, { bind: [lastSensorResults[0].area_id, lastEventResults[0].timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
 
         //if received action from req.body is equal 7, update the last_area_found to ""
-        if (lastEventResults[0].action === 7 && lastSensorResults[0].id === "P2") {
+        if (lastSensorResults[0].id === "P2") {
             const updateEmployeeQuery = `UPDATE employees SET last_area_found = $1, last_time_found = $2 WHERE id = $3;`;
             await sequelize.query(updateEmployeeQuery, { bind: ["", lastEventResults[0].timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
 
@@ -114,7 +126,7 @@ if (employee.last_time_found !== null && receivedTimeISO < lastTimeFoundISO) {
             await sequelize.query(removeBeaconQuery, { bind: [beacon_id, lastSensorResults[0].id], type: sequelize.QueryTypes.UPDATE });
         }
 
-        if (lastEventResults[0].action === 3 && lastSensorResults[0].id === "P1") {
+        if (lastSensorResults[0].id === "P1") {
             const updateEmployeeQuery = `UPDATE employees SET last_area_found = $1, last_time_found = $2 WHERE id = $3;`;
             await sequelize.query(updateEmployeeQuery, { bind: ["", lastEventResults[0].timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
 
