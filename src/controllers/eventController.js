@@ -57,7 +57,17 @@ const lastTimeFoundISO = new Date(employee.last_time_found).toISOString();
 if (employee.last_time_found !== null && receivedTimeISO < lastTimeFoundISO) {
     console.log("Received timestamp is earlier than last recorded time, skipping updates.");
     return res.status(201).json({ message: "No update needed as event is older." });
-}
+} else {
+    console.log("Received timestamp is later than last recorded time, updating employee and sensor data.");
+
+    //select last event from the employee
+    const lastEventQuery = `SELECT * FROM events WHERE employee_id = $1 ORDER BY timestamp DESC LIMIT 1;`;
+    const lastEventResults = await sequelize.query(lastEventQuery, { bind: [employee.id], type: sequelize.QueryTypes.SELECT });
+
+    //retrieve the sensor from the last event by the sensor_id
+    const lastSensorQuery = `SELECT * FROM sensors WHERE id = $1;`;
+    const lastSensorResults = await sequelize.query(lastSensorQuery, { bind: [lastEventResults[0].sensor_id], type: sequelize.QueryTypes.SELECT });
+
 
         // Retrieve the vessel ID from the project
         const projectQuery = `SELECT vessel_id FROM projects WHERE id = $1;`;
@@ -92,25 +102,25 @@ if (employee.last_time_found !== null && receivedTimeISO < lastTimeFoundISO) {
 
         // Update the employee's last found area
         const updateEmployeeQuery = `UPDATE employees SET last_area_found = $1, last_time_found = $2 WHERE id = $3;`;
-        await sequelize.query(updateEmployeeQuery, { bind: [sensor.area_id, timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
+        await sequelize.query(updateEmployeeQuery, { bind: [lastSensorResults[0].area_id, lastEventResults[0].timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
 
         //if received action from req.body is equal 7, update the last_area_found to ""
-        if (action === 7 && sensor_id === "P2") {
+        if (lastEventResults[0].action === 7 && lastSensorResults[0].id === "P2") {
             const updateEmployeeQuery = `UPDATE employees SET last_area_found = $1, last_time_found = $2 WHERE id = $3;`;
-            await sequelize.query(updateEmployeeQuery, { bind: ["", timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
+            await sequelize.query(updateEmployeeQuery, { bind: ["", lastEventResults[0].timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
 
             //remove the beacon from the sensor's beacons_found
             const removeBeaconQuery = `UPDATE sensors SET beacons_found = array_remove(beacons_found, $1) WHERE id = $2;`;
-            await sequelize.query(removeBeaconQuery, { bind: [beacon_id, sensor_id], type: sequelize.QueryTypes.UPDATE });
+            await sequelize.query(removeBeaconQuery, { bind: [beacon_id, lastSensorResults[0].id], type: sequelize.QueryTypes.UPDATE });
         }
 
-        if (action === 7 && sensor_id === "P1") {
+        if (lastEventResults[0].action === 3 && lastSensorResults[0].id === "P1") {
             const updateEmployeeQuery = `UPDATE employees SET last_area_found = $1, last_time_found = $2 WHERE id = $3;`;
-            await sequelize.query(updateEmployeeQuery, { bind: ["", timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
+            await sequelize.query(updateEmployeeQuery, { bind: ["", lastEventResults[0].timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
 
             //remove the beacon from the sensor's beacons_found
             const removeBeaconQuery = `UPDATE sensors SET beacons_found = array_remove(beacons_found, $1) WHERE id = $2;`;
-            await sequelize.query(removeBeaconQuery, { bind: [beacon_id, sensor_id], type: sequelize.QueryTypes.UPDATE });
+            await sequelize.query(removeBeaconQuery, { bind: [beacon_id, lastSensorResults[0].id], type: sequelize.QueryTypes.UPDATE });
         }
 
          // Retrieve all sensors in the same area and sum their beacons_found
@@ -136,6 +146,7 @@ if (employee.last_time_found !== null && receivedTimeISO < lastTimeFoundISO) {
 
         console.log("Completed event creation and updates.");
         res.status(201).json(event[0][0]);
+    }
     } catch (error) {
         console.error('Error in createEvent function:', error);
         res.status(500).json({ error: 'Server error' });
