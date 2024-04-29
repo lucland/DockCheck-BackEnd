@@ -11,7 +11,7 @@ const sequelize = require('../config/database');
 exports.createEvent = async (req, res) => {
     try {
         console.log("Creating event...");
-        const { id, employee_id, timestamp, project_id, action, sensor_id, beacon_id } = req.body;
+        const { id, employee_id, timestamp, project_id, action, sensor_id, beacon_id, status } = req.body;
 
         //if we receive the sensor_id as "P1B", turn it into just "P1" instead
         if (sensor_id.includes("B")) {
@@ -20,9 +20,9 @@ exports.createEvent = async (req, res) => {
 
         if (action !== 3 && action !== 7) {
             console.log(`Action is not 3, creating event without array manipulation. Action: ${action}`);
-            const eventQuery = `INSERT INTO events (id, employee_id, timestamp, project_id, action, sensor_id, beacon_id, created_at, updated_at)
-                                 VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW()) RETURNING *;`;
-            const event = await sequelize.query(eventQuery, { bind: [id, employee_id, timestamp, project_id, action, sensor_id, beacon_id], type: sequelize.QueryTypes.INSERT });
+            const eventQuery = `INSERT INTO events (id, employee_id, timestamp, project_id, action, sensor_id, beacon_id, status, created_at, updated_at)
+                                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW()) RETURNING *;`;
+            const event = await sequelize.query(eventQuery, { bind: [id, employee_id, timestamp, project_id, action, sensor_id, beacon_id, status], type: sequelize.QueryTypes.INSERT });
             return res.status(201).json(event[0][0]);
         }
 
@@ -45,9 +45,9 @@ exports.createEvent = async (req, res) => {
         }
         const sensor = sensorResults[0];
 
-        const eventInsertQuery = `INSERT INTO events (id, employee_id, timestamp, project_id, action, sensor_id, beacon_id, created_at, updated_at)
-                                  VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW()) RETURNING *;`;
-        const event = await sequelize.query(eventInsertQuery, { bind: [id, employee.id, timestamp, project_id, action, sensor_id, beacon_id], type: sequelize.QueryTypes.INSERT });
+        const eventInsertQuery = `INSERT INTO events (id, employee_id, timestamp, project_id, action, sensor_id, beacon_id, status, created_at, updated_at)
+                                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW()) RETURNING *;`;
+        const event = await sequelize.query(eventInsertQuery, { bind: [id, employee.id, timestamp, project_id, action, sensor_id, beacon_id, status], type: sequelize.QueryTypes.INSERT });
 
        // Convert both timestamps to ISO String format (YYYY-MM-DDTHH:MM:SS.sssZ)
 const receivedTimeISO = new Date(timestamp).toISOString();
@@ -66,8 +66,12 @@ if (action <= 0) {
 }
 
 // Compare ISO strings directly
-if (employee.last_time_found !== null && receivedTimeISO < lastTimeFoundISO) {
+if (employee.last_time_found !== null && receivedTimeISO < lastTimeFoundISO 
+    && receivedTimeISO < new Date(Date.now() + 5 * 60000).toISOString()
+    ) {
     console.log("Received timestamp is earlier than last recorded time, skipping updates.");
+    console.log(timestamp);
+    console.log(employee.last_time_found);
     return res.status(201).json({ message: "No update needed as event is older." });
 } else {
     console.log("Received timestamp is later than last recorded time, updating employee and sensor data.");
