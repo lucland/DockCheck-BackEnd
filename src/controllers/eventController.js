@@ -25,7 +25,7 @@ async function updateEmployeeAndSensorData(employee, sensor, timestamp, action) 
     let areaToUpdate = sensor.area_id;
 
     // Determine if we need to set the last_area_found to empty
-    if (["P1", "P2"].includes(sensor.id) || (sensor.id === "P3" && action === 7)) {
+    if (["P1", "P2"].includes(sensor.id)) {
         areaToUpdate = ""; // Set area to empty string as per the conditions
     }
 
@@ -50,6 +50,12 @@ exports.createEvent = async (req, res) => {
         if (new Date(timestamp) > new Date(new Date().getTime() + 3 * 60000)) {
             console.log("Received timestamp is more than 3 minutes into the future, skipping event creation.");
             return res.status(400).json({ message: "Event timestamp is too far in the future, event not created." });
+        }
+
+        // If action is 7 and sensor_id is not "P1" or "P2", do not update employee and do not save event
+        if (action === 7 && !["P1", "P2"].includes(modifiedSensorId)) {
+            console.log(`Action is 7 and sensor ID is ${modifiedSensorId}, skipping event creation and employee update.`);
+            return res.status(400).json({ message: "Event not created due to business rules." });
         }
 
         const employee = await fetchEmployee(beacon_id);
