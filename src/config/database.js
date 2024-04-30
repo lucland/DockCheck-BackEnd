@@ -12,7 +12,7 @@ const sequelize = new Sequelize({
   define: {
     timestamps: true,
     underscored: true,
-    timezone: false,
+    timezone: true,
   },
   timezone: '-03:00',
 });
