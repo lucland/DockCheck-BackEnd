@@ -63,10 +63,6 @@ exports.createEvent = async (req, res) => {
             console.log(`No sensor found with id: ${sensor_id}`);
             return res.status(404).json({ error: 'Sensor not found.' });
         }
-
-        console.log(`${employee.id}`);
-        console.log(`${employee.id}`);
-        console.log(`${employee.id}`);
         
         const event = await createEvent(id, employee.id, timestamp, project_id, action, sensor_id, beacon_id, status);
         console.log(`Event created with ID: ${event.id}`);
