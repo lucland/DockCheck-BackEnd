@@ -50,14 +50,12 @@ exports.createEvent = async (req, res) => {
         const event = await sequelize.query(eventInsertQuery, { bind: [id, employee.id, timestamp, project_id, action, sensor_id, beacon_id, status], type: sequelize.QueryTypes.INSERT });
 
        // Convert both timestamps to ISO String format (YYYY-MM-DDTHH:MM:SS.sssZ)
-const receivedTimeISO = new Date(timestamp).toISOString();
-const lastTimeFoundISO = new Date(employee.last_time_found).toISOString();
 
-//if action is 7 and sesor_id is P1, retun
-if (action === 7 && sensor_id === "P1") {
-    console.log("Received action is 7 and sensor_id is P1, skipping updates.");
-    return res.status(201).json({ message: "No update needed as event is older." });
-}
+
+console.log(`lastTime no ISO: ${employee.last_time_found}`);
+console.log(`lastTime no ISO AS DATE: ${Date(employee.last_time_found)}`);
+
+console.log(`receivedTime no ISO: ${timestamp < employee.last_time_found}`);
 
 //if action is 0 or lower than 0, return
 if (action <= 0) {
@@ -65,9 +63,19 @@ if (action <= 0) {
     return res.status(201).json({ message: "No update needed as event is older." });
 }
 
+//if timestamp is bigger than now + 3 minutes, return
+if (new Date(timestamp) > new Date(new Date().getTime() + 3 * 60000)) {
+    console.log("Received timestamp is bigger than now + 3 minutes, skipping updates.");
+    return res.status(201).json({ message: "No update needed as event is older." });
+}
+
+if (new Date(timestamp) < new Date(new Date().getTime() - 60 * 60000)) {
+    console.log("Received timestamp is lower than now - 60 minutes, skipping updates.");
+    return res.status(201).json({ message: "No update needed as event is older." });
+}
+
 // Compare ISO strings directly
-if (employee.last_time_found !== null && receivedTimeISO < lastTimeFoundISO 
-    && receivedTimeISO < new Date(Date.now() + 5 * 60000).toISOString()
+if (employee.last_time_found !== null && new Date(timestamp).toISOString() < new Date(employee.last_time_found).toISOString()
     ) {
     console.log("Received timestamp is earlier than last recorded time, skipping updates.");
     console.log(timestamp);
@@ -81,7 +89,7 @@ if (employee.last_time_found !== null && receivedTimeISO < lastTimeFoundISO
     const lastEventResults = await sequelize.query(lastEventQuery, { bind: [employee.id], type: sequelize.QueryTypes.SELECT });
 
     //retrieve the sensor from the last event by the sensor_id
-    const lastSensorQuery = `SELECT * FROM sensors WHERE id = $1;`;
+    const lastSensorQuery = `SELECT * FROM sensors WHERE id = $1 LIMIT 1;`;
     const lastSensorResults = await sequelize.query(lastSensorQuery, { bind: [lastEventResults[0].sensor_id], type: sequelize.QueryTypes.SELECT });
 
 
@@ -95,6 +103,7 @@ if (employee.last_time_found !== null && receivedTimeISO < lastTimeFoundISO
         const previousSensorResults = await sequelize.query(previousSensorQuery, { bind: [beacon_id, sensor_id], type: sequelize.QueryTypes.SELECT });
 
         if (previousSensorResults.length > 0) {
+            console.log(`Previous sensor found: ${previousSensorResults[0].id}`);
             const previousSensor = previousSensorResults[0];
             const removeBeaconQuery = `UPDATE sensors SET beacons_found = array_remove(beacons_found, $1) WHERE id = $2;`;
             await sequelize.query(removeBeaconQuery, { bind: [beacon_id, previousSensor.id], type: sequelize.QueryTypes.UPDATE });
@@ -112,31 +121,50 @@ if (employee.last_time_found !== null && receivedTimeISO < lastTimeFoundISO
 
         // Add the beacon to the current sensor's beacons_found if not already included
         if (!sensor.beacons_found.includes(beacon_id)) {
+            console.log(`Beacon ${beacon_id} not found in sensor ${sensor_id}, adding to beacons_found.`);
             const updateSensorQuery = `UPDATE sensors SET beacons_found = array_append(beacons_found, $1) WHERE id = $2;`;
             await sequelize.query(updateSensorQuery, { bind: [beacon_id, sensor_id], type: sequelize.QueryTypes.UPDATE });
         }
 
-        // Update the employee's last found area
+        // Convert timestamp to a Date object (if it's not already one)
+    const timestampDate = new Date(lastEventResults[0].timestamp);
+    console.log(`timestamp DATE: ${timestampDate}`);
+
+    // Convert to UTC string format before sending to Postgres
+    const timestampUTC = timestampDate.toISOString();
+    console.log(`timestamp  ISO: ${timestampUTC}`);
+
+    console.log('Last sensor:', lastSensorResults[0].id);
+
+    if (lastSensorResults[0].id === "P1") {
+        console.log("Sensor is P1, updating employee last_area_found to empty string.");
         const updateEmployeeQuery = `UPDATE employees SET last_area_found = $1, last_time_found = $2 WHERE id = $3;`;
-        await sequelize.query(updateEmployeeQuery, { bind: [lastSensorResults[0].area_id, lastEventResults[0].timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
+        await sequelize.query(updateEmployeeQuery, { bind: ["", timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
 
-        //if received action from req.body is equal 7, update the last_area_found to ""
-        if (lastSensorResults[0].id === "P2") {
+        //remove the beacon from the sensor's beacons_found
+        const removeBeaconQuery = `UPDATE sensors SET beacons_found = array_remove(beacons_found, $1) WHERE id = $2;`;
+        await sequelize.query(removeBeaconQuery, { bind: [beacon_id, lastSensorResults[0].id], type: sequelize.QueryTypes.UPDATE });
+    } else if (lastSensorResults[0].id === "P2") {
+            console.log("Sensor is P2, updating employee last_area_found to empty string.");
             const updateEmployeeQuery = `UPDATE employees SET last_area_found = $1, last_time_found = $2 WHERE id = $3;`;
-            await sequelize.query(updateEmployeeQuery, { bind: ["", lastEventResults[0].timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
+            await sequelize.query(updateEmployeeQuery, { bind: ["", timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
 
             //remove the beacon from the sensor's beacons_found
             const removeBeaconQuery = `UPDATE sensors SET beacons_found = array_remove(beacons_found, $1) WHERE id = $2;`;
             await sequelize.query(removeBeaconQuery, { bind: [beacon_id, lastSensorResults[0].id], type: sequelize.QueryTypes.UPDATE });
-        }
-
-        if (lastSensorResults[0].id === "P1") {
+        } else if (lastSensorResults[0].id === "P3" && action === 7) {
+            console.log("Sensor is P3 and action is 7, updating employee last_area_found to empty string.");
             const updateEmployeeQuery = `UPDATE employees SET last_area_found = $1, last_time_found = $2 WHERE id = $3;`;
-            await sequelize.query(updateEmployeeQuery, { bind: ["", lastEventResults[0].timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
+            await sequelize.query(updateEmployeeQuery, { bind: ["", timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
 
             //remove the beacon from the sensor's beacons_found
             const removeBeaconQuery = `UPDATE sensors SET beacons_found = array_remove(beacons_found, $1) WHERE id = $2;`;
             await sequelize.query(removeBeaconQuery, { bind: [beacon_id, lastSensorResults[0].id], type: sequelize.QueryTypes.UPDATE });
+        } else {
+            console.log("Sensor is not P1, P2 or P3, updating employee last_area_found to sensor's area_id.");
+         // Update the employee's last found area
+         const updateEmployeeQuery = `UPDATE employees SET last_area_found = $1, last_time_found = $2 WHERE id = $3;`;
+         await sequelize.query(updateEmployeeQuery, { bind: [lastSensorResults[0].area_id, timestamp, employee.id], type: sequelize.QueryTypes.UPDATE });
         }
 
          // Retrieve all sensors in the same area and sum their beacons_found
