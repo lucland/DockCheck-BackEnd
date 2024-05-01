@@ -58,7 +58,7 @@ exports.createEvent = async (req, res) => {
         }
 
         // If action is 7 and sensor_id is not "P1" or "P2", do not update employee and do not save event
-        if (action === 7 && !["P1", "P2"].includes(modifiedSensorId)) {
+        if (action === 7 && !["P1"].includes(modifiedSensorId)) {
             console.log(`Action is 7 and sensor ID is ${modifiedSensorId}, skipping event creation and employee update.`);
             return res.status(400).json({ message: "Event not created due to business rules." });
         }
