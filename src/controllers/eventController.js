@@ -36,6 +36,10 @@ async function updateEmployeeAndSensorData(employee, sensor, timestamp, action) 
         bind: [areaToUpdate, timestamp, employee.id],
         type: sequelize.QueryTypes.UPDATE
     });
+    //search if employee area is in sensor beacons_found of any sensor and remove it if it does
+    const removeBeaconQuery = `UPDATE sensors SET beacons_found = array_remove(beacons_found, $1) WHERE id <> $2 AND $1 = ANY(beacons_found);`;
+    await sequelize.query(removeBeaconQuery, { bind: [employee.area, sensor.id], type: sequelize.QueryTypes.UPDATE });
+    
     if (action === 3 && !sensor.beacons_found.includes(employee.area)) {
         console.log(`Adding employee area to sensor beacons_found: ${employee.area}`);
         const addBeaconQuery = `UPDATE sensors SET beacons_found = array_append(beacons_found, $1) WHERE id = $2;`;
