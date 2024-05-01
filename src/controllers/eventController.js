@@ -25,7 +25,7 @@ async function updateEmployeeAndSensorData(employee, sensor, timestamp, action) 
     let areaToUpdate = sensor.area_id;
 
     // Determine if we need to set the last_area_found to empty
-    if (["P1", "P2"].includes(sensor.id)) {
+    if (["P1", "P2", "P4"].includes(sensor.id)) {
         areaToUpdate = ""; // Set area to empty string as per the conditions
     }
 
@@ -39,7 +39,7 @@ async function updateEmployeeAndSensorData(employee, sensor, timestamp, action) 
     //search if employee area is in sensor beacons_found of any sensor and remove it if it does
     const removeBeaconQuery = `UPDATE sensors SET beacons_found = array_remove(beacons_found, $1) WHERE id <> $2 AND $1 = ANY(beacons_found);`;
     await sequelize.query(removeBeaconQuery, { bind: [employee.area, sensor.id], type: sequelize.QueryTypes.UPDATE });
-    
+
     if (action === 3 && !sensor.beacons_found.includes(employee.area)) {
         console.log(`Adding employee area to sensor beacons_found: ${employee.area}`);
         const addBeaconQuery = `UPDATE sensors SET beacons_found = array_append(beacons_found, $1) WHERE id = $2;`;
