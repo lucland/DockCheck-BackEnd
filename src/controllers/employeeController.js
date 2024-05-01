@@ -179,21 +179,25 @@ exports.approveEmployee = async (req, res) => {
     }
 };
 
-//retrieve a list of every employee.area values where the employee.area starts with ff
+//retrieve a list of every employee.area values in a single string with each item separated by a comma and no spaces
 exports.getEmployeeAreas = async (req, res) => {
     try {
-        // Find all employees in the database by user ID
-        const employees = await Employee.sequelize.query("SELECT area FROM Employees WHERE area LIKE 'ff%'", { type: QueryTypes.SELECT });
-
-        //return just a list of areas values, a list of string
-        const areas = employees.map(employee => employee.area);
-
-        console.log("200 - employees fetched successfully");
+        // Find all employees in the database
+        const employees = await Employee.findAll();
+        // Create an array to store the employee areas
+        const employeeAreas = [];
+        // Loop through all employees in the database
+        employees.forEach(employee => {
+            // Add the employee area to the employeeAreas array
+            employeeAreas.push(employee.area);
+        });
+        // Convert the employeeAreas array to a string with each item separated by a comma
+        const areas = employeeAreas.join(',');
+        console.log("200 - employee areas fetched successfully");
         res.status(200).json(areas);
     } catch (error) {
-        // Handle any errors that occur during the retrieval process
-        console.log(error);
-        res.status(500).json({ error: 'Failed to get employees' });
+        console.log("400 - error fetching employee areas");
+        res.status(400).json({ message: 'Error fetching employee areas', error });
     }
 };
 
