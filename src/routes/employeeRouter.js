@@ -79,6 +79,20 @@ router.get('/byid/:id', authenticateJWT, employeeController.getEmployee);
 
 /**
  * @swagger
+ * /api/v1/employees/allpaginated:
+ *  get:
+ *    summary: Get all employees paginated
+ *    tags: [Employees]
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *      '400':
+ *        description: Bad request
+ */
+router.get('/allpaginated', authenticateJWT, employeeController.getAllEmployeesPaginated);
+
+/**
+ * @swagger
  * /api/v1/employees/all:
  *  get:
  *    summary: Get all employees
@@ -260,5 +274,41 @@ router.get('/areas', employeeController.getEmployeeAreas);
  *        description: Bad request
  */
 router.put('/area/:id', employeeController.updateEmployeeArea);
+
+//get a list of all employees with lastAreaFound not empty using getEmployeesWithLastAreaFound function with swagger documentation
+/**
+ * @swagger
+ * /api/v1/employees/lastarea:
+ *  get:
+ *    summary: Get all employees with last area found
+ *    tags: [Employees]
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *      '400':
+ *        description: Bad request
+ */
+router.get('/lastarea', employeeController.getEmployeesWithLastAreaFound);
+
+//searchEmployee
+/**
+ * @swagger
+ * /api/v1/employees/search:
+ *  get:
+ *    summary: Search for an employee by name
+ *    tags: [Employees]
+ *    parameters:
+ *      - in: query
+ *        name: name
+ *        required: true
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *      '400':
+ *        description: Bad request
+ */
+router.get('/search', employeeController.searchEmployee);
 
 module.exports = router;
