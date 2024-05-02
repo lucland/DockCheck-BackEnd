@@ -3,6 +3,8 @@
 const e = require('cors');
 const Employee = require('../models/Employee');
 const { QueryTypes } = require('sequelize');
+const sequelize = require('../config/database');
+const { Router } = require('express');
 
 exports.createEmployee = async (req, res) => {
     try {
@@ -74,6 +76,33 @@ exports.getEmployee = async (req, res) => {
     }
 };
 
+exports.getAllEmployeesPaginated = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const offset = (page - 1) * limit;
+
+        const employees = await Employee.findAndCountAll({
+            limit,
+            offset,
+        });
+
+        const totalPages = Math.ceil(employees.count / limit);
+
+        console.log("200 - employees fetched successfully");
+        res.status(200).json({
+            employees: employees.rows,
+            totalPages,
+            currentPage: page,
+        });
+    } catch (error) {
+        console.log(error);
+        console.log("400 - error fetching employees");
+        res.status(400).json({ message: 'Error fetching employees', error });
+    }
+};
+
+//get all employees
 exports.getAllEmployees = async (req, res) => {
     try {
         const employees = await Employee.findAll();
@@ -84,6 +113,7 @@ exports.getAllEmployees = async (req, res) => {
         res.status(400).json({ message: 'Error fetching employees', error });
     }
 };
+
 
 exports.updateEmployee = async (req, res) => {
     try {
@@ -150,7 +180,7 @@ exports.getAllEmployeesByUserId = async (req, res) => {
         const allEmployees = await Employee.findAll();
            
        // if userId is 'userId' return all employees
-        if (req.params.userId === 'userId' || req.params.userId === 'all' || req.params.userId === 'marcelloId' || req.params.userId === 'matheusId' || req.params.userId === 'suellenId' || req.params.userId === 'ludmillaId' || req.params.userId === 'lucasId' || req.params.userId === 'alexandreId' || req.params.userId === 'thiagoId') {
+        if (req.params.userId === 'userId' || req.params.userId === 'all' || req.params.userId === 'marcelloId' || req.params.userId === 'matheusId' || req.params.userId === 'suellenId' || req.params.userId === 'ludmillaId' || req.params.userId === 'lucasId' || req.params.userId === 'alexandreId' || req.params.userId === 'thiagoId'|| req.params.userId === 'rpassos'|| req.params.userId === 'rpassos2') {
             console.log("200 - employees fetched successfully");
             return res.status(200).json(allEmployees);
         }
@@ -201,6 +231,24 @@ exports.getEmployeeAreas = async (req, res) => {
     }
 };
 
+//search for an employee by name or third_company_id
+exports.searchEmployee = async (req, res) => {
+    try {
+        const { search } = req.query;
+        const query = `
+            SELECT * FROM Employees
+            WHERE name ILIKE '%${search}%' OR third_company_id ILIKE '%${search}%'
+        `;
+        const employees = await sequelize.query(query, { type: QueryTypes.SELECT });
+        console.log("200 - employees fetched successfully");
+        res.status(200).json(employees);
+    } catch (error) {
+        console.log(error);
+        console.log("400 - error fetching employees");
+        res.status(400).json({ message: 'Error fetching employees', error });
+    }
+};
+
 //update employee area by employee id
 exports.updateEmployeeArea = async (req, res) => {
     try {
@@ -216,5 +264,42 @@ exports.updateEmployeeArea = async (req, res) => {
     } catch (error) {
         console.log("400 - error updating employee");
         res.status(400).json({ message: 'Error updating employee', error });
+    }
+};
+
+//retrieve a list of employees that have last_area_found not empty and not null with pagination
+exports.getEmployeesWithLastAreaFound = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const offset = (page - 1) * limit;
+
+        const query = `
+            SELECT * FROM Employees
+            WHERE last_area_found IS NOT NULL AND last_area_found <> ''
+            LIMIT ${limit} OFFSET ${offset}
+        `;
+
+        const employees = await sequelize.query(query, { type: QueryTypes.SELECT });
+
+        const countQuery = `
+            SELECT COUNT(*) AS total FROM Employees
+            WHERE last_area_found IS NOT NULL AND last_area_found <> ''
+        `;
+
+        const countResult = await sequelize.query(countQuery, { type: QueryTypes.SELECT });
+        const totalEmployees = countResult[0].total;
+        const totalPages = Math.ceil(totalEmployees / limit);
+
+        console.log("200 - employees fetched successfully");
+        res.status(200).json({
+            employees,
+            totalPages,
+            currentPage: page,
+        });
+    } catch (error) {
+        console.log(error);
+        console.log("400 - error fetching employees");
+        res.status(400).json({ message: 'Error fetching employees', error });
     }
 };
