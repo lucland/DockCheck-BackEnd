@@ -290,16 +290,16 @@ router.put('/area/:id', employeeController.updateEmployeeArea);
  */
 router.get('/lastarea', employeeController.getEmployeesWithLastAreaFound);
 
-//searchEmployee
+//searchEmployee receives a query string and returns a list of employees that match the query
 /**
  * @swagger
  * /api/v1/employees/search:
  *  get:
- *    summary: Search for an employee by name
+ *    summary: Search for an employee by query
  *    tags: [Employees]
  *    parameters:
  *      - in: query
- *        name: name
+ *        name: query
  *        required: true
  *        schema:
  *          type: string
