@@ -51,12 +51,15 @@ async function updateEmployeeAndSensorData(employee, sensor, timestamp, action) 
 exports.createEvent = async (req, res) => {
     const { id, employee_id, timestamp, project_id, action, sensor_id, beacon_id, status } = req.body;
 
+    //remove space and \r and \n from beacon_id if it has any
+    const modifiedBeaconId = beacon_id.replace(/\s+|\r|\n/g, '');
+
     try {
         console.log("Creating event...");
         let modifiedSensorId = sensor_id.includes("B") ? sensor_id.slice(0, -1) : sensor_id;
 
         // Check if the event timestamp is more than 3 minutes into the future
-        if (new Date(timestamp) > new Date(new Date().getTime() + 3 * 60000)) {
+        if (new Date(timestamp) > new Date(new Date().getTime() + 5 * 60000)) {
             console.log("Received timestamp is more than 3 minutes into the future, skipping event creation.");
             return res.status(400).json({ message: "Event timestamp is too far in the future, event not created." });
         }
@@ -67,9 +70,9 @@ exports.createEvent = async (req, res) => {
             return res.status(400).json({ message: "Event not created due to business rules." });
         }
 
-        const employee = await fetchEmployee(beacon_id);
+        const employee = await fetchEmployee(modifiedBeaconId);
         if (!employee) {
-            console.log(`No employee found with ID: ${beacon_id}`);
+            console.log(`No employee found with ID: ${modifiedBeaconId}`);
             return res.status(404).json({ error: 'Employee not found.' });
         } else {
 
@@ -79,10 +82,10 @@ exports.createEvent = async (req, res) => {
             return res.status(404).json({ error: 'Sensor not found.' });
         }
         
-        const event = await createEvent(id, employee.id, timestamp, project_id, action, sensor_id, beacon_id, status);
+        const event = await createEvent(id, employee.id, timestamp, project_id, action, sensor_id, modifiedBeaconId, status);
         console.log(`Event created with ID: ${event.id}`);
 
-        await manageBeaconTransition(beacon_id, sensor_id);
+        await manageBeaconTransition(modifiedBeaconId, sensor_id);
         await updateEmployeeAndSensorData(employee, sensor, timestamp, action);
 
         console.log("Completed event creation and updates.");
