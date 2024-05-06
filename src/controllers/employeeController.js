@@ -85,6 +85,7 @@ exports.getAllEmployeesPaginated = async (req, res) => {
         const employees = await Employee.findAndCountAll({
             limit,
             offset,
+            order: [['number', 'ASC']],
         });
 
         const totalPages = Math.ceil(employees.count / limit);
@@ -141,6 +142,7 @@ exports.updateEmployee = async (req, res) => {
             user_id,
             telephone,
         });
+        await employee.update({ updated_at: new Date() });
         console.log("200 - employee updated successfully");
         res.status(200).json(employee);
     } catch (error) {
@@ -162,6 +164,7 @@ exports.updateEmployeeArea = async (req, res) => {
             last_area_found,
             last_time_found,
         });
+        await employee.update({ updated_at: new Date() });
         console.log("200 - employee updated successfully");
         res.status(200).json(employee);
     } catch (error) {
@@ -214,22 +217,44 @@ exports.getEmployeeAreas = async (req, res) => {
     try {
         // Find all employees in the database
         const employees = await Employee.findAll();
-        // Create an array to store the employee areas
-        const employeeAreas = [];
+
+        // Create a Set to store unique employee areas
+        const employeeAreasSet = new Set();
+
         // Loop through all employees in the database
         employees.forEach(employee => {
-            // Add the employee area to the employeeAreas array
-            employeeAreas.push(employee.area);
+            // Ignore if the area is null, empty, or ends with "\r"
+            if (employee.area && employee.area.endsWith("\r")) {
+                employee.area = employee.area.slice(0, -1);
+            }
+            if (employee.area) {
+                employeeAreasSet.add(employee.area);
+            }
         });
-        // Convert the employeeAreas array to a string with each item separated by a comma
-        const areas = employeeAreas.join(',');
-        console.log("200 - employee areas fetched successfully");
-        res.status(200).json(areas);
+
+        // Convert the Set to an array
+        const employeeAreas = Array.from(employeeAreasSet);
+
+        // Prepare the final array of strings
+        const result = [];
+        const areaCount = 10; // number of areas per string
+
+        // Loop to create each string with 10 areas, less if not enough areas remain
+        for (let i = 0; i < employeeAreas.length; i += areaCount) {
+            // Slice the next 10 areas and join them with a comma
+            const areaString = employeeAreas.slice(i, i + areaCount).join(',');
+            // Add "P0 A," prefix to the string and push to result array
+            result.push(`P0 A,${areaString}`);
+        }
+
+        console.log("200 - Employee areas fetched successfully");
+        res.status(200).json(result);
     } catch (error) {
-        console.log("400 - error fetching employee areas");
+        console.log("400 - Error fetching employee areas");
         res.status(400).json({ message: 'Error fetching employee areas', error });
     }
 };
+
 
 //search for an employee by name or third_company_id
 exports.searchEmployee = async (req, res) => {
@@ -259,6 +284,9 @@ exports.updateEmployeeArea = async (req, res) => {
         }
         const { area } = req.body;
         await employee.update({ area });
+        //updated_at updated with date time now
+        await employee.update({ updated_at: new Date() });
+        
         console.log("200 - employee updated successfully");
         res.status(200).json(employee);
     } catch (error) {
@@ -301,5 +329,24 @@ exports.getEmployeesWithLastAreaFound = async (req, res) => {
         console.log(error);
         console.log("400 - error fetching employees");
         res.status(400).json({ message: 'Error fetching employees', error });
+    }
+};
+
+
+//get all employees areas that are not empty
+exports.getEmployeeAreasA = async (req, res) => {
+    try {
+        const areas = await sequelize.query(`
+            SELECT area FROM Employees
+            WHERE area IS NOT NULL AND area <> ''
+        `, { type: QueryTypes.SELECT });
+
+        const employeeAreas = areas.map(area => area.area);
+
+        console.log("200 - employee areas fetched successfully");
+        res.status(200).json(employeeAreas);
+    } catch (error) {
+        console.log("400 - error fetching employee areas");
+        res.status(400).json({ message: 'Error fetching employee areas', error });
     }
 };
