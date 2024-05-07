@@ -299,7 +299,7 @@ exports.updateEmployeeArea = async (req, res) => {
 exports.getEmployeesWithLastAreaFound = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
+        const limit = parseInt(req.query.limit) || 1000;
         const offset = (page - 1) * limit;
 
         const query = `
@@ -310,21 +310,8 @@ exports.getEmployeesWithLastAreaFound = async (req, res) => {
 
         const employees = await sequelize.query(query, { type: QueryTypes.SELECT });
 
-        const countQuery = `
-            SELECT COUNT(*) AS total FROM Employees
-            WHERE last_area_found IS NOT NULL AND last_area_found <> ''
-        `;
-
-        const countResult = await sequelize.query(countQuery, { type: QueryTypes.SELECT });
-        const totalEmployees = countResult[0].total;
-        const totalPages = Math.ceil(totalEmployees / limit);
-
         console.log("200 - employees fetched successfully");
-        res.status(200).json({
-            employees,
-            totalPages,
-            currentPage: page,
-        });
+        res.status(200).json(employees);
     } catch (error) {
         console.log(error);
         console.log("400 - error fetching employees");
