@@ -34,6 +34,7 @@ const CompanyProject = require('./models/CompanyProject');
 const ProjectAdmin = require('./models/ProjectAdmin');
 const ThirdCompanyAdmin = require('./models/ThirdCompanyAdmin');
 const Invite = require('./models/Invite');
+const Daily = require('./models/Daily');
 
 // Initialize routes
 const userRoutes = require('./routes/userRoutes');
@@ -55,6 +56,7 @@ const thirdProjectRouter = require('./routes/thirdProjectRouter');
 const inviteRouter = require('./routes/inviteRouter');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocs = require('./swagger');
+const dailyRouter = require('./routes/dailyRouter');
 
 // Initialize Sequelize models
 User.init(sequelize);
@@ -77,6 +79,7 @@ CompanyProject.init(sequelize);
 ProjectAdmin.init(sequelize);
 ThirdCompanyAdmin.init(sequelize);
 Invite.init(sequelize);
+Daily.init(sequelize);
 
 // Initialize Express and middleware
 const app = express();
@@ -114,6 +117,7 @@ app.use('/api/v1/sensors', sensorRouter);
 app.use('/api/v1/thirdCompanies', thirdCompanyRouter);
 app.use('/api/v1/thirdProjects', thirdProjectRouter);
 app.use('/api/v1/invites', inviteRouter);
+app.use('/api/v1/dailies', dailyRouter);
 app.use('/api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 const httpsServer = https.createServer({
   key:fs.readFileSync('./ssl/privkey.pem'),

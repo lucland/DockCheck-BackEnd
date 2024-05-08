@@ -203,7 +203,7 @@ exports.approveEmployee = async (req, res) => {
             console.log("404 - employee not found");
             return res.status(404).json({ message: 'Employee not found' });
         }
-        await employee.update({ is_blocked: false });
+        await employee.update({ is_blocked: false, updated_at: new Date()});
         console.log("200 - employee approved successfully");
         res.status(200).json(employee);
     } catch (error) {

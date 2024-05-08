@@ -5,6 +5,7 @@ const Employee = require('../models/Employee');
 const Area = require('../models/Area');
 const Project = require('../models/Project');
 const Vessel = require('../models/Vessel');
+const Daily = require('../models/Daily');
 const sequelize = require('../config/database');
 
 
@@ -88,6 +89,10 @@ exports.createEvent = async (req, res) => {
         await manageBeaconTransition(modifiedBeaconId, sensor_id);
         await updateEmployeeAndSensorData(employee, sensor, timestamp, action);
 
+        if (action === 3) {
+        await updateDailyData(employee.id, timestamp, project_id);
+        }
+
         console.log("Completed event creation and updates.");
         res.status(201).json(event);
     }
@@ -96,6 +101,35 @@ exports.createEvent = async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 };
+
+async function updateDailyData(employeeId, timestamp, projectId) {
+    const today = new Date().toISOString().split('T')[0];
+    const daily = await Daily.findOne({ where: { employee_id: employeeId } });
+
+    if (daily) {
+        if (daily.first.toISOString().split('T')[0] === today) {
+            daily.final = timestamp;
+        } else {
+            daily.first = timestamp;
+            daily.final = timestamp;
+        }
+        await daily.save();
+    } else {
+        const employee = await Employee.findByPk(employeeId);
+        if (employee) {
+            await Daily.create({
+                id: new Date().getTime(),
+                employee_id: employeeId,
+                first: timestamp,
+                project_id: projectId,
+                final: timestamp,
+                company: employee.third_company_id,
+                status: "",
+                beacon_id: "",
+            });
+        }
+    }
+}
 
 async function createEvent(id, employeeId, timestamp, projectId, action, sensorId, beaconId, status) {
     const eventInsertQuery = `INSERT INTO events (id, employee_id, timestamp, project_id, action, sensor_id, beacon_id, status, created_at, updated_at)
