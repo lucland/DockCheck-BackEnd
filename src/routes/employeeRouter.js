@@ -311,4 +311,19 @@ router.get('/lastarea', employeeController.getEmployeesWithLastAreaFound);
  */
 router.get('/search', employeeController.searchEmployee);
 
+//endpoint to use clearLastAreaFound that updates every employee with last_area_found to ""
+/**
+ * @swagger
+ * /api/v1/employees/clearareas:
+ *  get:
+ *    summary: Clear all last area found
+ *    tags: [Employees]
+ *    responses:
+ *      '200':
+ *        description: Employee updated successfully
+ *      '400':
+ *        description: Bad request
+ */
+router.get('/clearareas', employeeController.clearLastAreaFound);
+
 module.exports = router;
