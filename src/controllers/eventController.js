@@ -26,26 +26,43 @@ async function updateEmployeeAndSensorData(employee, sensor, timestamp, action) 
     let areaToUpdate = sensor.area_id;
 
     // Determine if we need to set the last_area_found to empty
-    if (["P1", "P2", "P4"].includes(sensor.id)) {
+    if (["P1", "P2", "P1B", "P3"].includes(sensor.id)) {
         areaToUpdate = ""; // Set area to empty string as per the conditions
+    }
+
+    //if timestamp is more than 5 minutes into the future or 5 minutes into the past, do not update employee and sensor data
+    if (new Date(timestamp) > new Date(new Date().getTime() + 5 * 60000) || new Date(timestamp) < new Date(new Date().getTime() - 5 * 60000)) {
+        console.log("Received timestamp is more than 5 minutes into the future or 5 minutes into the past, skipping employee and sensor data update.");
     }
 
     // Update the employee's last found area and timestamp
     console.log(`Updating last found data for employee: ${employee.id}, area: ${areaToUpdate}`);
-    const updateEmployeeQuery = `UPDATE employees SET last_area_found = $1, last_time_found = $2 WHERE id = $3;`;
-    await sequelize.query(updateEmployeeQuery, {
-        bind: [areaToUpdate, timestamp, employee.id],
-        type: sequelize.QueryTypes.UPDATE
-    });
-    //search if employee area is in sensor beacons_found of any sensor and remove it if it does
-    const removeBeaconQuery = `UPDATE sensors SET beacons_found = array_remove(beacons_found, $1) WHERE id <> $2 AND $1 = ANY(beacons_found);`;
-    await sequelize.query(removeBeaconQuery, { bind: [employee.area, sensor.id], type: sequelize.QueryTypes.UPDATE });
+    const employeeQuery = `SELECT last_time_found FROM employees WHERE id = $1;`;
+    const employeeResult = await sequelize.query(employeeQuery, { bind: [employee.id], type: sequelize.QueryTypes.SELECT });
 
-    if (action === 3 && !sensor.beacons_found.includes(employee.area)) {
-        console.log(`Adding employee area to sensor beacons_found: ${employee.area}`);
-        const addBeaconQuery = `UPDATE sensors SET beacons_found = array_append(beacons_found, $1) WHERE id = $2;`;
-        await sequelize.query(addBeaconQuery, { bind: [employee.area, sensor.id], type: sequelize.QueryTypes.UPDATE });
+    const lastTimeFound = new Date(employeeResult[0].last_time_found);
+    const receivedTimestamp = new Date(timestamp);
+
+    if (lastTimeFound < receivedTimestamp) {
+        const updateEmployeeQuery = `UPDATE employees SET last_area_found = $1, last_time_found = $2 WHERE id = $3;`;
+        await sequelize.query(updateEmployeeQuery, {
+            bind: [areaToUpdate, timestamp, employee.id],
+            type: sequelize.QueryTypes.UPDATE
+        });
+
+        //search if employee area is in sensor beacons_found of any sensor and remove it if it does
+        const removeBeaconQuery = `UPDATE sensors SET beacons_found = array_remove(beacons_found, $1) WHERE id <> $2 AND $1 = ANY(beacons_found);`;
+        await sequelize.query(removeBeaconQuery, { bind: [employee.area, sensor.id], type: sequelize.QueryTypes.UPDATE });
+
+        if (action === 3 && !sensor.beacons_found.includes(employee.area)) {
+            console.log(`Adding employee area to sensor beacons_found: ${employee.area}`);
+            const addBeaconQuery = `UPDATE sensors SET beacons_found = array_append(beacons_found, $1) WHERE id = $2;`;
+            await sequelize.query(addBeaconQuery, { bind: [employee.area, sensor.id], type: sequelize.QueryTypes.UPDATE });
+        }
+    } else {
+        console.log("Received timestamp is older than the current last_time_found, skipping update.");
     }
+    
 }
 
 // Main event creation function remains mostly unchanged
@@ -57,7 +74,7 @@ exports.createEvent = async (req, res) => {
 
     try {
         console.log("Creating event...");
-        let modifiedSensorId = sensor_id.includes("B") ? sensor_id.slice(0, -1) : sensor_id;
+        let modifiedSensorId = sensor_id;
 
         // Check if the event timestamp is more than 3 minutes into the future
         if (new Date(timestamp) > new Date(new Date().getTime() + 5 * 60000)) {
@@ -89,7 +106,7 @@ exports.createEvent = async (req, res) => {
         await manageBeaconTransition(modifiedBeaconId, sensor_id);
         await updateEmployeeAndSensorData(employee, sensor, timestamp, action);
 
-        if (action === 3) {
+        if (action === 3 && sensor_id !== "P1" && sensor_id !== "P2" && sensor_id !== "P3" && sensor_id !== "P1B") {
         await updateDailyData(employee.id, timestamp, project_id);
         }
 
