@@ -337,3 +337,34 @@ exports.getEmployeeAreasA = async (req, res) => {
         res.status(400).json({ message: 'Error fetching employee areas', error });
     }
 };
+
+//function to set last area found off all employees to "" where last area found is different from ""
+exports.clearLastAreaFound = async (_, res) => {
+    //update all employees last_area_found to ""
+    try {
+        await sequelize.query(`
+            UPDATE Employees
+            SET last_area_found = ''
+            WHERE last_area_found <> ''
+        `);
+        console.log("200 - last area found cleared successfully");
+
+        //set beacons_found param of every sensor of the sensors table to be a array with 1 empty string element, knowing that the beacons_found param is a charachter varying[] type
+        await sequelize.query(`
+            UPDATE Sensors
+            SET beacons_found = ARRAY['']
+        `);
+        
+        console.log("200 - beacons found cleared successfully");
+        //set count param of ever area in areas table to 0
+        await sequelize.query(`
+            UPDATE Areas
+            SET count = 0
+        `);
+        console.log("200 - areas count cleared successfully");
+        res.status(200).json({ message: 'Last area found cleared successfully' });
+    } catch (error) {
+        console.log("400 - error clearing last area found");
+        res.status(400).json({ message: 'Error clearing last area found', error });
+    }
+};
