@@ -282,7 +282,17 @@ exports.updateEmployeeArea = async (req, res) => {
             console.log("404 - employee not found");
             return res.status(404).json({ message: 'Employee not found' });
         }
+
+        
         const { area } = req.body;
+
+        //check if theres another employee with the same area and if so return an error
+        const employees = await Employee.findAll({ where: { area } });
+        if (employees.length > 0) {
+            console.log("400 - area already in use");
+            return res.status(400).json({ message: 'Area already in use' });
+        }
+        
         await employee.update({ area });
         //updated_at updated with date time now
         await employee.update({ updated_at: new Date() });
@@ -366,5 +376,49 @@ exports.clearLastAreaFound = async (_, res) => {
     } catch (error) {
         console.log("400 - error clearing last area found");
         res.status(400).json({ message: 'Error clearing last area found', error });
+    }
+};
+
+exports.getEmployeeAreasUpdatedToday = async (req, res) => {
+    try {
+        // Get today's date and format it in 'YYYY-MM-DD' for SQL query
+        const today = new Date().toISOString().slice(0, 10);
+
+        // SQL query to find employees updated today
+        const sqlQuery = `
+            SELECT DISTINCT area
+            FROM Employees
+            WHERE updated_at >= '${today} 00:00:00'
+            AND updated_at < '${today} 23:59:59'
+            AND area IS NOT NULL
+            AND area NOT LIKE '%\r'
+        `;
+
+        // Execute the SQL query
+        const [results] = await sequelize.query(sqlQuery);
+
+        if (results.length === 0) {
+            console.log("400 - No employee areas updated today");
+            return res.status(400).json({ message: 'No employee areas updated today' });
+        }
+
+        // Extract just the areas from the query results
+        const employeeAreas = results.map(row => row.area);
+
+        // Prepare the final array of strings
+        const result = [];
+        const areaCount = 10; // number of areas per string
+
+        // Loop to create each string with 10 areas, less if not enough areas remain
+        for (let i = 0; i < employeeAreas.length; i += areaCount) {
+            const areaString = employeeAreas.slice(i, i + areaCount).join(',');
+            result.push(`P0 A,${areaString}`);
+        }
+
+        console.log("200 - Employee areas updated today fetched successfully");
+        res.status(200).json(result);
+    } catch (error) {
+        console.log("400 - Error fetching employee areas updated today");
+        res.status(400).json({ message: 'Error fetching employee areas updated today', error });
     }
 };
