@@ -26,7 +26,7 @@ async function updateEmployeeAndSensorData(employee, sensor, timestamp, action) 
     let areaToUpdate = sensor.area_id;
 
     // Determine if we need to set the last_area_found to empty
-    if (["P1", "P2", "P1B", "P3"].includes(sensor.id)) {
+    if (["P1", "P2", "P1B", "P3", "P4"].includes(sensor.id)) {
         areaToUpdate = ""; // Set area to empty string as per the conditions
     }
 
@@ -106,7 +106,7 @@ exports.createEvent = async (req, res) => {
         await manageBeaconTransition(modifiedBeaconId, sensor_id);
         await updateEmployeeAndSensorData(employee, sensor, timestamp, action);
 
-        if (action === 3 && sensor_id !== "P1" && sensor_id !== "P2" && sensor_id !== "P3" && sensor_id !== "P1B") {
+        if (action === 3 && sensor_id !== "P1" && sensor_id !== "P2" && sensor_id !== "P3" && sensor_id !== "P1B" && sensor_id !== "P4") {
         await updateDailyData(employee.id, timestamp, project_id);
         }
 
