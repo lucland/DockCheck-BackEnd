@@ -326,4 +326,19 @@ router.get('/search', employeeController.searchEmployee);
  */
 router.get('/clearareas', employeeController.clearLastAreaFound);
 
+/**
+ * @swagger
+ * /api/v1/employees/areas/updatedtoday:
+ *  get:
+ *    summary: Get employee areas updated today
+ *    tags: [Employees]
+ *    responses:
+ *      '200':
+ *        description: Successful operation
+ *      '400':
+ *        description: Bad request
+ */
+router.get('/areas/updatedtoday', employeeController.getEmployeeAreasUpdatedToday);
+
+
 module.exports = router;
