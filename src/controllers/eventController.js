@@ -72,6 +72,16 @@ exports.createEvent = async (req, res) => {
     //remove space and \r and \n from beacon_id if it has any
     const modifiedBeaconId = beacon_id.replace(/\s+|\r|\n/g, '');
 
+    //before the whole logic, check all employees with last_are_found != "" or null and with last_time_found with a timestamp of before todays date and update last_area_found to ""
+    const employeesQuery = `SELECT id FROM employees WHERE last_area_found IS NOT NULL AND last_area_found != '' AND last_time_found < NOW()::DATE;`;
+    const employeesResults = await sequelize.query(employeesQuery, { type: sequelize.QueryTypes.SELECT });
+
+    for (const employee of employeesResults) {
+        console.log(`Updating last_area_found for employee: ${employee.id}`);
+        const updateEmployeeQuery = `UPDATE employees SET last_area_found = '' WHERE id = $1;`;
+        await sequelize.query(updateEmployeeQuery, { bind: [employee.id], type: sequelize.QueryTypes.UPDATE });
+    }
+
     try {
         console.log("Creating event...");
         let modifiedSensorId = sensor_id;
