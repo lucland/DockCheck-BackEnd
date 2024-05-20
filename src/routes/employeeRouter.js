@@ -182,7 +182,7 @@ router.put('/:id', authenticateJWT, employeeController.updateEmployee);
  *      '400':
  *        description: Bad request
  */
-router.put('/area/:id', authenticateJWT, employeeController.updateEmployeeArea);
+router.put('/updateEmployeeLastAreaFound/:id', authenticateJWT, employeeController.updateEmployeeArea);
 
 //get all employees by user_id where employee.user_id = user_id
 /**
@@ -273,7 +273,7 @@ router.get('/areas', employeeController.getEmployeeAreas);
  *      '400':
  *        description: Bad request
  */
-router.put('/area/:id', employeeController.updateEmployeeArea);
+router.put('/area/:id', employeeController.updateEmployeeAreaCode);
 
 //get a list of all employees with lastAreaFound not empty using getEmployeesWithLastAreaFound function with swagger documentation
 /**
