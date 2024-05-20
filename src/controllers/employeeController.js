@@ -275,7 +275,7 @@ exports.searchEmployee = async (req, res) => {
 };
 
 //update employee area by employee id
-exports.updateEmployeeArea = async (req, res) => {
+exports.updateEmployeeAreaCode = async (req, res) => {
     try {
         const employee = await Employee.findByPk(req.params.id);
         if (!employee) {
