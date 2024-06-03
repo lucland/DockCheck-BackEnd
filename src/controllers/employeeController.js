@@ -181,12 +181,19 @@ exports.getAllEmployeesByUserId = async (req, res) => {
         
         const employees = await Employee.findAll({ where: { user_id: req.params.userId } });
         const allEmployees = await Employee.findAll();
+
+        const googlemarineEmployees = allEmployees.filter(employee => employee.third_company_id === 'GOOGLEMARINE');
            
        // if userId is 'userId' return all employees
         if (req.params.userId === 'userId' || req.params.userId === 'all' || req.params.userId === 'marcelloId' || req.params.userId === 'matheusId' || req.params.userId === 'suellenId' || req.params.userId === 'ludmillaId' || req.params.userId === 'lucasId' || req.params.userId === 'alexandreId' || req.params.userId === 'thiagoId'|| req.params.userId === 'rpassos'|| req.params.userId === 'rpassos2') {
             console.log("200 - employees fetched successfully");
             return res.status(200).json(allEmployees);
         }
+        if (req.params.userId === 'lucasId' || req.params.userId === 'alexandreId' || req.params.userId === 'thiagoId') {
+            console.log("200 - employees fetched successfully");
+            return res.status(200).json(googlemarineEmployees);
+        }
+
         console.log("200 - employees fetched successfully");
         res.status(200).json(employees);
     } catch (error) {
