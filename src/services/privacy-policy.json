@@ -1,0 +1,74 @@
+{
+    "pt-br": {
+                "title": "Política de Privacidade",
+                "content": "política de Privacidade",
+
+                "Última atualização": "03 de junho de 2024",
+
+                "Introdução": "Bem-vindo ao DockCheck. Estamos empenhados em proteger a sua privacidade e garantir que as suas informações pessoais sejam tratadas de forma segura e responsável. Esta Política de Privacidade descreve como coletamos, usamos e protegemos suas informações.",
+
+                "Informações que coletamos e usamos": "Nosso aplicativo não coleta nem armazena nenhum dado pessoal dos usuários, exceto o acesso à câmera mencionado abaixo. Não temos nenhum outro sistema de coleta de dados em funcionamento.",
+
+                "Acesso à câmera": "Nosso aplicativo requer acesso à câmera do seu dispositivo somente quando você escolhe usar a funcionalidade da câmera dentro do aplicativo. Não acessamos nem usamos sua câmera sem o seu consentimento explícito.",
+
+                "Cookies e tecnologias de rastreamento": "Não usamos cookies ou qualquer tecnologia de rastreamento em nosso aplicativo.",
+
+                "Serviços terceirizados": "Não utilizamos nenhum serviço de terceiros que colete ou utilize seus dados.",
+
+                "Medidas de segurança": "Implementamos medidas técnicas e organizacionais adequadas para garantir um nível de segurança adequado ao risco do tratamento dos seus dados pessoais.",
+
+                "Direitos de uso": "Nos termos do Regulamento Geral de Proteção de Dados (RGPD), os utilizadores têm o direito de aceder, corrigir, eliminar os seus dados e retirar o consentimento quando for caso disso. Uma vez que não recolhemos quaisquer dados, estes direitos são naturalmente respeitados.",
+
+                "Retenção de dados": "Não retemos quaisquer dados pessoais, uma vez que não os recolhemos.",
+
+                "Privacidade infantil": "Nosso aplicativo não se destina a indivíduos menores de 18 anos. Não coletamos ou solicitamos intencionalmente dados pessoais de menores de 18 anos. Se soubermos que coletamos dados pessoais de uma criança menor de 18 anos, excluiremos esses dados. informações o mais rápido possível.",
+
+                "Transferências Internacionais de Dados": "Não transferimos quaisquer dados internacionalmente, pois não coletamos quaisquer dados do usuário.",
+
+                "Conformidade com o GDPR": "Estamos empenhados em cumprir o Regulamento Geral de Proteção de Dados (RGPD). Garantimos que os seus dados pessoais sejam processados ​​de forma legal, justa e transparente, respeitando os seus direitos de privacidade.",
+
+                "Público-alvo": "Nosso aplicativo não se destina a menores de 18 anos. Ao usar nosso aplicativo, você confirma que tem pelo menos 18 anos.",
+
+                "Informações de contato": "Se você tiver alguma dúvida ou preocupação sobre esta Política de Privacidade ou nossas práticas, entre em contato conosco:\n\nE-mail: engenharia@googlemarine.com.br\nEndereço: Rua Delegado Waldir Guilherme 32, Niterói - RJ, Brasil",
+
+                "Alterações nesta Política de Privacidade": "Poderemos atualizar nossa Política de Privacidade de tempos em tempos. Iremos notificá-lo sobre quaisquer alterações publicando a nova Política de Privacidade nesta página. Recomendamos que você revise esta Política de Privacidade periodicamente para quaisquer alterações.",
+
+                "Aceitação dos Termos": "Ao usar nosso aplicativo, você indica que aceita esta Política de Privacidade. Se você não concorda com esta política, não use nosso aplicativo."
+            },
+            "en-us": {
+                "title": "Privacy Policy",
+                "content": "Privacy Policy",
+
+                "Last updated": "03 June, 2024",
+
+                "Introduction": "Welcome to DockCheck. We are committed to protecting your privacy and ensuring that your personal information is handled in a safe and responsible manner. This Privacy Policy outlines how we collect, use, and protect your information.",
+
+                "Information We Collect and Use": "Our app does not collect or store any personal data from users, except for the camera access as mentioned below. We do not have any other data gathering systems in place.",
+
+                "Camera Access": "Our app requires access to your device's camera only when you choose to use the camera functionality within the app. We do not access or use your camera without your explicit consent.",
+
+                "Cookies and Tracking Technologies": "We do not use cookies or any tracking technologies within our app.",
+
+                "Third-Party Services": "We do not use any third-party services that collect or use your data.",
+
+                "Security Measures": "We implement appropriate technical and organizational measures to ensure a level of security appropriate to the risk of processing your personal data.",
+
+                "User Rights": "Under the General Data Protection Regulation (GDPR), users have the right to access, correct, delete their data, and withdraw consent where relevant. Since we do not collect any data, these rights are naturally upheld.",
+
+                "Data Retention": "We do not retain any personal data as we do not collect any.",
+
+                "Children’s Privacy": "Our app is not intended for individuals under the age of 18. We do not knowingly collect or solicit personal data from anyone under the age of 18. If we learn that we have collected personal data from a child under age 18, we will delete that information as quickly as possible.",
+
+                "International Data Transfers": "We do not transfer any data internationally as we do not collect any user data.",
+
+                "GDPR Compliance": "We are committed to complying with the General Data Protection Regulation (GDPR). We ensure that your personal data is processed lawfully, fairly, and transparently, with respect to your privacy rights.",
+
+                "Target Audience": "Our app is not intended for individuals under the age of 18. By using our app, you confirm that you are at least 18 years old.",
+
+                "Contact Information": "If you have any questions or concerns about this Privacy Policy or our practices, please contact us at:\n\nEmail: engenharia@googlemarine.com.br\nAddress: Rua Delegado Waldir Guilherme 32, Niterói - RJ, Brasil",
+
+                "Changes to This Privacy Policy": "We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page. We recommend that you review this Privacy Policy periodically for any changes.",
+
+                "Acceptance of Terms": "By using our app, you signify your acceptance of this Privacy Policy. If you do not agree to this policy, please do not use our app."
+            }
+}
