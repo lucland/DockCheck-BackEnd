@@ -119,6 +119,11 @@ app.use('/api/v1/thirdProjects', thirdProjectRouter);
 app.use('/api/v1/invites', inviteRouter);
 app.use('/api/v1/dailies', dailyRouter);
 app.use('/api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+// Include privacy policy route
+const privacyPolicyRouter = require('./services/privacy-policy');
+app.use('/privacy', privacyPolicyRouter);
+
 const httpsServer = https.createServer({
   key:fs.readFileSync('./ssl/privkey.pem'),
   cert:fs.readFileSync('./ssl/fullchain.pem'),
