@@ -155,3 +155,24 @@ httpsServer.listen(443, () => {
 
 
 //$env:NODE_ENV="production";node app.js
+
+
+/* env files:
+DEV:
+DB_HOST=localhost
+DB_USER=postgres
+DB_PASS=Ggm1234*
+DB_NAME=dockcheck-dev
+FIREBASE_KEY_PATH=./config/dockcheck-dev-firebase-adminsdk-fgd9o-f2c7440712.json
+DATABASE_URL=postgresql://postgres:Ggm1234*@localhost/dockcheck-dev
+SECRET_KEY=dev26102023env20231026dev
+
+PROD:
+DB_HOST=localhost
+DB_USER=postgres
+DB_PASS=Ggm1234*
+DB_NAME=dockcheck-prod
+FIREBASE_KEY_PATH=./config/dockcheck-prod-firebase-adminsdk-5wx8i-409b7aceae.json
+DATABASE_URL=postgresql://postgres:Ggm1234*@localhost/dockcheck-prod
+SECRET_KEY=prod26102023env20231026prod
+*/
